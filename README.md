@@ -109,3 +109,25 @@ version resets rather than crashes.
 
 Authentication, a database, global leaderboards, AI-generated scenarios, and CEO
 Mode are all deliberately out of scope for this version.
+
+## Deploying
+
+Live at **https://mvxswell.github.io/operator/**
+
+The app is client-only, so it ships as a static export on GitHub Pages. The
+`main` branch holds source; the `gh-pages` branch holds the built site.
+
+```bash
+npm run build:pages     # static export into out/, with the payload fix below
+```
+
+Then publish `out/` to the `gh-pages` branch. There is no GitHub Actions
+workflow because the current token lacks the `workflow` scope — grant it and
+this becomes a push-to-deploy setup.
+
+**Why `scripts/flatten-rsc-payloads.mjs` exists:** `output: "export"` writes
+per-segment prefetch payloads as nested directories
+(`quick/__next.quick/__PAGE__.txt`) while the client requests them dot-joined
+(`quick/__next.quick.__PAGE__.txt`). A Next server resolves that at request
+time; a static host cannot, so every navigation prefetch 404s and falls back to
+a full page load. The script copies each payload to the flattened name.
