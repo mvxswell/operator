@@ -1,0 +1,165 @@
+@import "tailwindcss";
+
+/*
+ * Operator design tokens.
+ *
+ * Dark-first and deliberately committed to a single dark theme: the product is
+ * a focus surface, and the question should always be the brightest thing on it.
+ */
+@theme {
+  --color-bg: #08090b;
+  --color-surface: #0e1013;
+  --color-surface-2: #14171b;
+  --color-raised: #1a1e23;
+  --color-line: #23272e;
+  --color-line-soft: #1a1d22;
+  --color-ink: #f3f5f7;
+  --color-muted: #8b929c;
+  --color-faint: #5b616a;
+  --color-accent: #f2b441;
+  --color-accent-soft: #3a2c11;
+  --color-pos: #52d18b;
+  --color-pos-soft: #12301f;
+  --color-neg: #f4726d;
+  --color-neg-soft: #331715;
+
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, "SF Mono", monospace;
+
+  --animate-rise: rise 0.4s cubic-bezier(0.16, 1, 0.3, 1) both;
+  --animate-pop: pop 0.28s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-fade: fade 0.3s ease both;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes flash-pos {
+  0% {
+    background-color: var(--color-pos-soft);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes flash-neg {
+  0% {
+    background-color: var(--color-neg-soft);
+  }
+  100% {
+    background-color: transparent;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+
+html {
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  /* A single soft light source at the top keeps the page from reading as flat black. */
+  background-image: radial-gradient(
+    120% 70% at 50% -10%,
+    rgba(242, 180, 65, 0.07) 0%,
+    rgba(242, 180, 65, 0) 60%
+  );
+  background-attachment: fixed;
+}
+
+::selection {
+  background: var(--color-accent);
+  color: #16120a;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Numerals should never shift width while a score counts up. */
+.tabular {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+.stack-rise > * {
+  animation: var(--animate-rise);
+}
+.stack-rise > *:nth-child(2) {
+  animation-delay: 0.05s;
+}
+.stack-rise > *:nth-child(3) {
+  animation-delay: 0.1s;
+}
+.stack-rise > *:nth-child(4) {
+  animation-delay: 0.15s;
+}
+.stack-rise > *:nth-child(5) {
+  animation-delay: 0.2s;
+}
+
+.flash-pos {
+  animation: flash-pos 0.45s ease-out both;
+}
+.flash-neg {
+  animation: flash-neg 0.45s ease-out both;
+}
+
+/* Quick Decisions is a keyboard game first; text selection gets in the way. */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
