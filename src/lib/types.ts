@@ -44,6 +44,8 @@ export interface Question {
   prompt: string;
   choices: Choice[];
   correctChoiceId: string;
+  /** Optional step-by-step reasoning revealed after the answer. */
+  work?: string[];
   explanation: string;
 }
 

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
+import { Calculator } from "@/components/Calculator";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
 import { findQuestion } from "@/data";
@@ -69,6 +70,7 @@ function Intro({
           <Rule text="Everything you need to answer is in the scenario. No trivia, no outside knowledge." />
           <Rule text="Accuracy counts most, difficulty next, speed last — guessing quickly will not help." />
           <Rule text="Press 1–4 or A–D to answer, then Enter for the next question." />
+          <Rule text="A scratch calculator is available during every question." />
         </Panel>
 
         {personalBest > 0 ? (
@@ -157,6 +159,8 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
         onSelect={answer}
         revealed={revealed}
       />
+
+      <Calculator />
 
       {revealed ? (
         <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/92 backdrop-blur-md">
@@ -407,6 +411,11 @@ function ReviewSection({ missedIds }: { missedIds: string[] }) {
                 <span className="text-pos">Best answer: </span>
                 {q.choices.find((c) => c.id === q.correctChoiceId)?.text}
               </p>
+              {q.work?.length ? (
+                <ol className="mt-3 space-y-1.5 border-l border-accent/30 pl-4 text-sm leading-relaxed text-muted">
+                  {q.work.map((step) => <li key={step}>{step}</li>)}
+                </ol>
+              ) : null}
               <p className="mt-2 text-sm leading-relaxed text-muted">{q.explanation}</p>
             </div>
           ))}

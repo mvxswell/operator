@@ -24,7 +24,7 @@ export function Nav() {
             O
           </span>
           <span className="hidden text-[13px] font-semibold tracking-[0.16em] text-ink sm:inline">
-            OPERATOR
+            THINK OPERATOR
           </span>
         </Link>
 

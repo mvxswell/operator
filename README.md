@@ -1,4 +1,4 @@
-# Operator
+# Think Operator
 
 A web app that tests and trains business judgment. Four modes, an adaptive question
 engine, and a 0–1000 Operator Score.
@@ -112,7 +112,7 @@ Mode are all deliberately out of scope for this version.
 
 ## Deploying
 
-Live at **https://mvxswell.github.io/operator/**
+Live at **https://thinkoperator.com/**
 
 The app is client-only, so it ships as a static export on GitHub Pages. The
 `main` branch holds source; the `gh-pages` branch holds the built site.

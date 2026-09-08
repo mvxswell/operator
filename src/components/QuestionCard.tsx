@@ -33,6 +33,7 @@ export function QuestionCard({
   useEffect(() => {
     if (revealed) return;
     const onKey = (e: KeyboardEvent) => {
+      if (document.querySelector('[data-calculator-open="true"]')) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const key = e.key.toLowerCase();
       const byNumber = "1234".indexOf(key);
@@ -86,8 +87,21 @@ export function QuestionCard({
       {revealed ? (
         <div className="mt-5 animate-[var(--animate-rise)] rounded-lg border border-line bg-surface-2 p-4">
           <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
-            Why
+            {question.work?.length ? "How to get there" : "Why this is the best call"}
           </p>
+          {question.work?.length ? (
+            <ol className="mt-3 space-y-2 border-l border-accent/30 pl-4 text-sm leading-relaxed text-ink">
+              {question.work.map((step, index) => (
+                <li key={step} className="relative">
+                  <span className="absolute -left-[21px] top-0.5 grid h-4 w-4 place-items-center rounded-full bg-accent-soft text-[9px] font-semibold text-accent">{index + 1}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+          ) : null}
+          {question.work?.length ? (
+            <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-faint">Why it matters</p>
+          ) : null}
           <p className="mt-1.5 text-sm leading-relaxed text-muted">{question.explanation}</p>
         </div>
       ) : null}

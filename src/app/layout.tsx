@@ -14,9 +14,18 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Operator — Test your business judgment",
+  metadataBase: new URL("https://thinkoperator.com"),
+  title: "Think Operator — Test your business judgment",
   description:
     "Test your judgment across real-world business scenarios. Train your weaknesses. Make better decisions faster.",
+  alternates: { canonical: "/" },
+  openGraph: {
+    title: "Think Operator",
+    description: "Test your judgment across real-world business scenarios.",
+    url: "https://thinkoperator.com",
+    siteName: "Think Operator",
+    type: "website",
+  },
 };
 
 export const viewport: Viewport = {

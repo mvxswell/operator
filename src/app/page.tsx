@@ -179,8 +179,8 @@ export default function HomePage() {
       </section>
 
       <footer className="border-t border-line-soft py-8 text-[12px] text-faint">
-        Scores and history are stored locally in your browser. Accounts, leaderboards and
-        AI-generated scenarios come later.
+        <span className="font-medium text-muted">Think Operator</span> · Scores and history are
+        stored locally in your browser. Accounts, leaderboards and AI-generated scenarios come later.
       </footer>
     </div>
   );

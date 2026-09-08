@@ -7,15 +7,16 @@ import type { NextConfig } from "next";
  * The Pages-specific options are opt-in via GITHUB_PAGES=true so that local
  * `next dev` keeps serving from the root with no basePath.
  */
-const REPO = "operator";
 const isGitHubPages = process.env.GITHUB_PAGES === "true";
 
 const nextConfig: NextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
   ...(isGitHubPages
     ? {
         output: "export",
-        // Project sites are served from https://<user>.github.io/<repo>/
-        basePath: `/${REPO}`,
+        // The project has a custom Pages domain, so it is served from the root.
         trailingSlash: true,
       }
     : {}),

@@ -12,9 +12,9 @@ export async function generateMetadata(
 ): Promise<Metadata> {
   const { category } = await props.params;
   const id = categoryFromSlug(category);
-  if (!id) return { title: "Skill not found — Operator" };
+  if (!id) return { title: "Skill not found — Think Operator" };
   return {
-    title: `${CATEGORY_MAP[id].name} — Operator`,
+    title: `${CATEGORY_MAP[id].name} — Think Operator`,
     description: CATEGORY_MAP[id].description,
   };
 }

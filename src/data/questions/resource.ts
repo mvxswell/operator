@@ -18,6 +18,11 @@ export const RESOURCE_QUESTIONS: Question[] = [
       { id: "d", text: "Cancel both and rebook a fuller day" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Value per use of the scarce van: Job A = $900; Job B = $200.",
+      "$900 ÷ $200 = 4.5, so Job A is worth 4.5 times as much.",
+      "Job B is flexible and can be moved; Job A's deadline cannot.",
+    ],
     explanation:
       "One scarce asset should go to the highest-value use. Job A is worth 4.5 times as much and is the only one with a real deadline.",
   },
@@ -38,6 +43,11 @@ export const RESOURCE_QUESTIONS: Question[] = [
       { id: "d", text: "Hold the cash until the next quarter" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Expected monthly spoilage = 2 failures × $3,000 = about $6,000.",
+      "A $10,000 replacement pays back in roughly $10,000 ÷ $6,000 = 1.7 months.",
+      "Signage has an uncertain return; refrigeration stops a measured recurring loss.",
+    ],
     explanation:
       "The refrigeration failures destroy about $6,000 a month. That is a certain, recurring loss you can stop, which beats a speculative gain from signage.",
   },
@@ -58,6 +68,11 @@ export const RESOURCE_QUESTIONS: Question[] = [
       { id: "d", text: "Pause both and rebuild the landing page" },
     ],
     correctChoiceId: "a",
+    work: [
+      "Channel A costs $25 per signup; Channel B costs $83.",
+      "$83 ÷ $25 = 3.32, so B costs more than three times as much for the same outcome.",
+      "Because conversion and remaining capacity are equal, shift the next dollar toward A.",
+    ],
     explanation:
       "Same conversion rate, same headroom, and a third of the cost per signup. With those facts stated, Channel A is simply better use of the same dollar.",
   },
@@ -134,6 +149,11 @@ export const RESOURCE_QUESTIONS: Question[] = [
       { id: "d", text: "Cut the channel entirely" },
     ],
     correctChoiceId: "b",
+    work: [
+      "At $80,000 spend, average acquisition cost is $78 against only $60 of gross profit.",
+      "The incremental 150 customers from $40,000 to $80,000 cost $40,000 ÷ 150 ≈ $267 each.",
+      "The channel still works at lower spend, so pull back below the point of negative marginal return.",
+    ],
     explanation:
       "The last doubling bought customers above their $60 gross profit, so those dollars lose money. The channel is still profitable at lower volume, so pull back rather than abandon it.",
   },
@@ -154,6 +174,11 @@ export const RESOURCE_QUESTIONS: Question[] = [
       { id: "d", text: "Raise decal prices and keep the current mix" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Banner margin per constrained hour = $180 ÷ 3 = $60.",
+      "Decal margin per constrained hour = $90 ÷ 0.75 = $120.",
+      "Decals generate twice the margin from the resource that is actually scarce.",
+    ],
     explanation:
       "On a constrained machine the right unit is margin per machine hour: banners earn $60 an hour, decals earn $120. Total margin per job is the wrong comparison when time is what is scarce.",
   },
@@ -174,6 +199,11 @@ export const RESOURCE_QUESTIONS: Question[] = [
       { id: "d", text: "Do neither until you hire a second engineer" },
     ],
     correctChoiceId: "b",
+    work: [
+      "The platform issue reaches 30% × 200 = about 60 customers.",
+      "It consumes three weeks versus four weeks for a one-customer integration.",
+      "Fix the shared problem, then spend the remaining week addressing Customer X's renewal risk directly.",
+    ],
     explanation:
       "The platform fix helps roughly 60 customers instead of one and costs less time. The remaining week is enough to address the renewal directly rather than by building bespoke software.",
   },

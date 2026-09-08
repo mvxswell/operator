@@ -18,6 +18,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Add more menu options to increase order size" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Contribution per box = $50 selling price − $58 variable cost = −$8.",
+      "At 100 more orders, that loss grows by another $800 before fixed costs.",
+      "Make one order profitable first; only then does added volume help.",
+    ],
     explanation:
       "You lose $8 on every box. Volume multiplies a loss rather than curing it, so the economics have to work on one unit first.",
   },
@@ -38,6 +43,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Someone is stealing from the business" },
     ],
     correctChoiceId: "b",
+    work: [
+      "The P&L records revenue when customers are invoiced, not when they pay.",
+      "With 60-day terms, the newest sales can sit in receivables for two months.",
+      "Forty-percent growth therefore creates a larger cash gap even while reported profit rises.",
+    ],
     explanation:
       "Profit is recorded when you invoice; cash arrives 60 days later. Fast growth means you fund more inventory and receivables before collecting, so a profitable quarter can still drain the bank.",
   },
@@ -58,6 +68,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Turns the sale into a loss" },
     ],
     correctChoiceId: "a",
+    work: [
+      "Original gross profit = $400 − $260 = $140.",
+      "Discounted gross profit = $340 − $260 = $80.",
+      "Profit lost = $60 ÷ $140 = 42.9%, even though price fell only 15%.",
+    ],
     explanation:
       "The discount comes entirely out of profit, not cost. A 15% price cut removed 43% of the gross profit on that chair.",
   },
@@ -78,6 +93,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "About 15% more" },
     ],
     correctChoiceId: "c",
+    work: [
+      "Start with $100 of sales: a 30% margin produces $30 of gross profit.",
+      "After a 10% discount, revenue is $90 while the $70 cost is unchanged, leaving $20.",
+      "Required volume = $30 ÷ $20 = 1.5, so volume must rise 50% just to stand still.",
+    ],
     explanation:
       "The discount takes margin from 30 points to 20. To earn the same total gross profit you need 30/20, or 50% more volume — which is why blanket discounts are so expensive.",
   },
@@ -106,6 +126,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Cost of goods, which must have crept up" },
     ],
     correctChoiceId: "c",
+    work: [
+      "Revenue growth = ($5.0M − $4.0M) ÷ $4.0M = 25%.",
+      "Operating-expense growth = ($1.72M − $1.24M) ÷ $1.24M ≈ 38.7%.",
+      "Gross margin held at 38%, so overhead growing 14 points faster than revenue is the outlier.",
+    ],
     explanation:
       "Revenue rose 25% and gross margin held, so the product economics are intact. Overhead rose 39%, which is the entire reason profit fell.",
   },
@@ -126,6 +151,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "The 30-month average customer life" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Monthly gross profit per customer = $100 × 80% = $80.",
+      "CAC payback = $900 ÷ $80 = 11.25 months.",
+      "The company has only four months of runway, so it cannot wait eleven months to recycle each acquisition dollar.",
+    ],
     explanation:
       "The lifetime value is healthy, but you spend $900 today and recover it at $80 a month — 11 months. With four months of reserves, growth speed is limited by cash, not by whether the customer is profitable.",
   },
@@ -146,6 +176,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Slow growth until margins improve" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Cash leaves when the factory is paid, then goods spend 60 days in transit.",
+      "Add 45 warehouse days and 60 customer-payment days.",
+      "Total cash gap = 60 + 45 + 60 = 165 days.",
+    ],
     explanation:
       "You fund every order for about 165 days, so doubling orders doubles the cash you must front. Supplier terms, faster turns, or customer deposits fix the actual problem; better margin on a 165-day cycle still starves you.",
   },
@@ -166,6 +201,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Breakeven cannot be determined from this information" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Contribution per membership = $120 price − $20 variable cost = $100.",
+      "Current contribution = 380 × $100 = $38,000 per month.",
+      "$42,000 fixed cost − $38,000 contribution = a $4,000 monthly shortfall; breakeven is 420 members.",
+    ],
     explanation:
       "Contribution is $100 per member, so 380 members produce $38,000 against $42,000 of fixed cost and breakeven is 420. Opening a second studio on the same cost structure would duplicate a unit that does not yet cover itself.",
   },
@@ -186,6 +226,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Yes, but only if you cut ingredient quality to reach the price" },
     ],
     correctChoiceId: "b",
+    work: [
+      "The $0.85 allocated overhead is already being paid while the ovens sit idle.",
+      "Incremental contribution = $2.10 price − $1.55 ingredients and direct labor = $0.55 per loaf.",
+      "Because existing retail sales are unaffected, every accepted loaf adds $0.55 toward profit.",
+    ],
     explanation:
       "The $0.85 of overhead is paid whether the ovens run or not. Against genuinely idle capacity the relevant comparison is the $1.55 of incremental cost, so each loaf contributes $0.55 you would not otherwise have.",
   },
@@ -206,6 +251,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Negotiate for 45-day terms instead" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Paying 20 days early earns 2%, or roughly 2% × (365 ÷ 20) = 36.5% annualized.",
+      "Financing those 20 days at 12% costs about 12% × (20 ÷ 365) = 0.66%.",
+      "The 2% discount comfortably exceeds the 0.66% borrowing cost.",
+    ],
     explanation:
       "You earn 2% for paying 20 days early, which annualizes to roughly 36%. Borrowing at 12% to capture a 36% return is worth doing on every invoice.",
   },
@@ -226,6 +276,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Raise small-business prices to subsidize enterprise" },
     ],
     correctChoiceId: "b",
+    work: [
+      "Reported segment margin excludes senior-engineering time because that time sits in shared overhead.",
+      "Enterprise consumes 70% of escalations plus the two most expensive engineers.",
+      "Reassign those service costs to the clients causing them, then compare true contribution by segment.",
+    ],
     explanation:
       "When the largest cost of serving a segment sits in a shared pool, that segment always looks best. Assign senior engineering time to the accounts consuming it before deciding where to grow.",
   },
@@ -246,6 +301,11 @@ export const FINANCIAL_QUESTIONS: Question[] = [
       { id: "d", text: "Cut half the team to balance both concerns" },
     ],
     correctChoiceId: "c",
+    work: [
+      "The certain benefit is $600,000 of annual payroll savings.",
+      "The possible cost is the gross profit generated by an 11% sales-per-square-foot lift.",
+      "Multiply the affected stores' sales by 11% and their gross margin; compare that result with $600,000 before cutting.",
+    ],
     explanation:
       "Cost cuts are only wins if the cost was not producing more than it consumed. The 11% gap is the number that decides this, and it is available before you act rather than after.",
   },

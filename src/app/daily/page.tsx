@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
+import { Calculator } from "@/components/Calculator";
 import { ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { dailyQuestionFor } from "@/data";
 import { CATEGORY_MAP } from "@/lib/categories";
@@ -81,6 +82,8 @@ export default function DailyPage() {
           revealed={revealed}
         />
       </Panel>
+
+      <Calculator />
 
       {revealed ? (
         <>
