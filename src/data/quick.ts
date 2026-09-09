@@ -1,4 +1,5 @@
 import type { QuickQuestion } from "@/lib/types";
+import { EXTRA_QUICK_QUESTIONS } from "./quick-expansion";
 
 /**
  * Quick Decisions bank.
@@ -12,6 +13,7 @@ import type { QuickQuestion } from "@/lib/types";
  * carries no signal.
  */
 export const QUICK_QUESTIONS: QuickQuestion[] = [
+  ...EXTRA_QUICK_QUESTIONS,
   /* ------------------------------ Difficulty 1 ------------------------------ */
   {
     id: "qk-001",

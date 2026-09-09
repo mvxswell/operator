@@ -75,7 +75,7 @@ export function Panel({
   children: ReactNode;
 }) {
   return (
-    <div className={`rounded-xl border border-line bg-surface ${className}`}>{children}</div>
+    <div className={`panel-depth rounded-xl border border-line bg-surface ${className}`}>{children}</div>
   );
 }
 

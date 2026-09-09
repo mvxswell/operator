@@ -10,6 +10,49 @@ require.extensions[".ts"] = (module, filename) => {
   }).outputText, filename);
 };
 const storage = require("../src/lib/storage.ts");
+const { selectQuickQuestion } = require("../src/lib/quickSelection.ts");
+const { QUICK_QUESTIONS } = require("../src/data/quick.ts");
+
+test("quick bank has unique, complete scenarios across all difficulties", () => {
+  assert.equal(QUICK_QUESTIONS.length, 108);
+  assert.equal(new Set(QUICK_QUESTIONS.map(q => q.id)).size, 108);
+  assert.equal(new Set(QUICK_QUESTIONS.map(q => q.scenario)).size, 108);
+  for (const q of QUICK_QUESTIONS) {
+    assert.ok(q.left && q.right && q.explanation && q.left !== q.right);
+    assert.ok([1, 2, 3].includes(q.difficulty));
+    assert.ok(["left", "right"].includes(q.correct));
+  }
+});
+
+test("quick rotation preserves level and cycles cards across restarted rounds", () => {
+  const recent = [];
+  const levelOne = QUICK_QUESTIONS.filter(q => q.difficulty === 1);
+  for (let i = 0; i < levelOne.length; i++) {
+    const q = selectQuickQuestion(QUICK_QUESTIONS, 1, new Set(), recent, () => 0);
+    assert.equal(q.difficulty, 1);
+    assert.ok(!recent.includes(q.id));
+    recent.push(q.id);
+  }
+  assert.equal(selectQuickQuestion(QUICK_QUESTIONS, 1, new Set(), recent).id, recent[0]);
+  const used = new Set();
+  for (let i = 0; i < QUICK_QUESTIONS.length; i++) {
+    const q = selectQuickQuestion(QUICK_QUESTIONS, 1, used, recent);
+    assert.ok(!used.has(q.id));
+    used.add(q.id);
+  }
+  assert.ok(selectQuickQuestion(QUICK_QUESTIONS, 1, used, recent));
+  assert.throws(() => selectQuickQuestion([], 1, used, recent));
+});
+
+test("rotation history is bounded, backward compatible, and exported with progress", () => {
+  const old = storage.emptyProfile();
+  delete old.quick.recentQuestionIds;
+  assert.deepEqual(storage.reviveProfile(old).quick.recentQuestionIds, []);
+  old.quick.recentQuestionIds = [null, {}, "<script>", ...Array.from({ length: 1100 }, (_, i) => `qk-${i}`)];
+  const restored = storage.reviveProfile(JSON.parse(JSON.stringify(old)));
+  assert.equal(restored.quick.recentQuestionIds.length, 1000);
+  assert.equal(restored.quick.recentQuestionIds[999], "qk-1099");
+});
 
 test("malformed saved structures normalize to a usable profile", () => {
   for (const input of [null, [], "bad", { version: 1, operator: { runs: "bad", best: "999" }, skills: { financial: { runs: {} } }, daily: [] }]) {

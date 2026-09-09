@@ -1,7 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { pickOne, shuffle } from "./random";
+import { selectQuickQuestion } from "./quickSelection";
+import { profileStore, rememberQuickQuestion } from "./storage";
 import { computeQuickResult, type QuickResult } from "./scoring";
 import type { QuickAttemptRecord, QuickQuestion } from "./types";
 
@@ -90,20 +91,10 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
 
   const present = useCallback(() => {
     const target = Math.round(levelRef.current);
-    let candidates = pool.filter((q) => !usedRef.current.has(q.id) && q.difficulty === target);
-
-    // Widen to neighbouring levels, then allow reuse rather than ever stalling.
-    if (!candidates.length) {
-      candidates = pool.filter((q) => !usedRef.current.has(q.id));
-    }
-    if (!candidates.length) {
-      usedRef.current = new Set();
-      candidates = pool.filter((q) => q.difficulty === target);
-      if (!candidates.length) candidates = [...pool];
-    }
-
-    const question = pickOne(shuffle(candidates));
+    if (usedRef.current.size >= pool.length) usedRef.current.clear();
+    const question = selectQuickQuestion(pool, target, usedRef.current, profileStore.load().quick.recentQuestionIds);
     usedRef.current.add(question.id);
+    rememberQuickQuestion(question.id);
     setCard({ question, flipped: Math.random() < 0.5 });
     setFeedback(null);
     shownAtRef.current = performance.now();

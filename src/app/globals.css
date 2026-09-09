@@ -114,6 +114,19 @@ body {
   color: #16120a;
 }
 
+/* Quiet dimensionality shared by dashboards and assessment surfaces. */
+.panel-depth {
+  background-image: linear-gradient(145deg, rgba(255,255,255,0.035), transparent 60%);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.025) inset, 0 12px 32px rgba(0,0,0,0.16);
+}
+.progress-hero {
+  background: radial-gradient(ellipse at 100% 0%, rgba(242,180,65,0.16), transparent 65%), linear-gradient(135deg, #191b20, #101215);
+  box-shadow: 0 1px 0 rgba(255,255,255,0.06) inset, 0 18px 60px rgba(0,0,0,0.22);
+}
+.skill-disclosure > summary { list-style: none; }
+.skill-disclosure > summary::-webkit-details-marker { display: none; }
+.skill-disclosure[open] .disclosure-arrow { transform: rotate(180deg); }
+
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 2px;

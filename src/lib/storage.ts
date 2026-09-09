@@ -58,7 +58,7 @@ export interface DailyRecord {
 export interface Profile {
   version: number;
   operator: { best: number; runs: OperatorRun[] };
-  quick: { bestDpm: number; runs: QuickRun[] };
+  quick: { bestDpm: number; runs: QuickRun[]; recentQuestionIds: string[] };
   skills: Record<CategoryId, { best: number; runs: SkillRun[] }>;
   daily: Record<string, DailyRecord>;
 }
@@ -78,7 +78,7 @@ export function emptyProfile(): Profile {
   return {
     version: SCHEMA_VERSION,
     operator: { best: 0, runs: [] },
-    quick: { bestDpm: 0, runs: [] },
+    quick: { bestDpm: 0, runs: [], recentQuestionIds: [] },
     skills: buildSkills(),
     daily: {},
   };
@@ -157,6 +157,8 @@ export function reviveProfile(raw: unknown): Profile {
     },
     quick: {
       bestDpm: number(quick.bestDpm, 300),
+      recentQuestionIds: Array.isArray(quick.recentQuestionIds)
+        ? [...new Set(quick.recentQuestionIds.slice(-1000).filter((id): id is string => typeof id === "string" && /^qk-[a-zA-Z0-9-]{1,64}$/.test(id)))] : [],
       runs: runs(quick.runs, (row) => {
         const made = Math.floor(number(row.made, 300));
         const correct = Math.floor(number(row.correct, made));
@@ -285,12 +287,20 @@ export function recordQuickRun(run: QuickRun): Profile {
   const next: Profile = {
     ...profile,
     quick: {
+      ...profile.quick,
       bestDpm: Math.max(profile.quick.bestDpm, run.dpm),
       runs: trim([run, ...profile.quick.runs.filter((item) => item.id !== run.id)]),
     },
   };
   profileStore.save(next);
   return next;
+}
+
+export function rememberQuickQuestion(id: string): void {
+  const profile = profileStore.load();
+  profileStore.save({ ...profile, quick: { ...profile.quick,
+    recentQuestionIds: [...profile.quick.recentQuestionIds.filter((item) => item !== id), id].slice(-1000),
+  } });
 }
 
 export function recordSkillRun(run: SkillRun): Profile {
