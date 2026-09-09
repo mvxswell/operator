@@ -9,6 +9,15 @@ npm run dev
 
 Then open http://localhost:3000.
 
+## User readiness
+
+`/progress` shows browser-local training history, trends, streaks and backups.
+`/privacy` explains storage and data controls. Accounts and cloud sync are not active.
+See [security audit](docs/SECURITY-AUDIT.md) and [launch plan](docs/LAUNCH-PLAN.md).
+Run `npm test`, `npm run lint`, and `npm run build:pages` before publishing.
+The Pages build hashes inline scripts and inserts a CSP into exported HTML;
+use this build command for deployment, not a plain export without postprocessing.
+
 ## Modes
 
 | Mode | Route | Shape |

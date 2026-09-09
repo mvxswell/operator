@@ -6,6 +6,7 @@
 
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
+import { secureExport } from "./secure-export.mjs";
 
 const env = { ...process.env, GITHUB_PAGES: "true" };
 
@@ -29,4 +30,5 @@ const flatten = spawnSync(
   ["scripts/flatten-rsc-payloads.mjs", "out"],
   { stdio: "inherit", env },
 );
-process.exit(flatten.status ?? 0);
+if (flatten.status !== 0) process.exit(flatten.status ?? 1);
+console.log(`secure-export: protected ${await secureExport("out")} HTML files`);

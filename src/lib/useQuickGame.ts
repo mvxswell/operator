@@ -166,6 +166,7 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
     (side: Side) => {
       const now = performance.now();
       if (phase !== "running" || !card || feedback || now < lockUntilRef.current) return;
+      if (now >= deadlineRef.current) { finish(); return; }
 
       const authoredSide: Side = card.flipped ? flip(side) : side;
       const correct = authoredSide === card.question.correct;

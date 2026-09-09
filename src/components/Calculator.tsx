@@ -24,6 +24,7 @@ export function Calculator() {
   useEffect(() => {
     if (!open) return;
     const onKey = (event: KeyboardEvent) => {
+      if (event.ctrlKey || event.metaKey || event.altKey || event.repeat) return;
       if (event.key === "Escape") {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -103,12 +104,12 @@ export function Calculator() {
           id="test-calculator"
           role="dialog"
           aria-label="Calculator"
-          className="fixed inset-x-3 bottom-36 z-50 animate-[var(--animate-pop)] rounded-2xl border border-line bg-surface p-4 shadow-[0_28px_80px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:right-6 sm:w-[320px]"
+          className="fixed inset-x-3 bottom-36 z-50 max-h-[calc(100dvh-10rem)] overflow-y-auto animate-[var(--animate-pop)] rounded-2xl border border-line bg-surface p-4 shadow-[0_28px_80px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:right-6 sm:w-[320px]"
         >
           <div className="flex items-center justify-between">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-accent">Scratch calculator</p>
-              <p className="mt-0.5 text-[11px] text-faint">Use the figures in the scenario</p>
+              <p className="mt-0.5 text-[11px] text-faint">Percent means divide by 100 · e.g. 200 × 10%</p>
             </div>
             <button type="button" onClick={() => setOpen(false)} className="rounded-md px-2 py-1 text-lg text-muted hover:bg-raised hover:text-ink" aria-label="Close calculator">×</button>
           </div>
@@ -135,7 +136,7 @@ export function Calculator() {
           </div>
           {history.length > 1 ? (
             <div className="mt-3 border-t border-line-soft pt-3">
-              {history.slice(1).map((item) => <p key={item} className="truncate font-mono text-[11px] text-faint">{item}</p>)}
+              {history.slice(1).map((item, index) => <p key={`${index}-${item}`} className="truncate font-mono text-[11px] text-faint">{item}</p>)}
             </div>
           ) : null}
         </div>
@@ -217,7 +218,7 @@ function tokenize(input: string): Token[] {
       let end = index + 1;
       while (end < compact.length && /[0-9.]/.test(compact[end])) end += 1;
       const raw = compact.slice(index, end);
-      if ((raw.match(/\./g) ?? []).length > 1) throw new Error("invalid number");
+      if (!/^(?:\d+(?:\.\d*)?|\.\d+)$/.test(raw)) throw new Error("invalid number");
       const number = Number(raw);
       if (!Number.isFinite(number)) throw new Error("invalid number");
       tokens.push(number);

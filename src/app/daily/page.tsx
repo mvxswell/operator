@@ -122,7 +122,7 @@ export default function DailyPage() {
         </>
       ) : (
         <p className="mt-5 text-center text-[13px] text-faint">
-          Answer before you can see how everyone else voted.
+          Answer to see the explanation and an illustrative response distribution.
         </p>
       )}
     </div>
@@ -142,7 +142,7 @@ function Distribution({
     <section className="mt-8">
       <div className="flex items-baseline justify-between gap-3">
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">
-          How everyone answered
+          Example response distribution
         </h2>
         <span className="rounded-md border border-line bg-surface-2 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-faint">
           Simulated

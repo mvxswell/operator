@@ -33,6 +33,7 @@ export function QuestionCard({
   useEffect(() => {
     if (revealed) return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.repeat || (e.target instanceof HTMLElement && e.target.closest('input, textarea, select, [contenteditable="true"]'))) return;
       if (document.querySelector('[data-calculator-open="true"]')) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       const key = e.key.toLowerCase();

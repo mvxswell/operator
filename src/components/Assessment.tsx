@@ -113,6 +113,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
   useEffect(() => {
     if (phase !== "feedback") return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.repeat || document.querySelector('[data-calculator-open="true"]') || (e.target instanceof HTMLElement && e.target.closest('button, a, input, textarea, select, [contenteditable="true"]'))) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         next();
@@ -256,6 +257,7 @@ function Results({
 
       {/* Actions */}
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+        <ButtonLink href="/progress" variant="secondary" size="lg">View my progress</ButtonLink>
         {variant === "operator" && result.weakest ? (
           <ButtonLink href={`/skills/${result.weakest.category}`} size="lg">
             Train {CATEGORY_MAP[result.weakest.category].name}

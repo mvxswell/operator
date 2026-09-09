@@ -69,6 +69,7 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
   const askedRef = useRef<Set<string>>(new Set());
   const categoryCountsRef = useRef<Partial<Record<CategoryId, number>>>({});
   const shownAtRef = useRef<number>(0);
+  const answeredRef = useRef(false);
 
   /** Effective run length can never exceed what the pool can supply. */
   const total = useMemo(() => {
@@ -101,6 +102,7 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
       setCurrent({ question, choices: shuffle(question.choices), index });
       setSelectedChoiceId(null);
       setPhase("question");
+      answeredRef.current = false;
       shownAtRef.current = performance.now();
     },
     [pool, restrictTo],
@@ -118,6 +120,8 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
   const answer = useCallback(
     (choiceId: string) => {
       if (phase !== "question" || !current) return;
+      if (answeredRef.current || !current.choices.some((choice) => choice.id === choiceId)) return;
+      answeredRef.current = true;
 
       const elapsedMs = Math.max(0, performance.now() - shownAtRef.current);
       const correct = choiceId === current.question.correctChoiceId;

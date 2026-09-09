@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Nav } from "@/components/Nav";
+import { StorageNotice } from "@/components/StorageNotice";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -18,7 +19,6 @@ export const metadata: Metadata = {
   title: "Think Operator — Test your business judgment",
   description:
     "Test your judgment across real-world business scenarios. Train your weaknesses. Make better decisions faster.",
-  alternates: { canonical: "/" },
   openGraph: {
     title: "Think Operator",
     description: "Test your judgment across real-world business scenarios.",
@@ -39,8 +39,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <a href="#main-content" className="sr-only focus:not-sr-only focus:p-3 focus:text-accent">Skip to content</a>
         <Nav />
-        <main className="flex-1">{children}</main>
+        <StorageNotice />
+        <main id="main-content" className="flex-1">{children}</main>
       </body>
     </html>
   );

@@ -8,6 +8,7 @@ const LINKS = [
   { href: "/quick", label: "Quick Decisions", short: "Quick" },
   { href: "/skills", label: "Skills", short: "Skills" },
   { href: "/daily", label: "Daily", short: "Daily" },
+  { href: "/progress", label: "My progress", short: "Progress" },
 ];
 
 export function Nav() {
@@ -19,7 +20,7 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-line-soft bg-bg/85 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 sm:px-6">
-        <Link href="/" className="group flex shrink-0 items-center gap-2">
+        <Link href="/" aria-label="Think Operator home" className="group flex shrink-0 items-center gap-2">
           <span className="grid h-6 w-6 place-items-center rounded-[5px] bg-accent text-[13px] font-bold text-[#16120a]">
             O
           </span>
