@@ -57,8 +57,8 @@ function Intro({
   backLabel,
 }: AssessmentProps & { total: number; onStart: () => void }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24">
-      <div className="stack-rise">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="brand-hero stack-rise">
         <Eyebrow>{total} questions · adaptive difficulty</Eyebrow>
         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
           {title}
@@ -132,7 +132,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
   return (
     <div className="mx-auto max-w-2xl px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-12">
       {/* Progress header */}
-      <div className="mb-8">
+      <div className="panel-depth mb-8 rounded-xl border border-line bg-surface p-4">
         <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-faint">
           <span>
             Question {current.index + 1} of {total}
@@ -220,9 +220,9 @@ function Results({
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
       {/* Score */}
-      <div className="text-center">
+      <div className="brand-hero text-center">
         <Eyebrow>{scoreLabel}</Eyebrow>
-        <p className="tabular mt-3 text-[80px] font-semibold leading-none tracking-[-0.04em] text-ink sm:text-[104px]">
+        <p className="tabular mt-3 text-[80px] font-semibold leading-none tracking-[-0.04em] text-accent sm:text-[104px]">
           <CountUp value={result.score} durationMs={1300} />
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2">

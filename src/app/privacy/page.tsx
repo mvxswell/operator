@@ -4,8 +4,7 @@ export const metadata = { title: "Your data — Think Operator" };
 
 export default function PrivacyPage() {
   return <div className="mx-auto max-w-2xl space-y-6 px-4 py-12 text-sm leading-relaxed text-muted">
-    <h1 className="text-3xl font-semibold text-ink">Your data at Think Operator</h1>
-    <p>Current preview · updated September 9, 2026</p>
+    <header className="brand-hero"><p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Your data, your control</p><h1 className="text-3xl font-semibold tracking-tight text-ink">Your data at Think Operator</h1><p className="mt-4">Current preview · updated September 9, 2026</p></header>
     <h2 className="text-lg font-semibold text-ink">Progress stays in your browser</h2>
     <p>The app stores completed scores, answer accuracy, test dates, skill results, and daily decisions in local browser storage. It does not currently send these results to an account or a database. Anyone using the same browser profile can see them. They do not automatically transfer between browsers, devices, domains, or HTTP and HTTPS.</p>
     <p>Up to 100 recent runs are retained for each test type and each skill, alongside personal bests and up to ten years of daily decisions. Older entries outside these limits are removed. Clearing site data or using private browsing may remove your progress.</p>

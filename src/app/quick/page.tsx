@@ -73,8 +73,8 @@ export default function QuickDecisionsPage() {
 
 function IdleScreen({ best, onStart }: { best: number; onStart: () => void }) {
   return (
-    <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24">
-      <div className="stack-rise">
+    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <div className="brand-hero stack-rise">
         <Eyebrow>60 seconds · two choices</Eyebrow>
         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
           Quick Decisions
@@ -288,9 +288,9 @@ function ResultsScreen({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <div className="text-center">
+      <div className="brand-hero text-center">
         <Eyebrow>Decisions per minute</Eyebrow>
-        <p className="tabular mt-3 text-[86px] font-semibold leading-none tracking-[-0.04em] text-ink sm:text-[110px]">
+        <p className="tabular mt-3 text-[86px] font-semibold leading-none tracking-[-0.04em] text-accent sm:text-[110px]">
           <CountUp value={result.dpm} durationMs={1100} />
         </p>
         <div className="mt-4 flex flex-wrap items-center justify-center gap-2">

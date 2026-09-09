@@ -11,7 +11,7 @@ export default function SkillsPage() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-14 sm:px-6 sm:py-20">
-      <div className="stack-rise">
+      <div className="brand-hero stack-rise">
         <Eyebrow>Focused practice</Eyebrow>
         <h1 className="mt-3 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
           Train your business skills
@@ -31,7 +31,7 @@ export default function SkillsPage() {
             <Link
               key={cat.id}
               href={`/skills/${cat.id}`}
-              className="group flex flex-col rounded-xl border border-line bg-surface p-5 transition-colors hover:border-faint hover:bg-surface-2"
+              className="brand-card group flex flex-col rounded-xl border border-line bg-surface p-5 sm:p-6"
             >
               <div className="flex items-start gap-3">
                 <span
@@ -51,7 +51,7 @@ export default function SkillsPage() {
                   <p className="text-[10px] uppercase tracking-[0.14em] text-faint">
                     {best > 0 ? "Best score" : "Not attempted"}
                   </p>
-                  <p className="tabular mt-0.5 text-xl font-semibold text-ink">
+                  <p className="tabular mt-0.5 text-2xl font-semibold text-accent">
                     {best > 0 ? best : <span className="text-faint">—</span>}
                     {lastRun ? (
                       <span className="ml-2 text-[11px] font-normal text-faint">

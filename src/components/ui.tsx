@@ -81,7 +81,7 @@ export function Panel({
 
 export function Eyebrow({ children }: { children: ReactNode }) {
   return (
-    <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-faint">{children}</p>
+    <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">{children}</p>
   );
 }
 

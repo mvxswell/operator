@@ -47,7 +47,7 @@ export default function HomePage() {
   return (
     <div className="mx-auto max-w-6xl px-4 sm:px-6">
       {/* ---------------------------------- Hero --------------------------------- */}
-      <section className="grid gap-10 py-14 sm:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-16">
+      <section className="brand-hero my-8 grid gap-8 sm:my-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10">
         <div className="stack-rise">
           <Eyebrow>Business decision testing</Eyebrow>
           <h1 className="mt-4 text-[34px] font-semibold leading-[1.1] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[56px]">
@@ -77,7 +77,7 @@ export default function HomePage() {
                 <p className="text-[11px] uppercase tracking-[0.18em] text-faint">
                   Operator Score
                 </p>
-                <p className="tabular mt-1 text-[64px] font-semibold leading-none tracking-[-0.03em] text-ink">
+                <p className="tabular mt-1 text-[64px] font-semibold leading-none tracking-[-0.03em] text-accent">
                   <CountUp value={displayScore} durationMs={1200} />
                 </p>
               </div>
@@ -166,7 +166,7 @@ export default function HomePage() {
             <Link
               key={cat.id}
               href={`/skills/${cat.id}`}
-              className="group rounded-lg border border-line bg-surface p-4 transition-colors hover:border-faint hover:bg-surface-2"
+              className="brand-card group rounded-xl border border-line bg-surface p-5"
             >
               <span style={{ color: cat.accent }}>
                 <CategoryIcon category={cat.id} className="h-5 w-5" />
@@ -203,18 +203,18 @@ function ModeCard({
   return (
     <Link
       href={href}
-      className="group relative overflow-hidden rounded-xl border border-line bg-surface p-6 transition-colors hover:border-faint hover:bg-surface-2"
+      className="brand-card group relative overflow-hidden rounded-xl border border-line bg-surface p-6"
     >
       <div
         className="absolute inset-x-0 top-0 h-px opacity-60"
         style={{ background: `linear-gradient(90deg, transparent, ${accent}, transparent)` }}
       />
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h3 className="text-lg font-semibold text-ink">{title}</h3>
         <span className="shrink-0 text-[11px] text-faint">{meta}</span>
       </div>
       <p className="mt-2.5 text-sm leading-relaxed text-muted">{body}</p>
-      <p className="mt-4 text-[13px] font-medium text-accent opacity-0 transition-opacity group-hover:opacity-100">
+      <p className="mt-4 text-[13px] font-medium text-accent">
         Start →
       </p>
     </Link>

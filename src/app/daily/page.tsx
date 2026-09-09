@@ -52,7 +52,7 @@ export default function DailyPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+      <div className="brand-hero mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
           <Eyebrow>Daily Decision</Eyebrow>
           <h1 className="mt-2 text-2xl font-semibold tracking-[-0.01em] text-ink sm:text-3xl">
