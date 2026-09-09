@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { BrandLogo } from "./BrandLogo";
 
 const LINKS = [
   { href: "/operator", label: "Operator Test", short: "Operator" },
@@ -21,12 +22,7 @@ export function Nav() {
     <header className="sticky top-0 z-50 border-b border-line-soft bg-bg/85 backdrop-blur-md">
       <nav className="mx-auto flex h-14 max-w-6xl items-center gap-6 px-4 sm:px-6">
         <Link href="/" aria-label="Think Operator home" className="group flex shrink-0 items-center gap-2">
-          <span className="grid h-6 w-6 place-items-center rounded-[5px] bg-accent text-[13px] font-bold text-[#16120a]">
-            O
-          </span>
-          <span className="hidden text-[13px] font-semibold tracking-[0.16em] text-ink sm:inline">
-            THINK OPERATOR
-          </span>
+          <BrandLogo />
         </Link>
 
         <div className="-mx-4 flex flex-1 items-center gap-1 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
