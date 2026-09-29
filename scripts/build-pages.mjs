@@ -8,7 +8,11 @@ import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { secureExport } from "./secure-export.mjs";
 
-const env = { ...process.env, GITHUB_PAGES: "true" };
+const env = {
+  ...process.env,
+  GITHUB_PAGES: "true",
+  NEXT_PUBLIC_PRESENCE_URL: process.env.NEXT_PUBLIC_PRESENCE_URL || "https://think-operator-presence.mrm1244.workers.dev/online",
+};
 const presenceOrigin = env.NEXT_PUBLIC_PRESENCE_URL
   ? new URL(env.NEXT_PUBLIC_PRESENCE_URL).origin
   : "";

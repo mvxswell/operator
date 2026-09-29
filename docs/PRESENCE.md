@@ -8,9 +8,9 @@ Use a Cloudflare **Workers Free** account with the SQLite Durable Object declare
 
 ## Activate
 
-1. Create or use a Cloudflare account on the Workers Free plan. Sign in locally with `npx wrangler login` in this repository; the owner must complete any sign-in or terms prompts.
-2. Deploy with `npx wrangler deploy`. The configuration creates one SQLite Durable Object namespace and a rate limiter set to 10 requests per IP per minute.
-3. Copy the HTTPS `workers.dev` URL from the deployment result. Build the GitHub Pages export with `NEXT_PUBLIC_PRESENCE_URL=https://<worker-subdomain>.workers.dev/online` in the environment. The build adds that origin to the page's CSP.
+1. Confirm the Cloudflare account is still on Workers Free. Sign in locally with `npx wrangler login` in this repository if needed; the owner must complete any sign-in prompts.
+2. Deploy with `npx wrangler deploy`. The configuration creates one SQLite Durable Object namespace and a rate limiter set to 10 requests per IP per minute. The current Worker URL is `https://think-operator-presence.mrm1244.workers.dev/online`.
+3. Run `npm run build:pages`. The build script sets the deployed Worker URL by default and adds its origin to the page's CSP. Set `NEXT_PUBLIC_PRESENCE_URL` only to override that URL.
 4. Publish the `out` directory to the existing Pages branch as usual. Test from `https://thinkoperator.com`, with two browsers and a hidden tab, and confirm the count vanishes if the Worker is unavailable.
 
 Do not put a Cloudflare API token in the web app, repository, `.env` committed to Git, or GitHub Pages output. The browser sends only a random ID; the service does not collect test scores. The ID is cleared when the user resets progress. The public privacy page explains the counter.
