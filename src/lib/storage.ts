@@ -230,6 +230,7 @@ class LocalProfileStore implements ProfileStore {
     if (typeof window !== "undefined") {
       try {
         window.localStorage.removeItem(STORAGE_KEY);
+        window.localStorage.removeItem("operator.presence.visitor.v1");
         setStorageWarning("");
       } catch {
         setStorageWarning("Browser storage could not be cleared. Remove this site's data in your browser settings.");

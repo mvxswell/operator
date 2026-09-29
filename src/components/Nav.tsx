@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
+import { OnlineNow } from "./OnlineNow";
 
 const LINKS = [
   { href: "/operator", label: "Operator Test", short: "Operator" },
@@ -41,6 +42,7 @@ export function Nav() {
             </Link>
           ))}
         </div>
+        <OnlineNow />
       </nav>
     </header>
   );

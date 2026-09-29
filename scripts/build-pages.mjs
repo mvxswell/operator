@@ -9,6 +9,10 @@ import { createRequire } from "node:module";
 import { secureExport } from "./secure-export.mjs";
 
 const env = { ...process.env, GITHUB_PAGES: "true" };
+const presenceOrigin = env.NEXT_PUBLIC_PRESENCE_URL
+  ? new URL(env.NEXT_PUBLIC_PRESENCE_URL).origin
+  : "";
+if (presenceOrigin && !presenceOrigin.startsWith("https://")) throw new Error("Presence service must use HTTPS");
 
 // Run Next's JS entry with the current node binary. Resolving the shell shim
 // (`npx.cmd`) is unreliable under spawn on Windows.
@@ -31,4 +35,4 @@ const flatten = spawnSync(
   { stdio: "inherit", env },
 );
 if (flatten.status !== 0) process.exit(flatten.status ?? 1);
-console.log(`secure-export: protected ${await secureExport("out")} HTML files`);
+console.log(`secure-export: protected ${await secureExport("out", presenceOrigin)} HTML files`);

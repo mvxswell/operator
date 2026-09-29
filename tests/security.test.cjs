@@ -110,6 +110,9 @@ test("export CSP hashes inline scripts without allowing arbitrary inline JS", as
   assert.match(protectedHtml, /object-src 'none'/);
   assert.doesNotMatch(protectedHtml, /script-src[^;]*unsafe-inline/);
   assert.equal(secureHtml(protectedHtml), protectedHtml);
+  const withPresence = secureHtml(html, "https://example.workers.dev");
+  assert.match(withPresence, /connect-src 'self' https:\/\/example\.workers\.dev/);
+  assert.equal(secureHtml(withPresence, "https://example.workers.dev"), withPresence);
 });
 
 test("cross-tab events invalidate cached progress and unsubscribe removes listener", () => {
