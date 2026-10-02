@@ -113,6 +113,10 @@ test("export CSP hashes inline scripts without allowing arbitrary inline JS", as
   const withPresence = secureHtml(html, "https://example.workers.dev");
   assert.match(withPresence, /connect-src 'self' https:\/\/example\.workers\.dev/);
   assert.equal(secureHtml(withPresence, "https://example.workers.dev"), withPresence);
+  const withAnalytics = secureHtml(html, "https://example.workers.dev", true);
+  assert.match(withAnalytics, /script-src[^;]*https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js/);
+  assert.match(withAnalytics, /connect-src[^;]*https:\/\/cloudflareinsights\.com/);
+  assert.equal(secureHtml(withAnalytics, "https://example.workers.dev", true), withAnalytics);
 });
 
 test("cross-tab events invalidate cached progress and unsubscribe removes listener", () => {

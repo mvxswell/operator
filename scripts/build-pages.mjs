@@ -39,4 +39,4 @@ const flatten = spawnSync(
   { stdio: "inherit", env },
 );
 if (flatten.status !== 0) process.exit(flatten.status ?? 1);
-console.log(`secure-export: protected ${await secureExport("out", presenceOrigin)} HTML files`);
+console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true)} HTML files`);

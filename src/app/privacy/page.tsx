@@ -4,7 +4,7 @@ export const metadata = { title: "Your data — Think Operator" };
 
 export default function PrivacyPage() {
   return <div className="mx-auto max-w-2xl space-y-6 px-4 py-12 text-sm leading-relaxed text-muted">
-    <header className="brand-hero"><p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Your data, your control</p><h1 className="text-3xl font-semibold tracking-tight text-ink">Your data at Think Operator</h1><p className="mt-4">Current preview · updated September 9, 2026</p></header>
+    <header className="brand-hero"><p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-accent">Your data, your control</p><h1 className="text-3xl font-semibold tracking-tight text-ink">Your data at Think Operator</h1><p className="mt-4">Updated October 2, 2026</p></header>
     <h2 className="text-lg font-semibold text-ink">Progress stays in your browser</h2>
     <p>The app stores completed scores, answer accuracy, test dates, skill results, and daily decisions in local browser storage. It does not currently send these results to an account or a database. Anyone using the same browser profile can see them. They do not automatically transfer between browsers, devices, domains, or HTTP and HTTPS.</p>
     <p>Up to 100 recent runs are retained for each test type and each skill, alongside personal bests and up to ten years of daily decisions. Older entries outside these limits are removed. Clearing site data or using private browsing may remove your progress.</p>
@@ -13,7 +13,7 @@ export default function PrivacyPage() {
     <h2 className="text-lg font-semibold text-ink">Back up or delete your progress</h2>
     <p>Use <Link href="/progress" className="text-accent underline">My progress</Link> to download a JSON backup, restore a backup, or delete your saved progress. A backup contains your test history, so share it only if you want someone to see those results.</p>
     <h2 className="text-lg font-semibold text-ink">Hosting and tracking</h2>
-    <p>This preview is hosted by GitHub Pages. Like any web host, GitHub receives connection information such as your IP address when serving the site. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" className="text-accent underline">GitHub’s privacy statement</a> for its handling of that information. We have not added advertising trackers, analytics scripts, account registration, or payment collection.</p>
+    <p>This site is hosted by GitHub Pages. Like any web host, GitHub receives connection information such as your IP address when serving the site. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement" className="text-accent underline">GitHub’s privacy statement</a> for its handling of that information. We use Cloudflare Web Analytics to measure aggregate visits, page views, referral sources, and page performance. The analytics beacon does not receive your saved scores or test answers. We have not added advertising trackers, account registration, or payment collection.</p>
     <h2 className="text-lg font-semibold text-ink">What scores mean</h2>
     <p>Scores are practice feedback from the current question bank, not a professional certification or a validated hiring assessment. They are calculated on your device and can be edited by its user. Daily community percentages are illustrative examples, not measurements of real users.</p>
     <h2 className="text-lg font-semibold text-ink">Future accounts</h2>

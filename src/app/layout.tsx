@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import Script from "next/script";
 import { Nav } from "@/components/Nav";
 import { StorageNotice } from "@/components/StorageNotice";
 import "./globals.css";
@@ -43,6 +44,14 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Nav />
         <StorageNotice />
         <main id="main-content" className="flex-1">{children}</main>
+        {process.env.GITHUB_PAGES === "true" && (
+          <Script
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            strategy="afterInteractive"
+            type="module"
+            data-cf-beacon={JSON.stringify({ token: "ba98ed18a52745f48837a9db434d41d5" })}
+          />
+        )}
       </body>
     </html>
   );
