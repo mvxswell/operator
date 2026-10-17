@@ -63,11 +63,11 @@ export default function DailyPage() {
           <div className="flex gap-6">
             <div className="text-right">
               <p className="tabular text-xl font-semibold text-ink">{streak}</p>
-              <p className="text-[10px] uppercase tracking-[0.13em] text-faint">day streak</p>
+              <p className="text-[10px] uppercase tracking-[0.13em] text-muted">day streak</p>
             </div>
             <div className="text-right">
               <p className="tabular text-xl font-semibold text-ink">{completedDays}</p>
-              <p className="text-[10px] uppercase tracking-[0.13em] text-faint">completed</p>
+              <p className="text-[10px] uppercase tracking-[0.13em] text-muted">completed</p>
             </div>
           </div>
         ) : null}
@@ -144,7 +144,7 @@ function Distribution({
         <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">
           Example response distribution
         </h2>
-        <span className="rounded-md border border-line bg-surface-2 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-faint">
+        <span className="rounded-md border border-line bg-surface-2 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-muted">
           Simulated
         </span>
       </div>

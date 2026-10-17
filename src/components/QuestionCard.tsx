@@ -53,10 +53,7 @@ export function QuestionCard({
     <div key={question.id} className="animate-[var(--animate-rise)]">
       {showMeta ? (
         <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <span
-            className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.12em]"
-            style={{ color: meta.accent }}
-          >
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
             <CategoryIcon category={question.category} className="h-3.5 w-3.5" />
             {meta.name}
           </span>
@@ -87,7 +84,7 @@ export function QuestionCard({
 
       {revealed ? (
         <div className="mt-5 animate-[var(--animate-rise)] rounded-lg border border-line bg-surface-2 p-4">
-          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-faint">
+          <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-muted">
             {question.work?.length ? "How to get there" : "Why this is the best call"}
           </p>
           {question.work?.length ? (
@@ -101,7 +98,7 @@ export function QuestionCard({
             </ol>
           ) : null}
           {question.work?.length ? (
-            <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-faint">Why it matters</p>
+            <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-muted">Why it matters</p>
           ) : null}
           <p className="mt-1.5 text-sm leading-relaxed text-muted">{question.explanation}</p>
         </div>
@@ -135,7 +132,7 @@ const LETTER_STYLES: Record<ChoiceState, string> = {
   idle: "border-line text-muted group-hover:border-faint group-hover:text-ink",
   correct: "border-pos/60 bg-pos text-[#08150d]",
   wrong: "border-neg/60 bg-neg text-[#1a0b0a]",
-  muted: "border-line-soft text-faint",
+  muted: "border-line-soft text-ink",
 };
 
 function ChoiceRow({

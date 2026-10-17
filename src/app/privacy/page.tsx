@@ -1,6 +1,8 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+import { pageMetadata } from "@/lib/site";
 
-export const metadata = { title: "Your data — Think Operator" };
+export const metadata: Metadata = pageMetadata("/privacy");
 
 export default function PrivacyPage() {
   return <div className="mx-auto max-w-2xl space-y-6 px-4 py-12 text-sm leading-relaxed text-muted">

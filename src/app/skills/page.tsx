@@ -34,10 +34,7 @@ export default function SkillsPage() {
               className="brand-card group flex flex-col rounded-xl border border-line bg-surface p-5 sm:p-6"
             >
               <div className="flex items-start gap-3">
-                <span
-                  className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-surface-2"
-                  style={{ color: cat.accent }}
-                >
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg border border-line bg-surface-2 text-accent">
                   <CategoryIcon category={cat.id} className="h-4.5 w-4.5" />
                 </span>
                 <div className="min-w-0 flex-1">
@@ -48,24 +45,30 @@ export default function SkillsPage() {
 
               <div className="mt-5 flex items-end justify-between border-t border-line-soft pt-4">
                 <div>
-                  <p className="text-[10px] uppercase tracking-[0.14em] text-faint">
+                  <p className="text-[10px] uppercase tracking-[0.14em] text-muted">
                     {best > 0 ? "Best score" : "Not attempted"}
                   </p>
                   <p className="tabular mt-0.5 text-2xl font-semibold text-accent">
                     {best > 0 ? best : <span className="text-faint">—</span>}
                     {lastRun ? (
-                      <span className="ml-2 text-[11px] font-normal text-faint">
+                      <span className="ml-2 text-[11px] font-normal text-muted">
                         Level {lastRun.highestLevel} reached
                       </span>
                     ) : null}
                   </p>
                 </div>
                 <span className="text-[13px] font-medium text-accent">
-                  {best > 0 ? `Beat ${best}` : "Start test"} →
+                  {best > 0 ? `Beat ${best}` : "Start test"}{" "}
+                  <span
+                    aria-hidden="true"
+                    className="inline-block transition-transform duration-150 group-hover:translate-x-[2px]"
+                  >
+                    →
+                  </span>
                 </span>
               </div>
 
-              <p className="mt-3 text-[11px] text-faint">
+              <p className="mt-3 text-[11px] text-muted">
                 {questionsForCategory(cat.id).length} scenarios in this skill
               </p>
             </Link>

@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import type { NextConfig } from "next";
 
 /**
@@ -6,7 +7,17 @@ import type { NextConfig } from "next";
  *
  * The Pages-specific options are opt-in via GITHUB_PAGES=true so that local
  * `next dev` keeps serving from the root with no basePath.
+ *
+ * The share image is rendered here, before the app directory is scanned, so the
+ * static export contains a real PNG rather than an extensionless route.
  */
+const og = spawnSync(process.execPath, ["scripts/build-og.mjs"], {
+  stdio: "inherit",
+});
+if (og.status !== 0) {
+  throw new Error("Open Graph image generation failed");
+}
+
 const isGitHubPages = process.env.GITHUB_PAGES === "true";
 
 const nextConfig: NextConfig = {

@@ -64,7 +64,7 @@ export default function HomePage() {
               Quick Decisions — 60 sec
             </ButtonLink>
           </div>
-          <p className="mt-5 text-[13px] text-faint">
+          <p className="mt-5 text-[13px] text-muted">
             {BANK_STATS.standard} scenarios · 8 skills · 6 difficulty levels · no account needed
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function HomePage() {
           <div className="border-b border-line px-6 py-5">
             <div className="flex items-start justify-between">
               <div>
-                <p className="text-[11px] uppercase tracking-[0.18em] text-faint">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-muted">
                   Operator Score
                 </p>
                 <p className="tabular mt-1 text-[64px] font-semibold leading-none tracking-[-0.03em] text-accent">
@@ -166,13 +166,14 @@ export default function HomePage() {
             <Link
               key={cat.id}
               href={`/skills/${cat.id}`}
-              className="brand-card group rounded-xl border border-line bg-surface p-5"
+              aria-label={cat.name}
+              className="brand-card group cursor-pointer rounded-xl border border-line bg-surface p-5"
             >
-              <span style={{ color: cat.accent }}>
+              <span className="text-accent">
                 <CategoryIcon category={cat.id} className="h-5 w-5" />
               </span>
               <p className="mt-3 text-sm font-medium text-ink">{cat.name}</p>
-              <p className="mt-1 text-[12px] leading-snug text-faint">{cat.blurb}</p>
+              <p className="mt-1 text-[12px] leading-snug text-muted">{cat.blurb}</p>
             </Link>
           ))}
         </div>
@@ -203,7 +204,8 @@ function ModeCard({
   return (
     <Link
       href={href}
-      className="brand-card group relative overflow-hidden rounded-xl border border-line bg-surface p-6"
+      aria-label={title}
+      className="brand-card group relative cursor-pointer rounded-xl border border-line bg-surface p-6"
     >
       <div
         className="absolute inset-x-0 top-0 h-px opacity-60"
@@ -211,11 +213,17 @@ function ModeCard({
       />
       <div className="flex flex-wrap items-baseline justify-between gap-3">
         <h3 className="text-lg font-semibold text-ink">{title}</h3>
-        <span className="shrink-0 text-[11px] text-faint">{meta}</span>
+        <span className="shrink-0 text-[11px] text-muted">{meta}</span>
       </div>
       <p className="mt-2.5 text-sm leading-relaxed text-muted">{body}</p>
       <p className="mt-4 text-[13px] font-medium text-accent">
-        Start →
+        Start{" "}
+        <span
+          aria-hidden="true"
+          className="inline-block transition-transform duration-150 group-hover:translate-x-[2px]"
+        >
+          →
+        </span>
       </p>
     </Link>
   );

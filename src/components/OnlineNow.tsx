@@ -2,6 +2,9 @@
 
 import { useEffect, useState } from "react";
 
+/** Hide the header badge until this many people are online. */
+export const ONLINE_BADGE_MIN = 5;
+
 const ENDPOINT = process.env.NEXT_PUBLIC_PRESENCE_URL;
 const VISITOR_KEY = "operator.presence.visitor.v1";
 const UPDATE_MS = 60_000;
@@ -59,7 +62,7 @@ export function OnlineNow() {
     };
   }, []);
 
-  if (count === null) return null;
+  if (count === null || count < ONLINE_BADGE_MIN) return null;
   return <span className="shrink-0 whitespace-nowrap rounded-full border border-pos/20 bg-pos-soft/30 px-2.5 py-1.5 text-[11px] font-medium text-pos" aria-label={`${count} online now`}>
     <span aria-hidden="true" className="mr-1.5 inline-block h-1.5 w-1.5 rounded-full bg-pos" />
     {count} online

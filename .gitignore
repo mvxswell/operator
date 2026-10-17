@@ -18,6 +18,10 @@
 /.next/
 /out/
 
+# Generated at build time by scripts/build-og.mjs
+/src/app/opengraph-image.png
+/src/app/twitter-image.png
+
 # production
 /build
 

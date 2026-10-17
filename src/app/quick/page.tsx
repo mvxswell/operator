@@ -102,7 +102,7 @@ function IdleScreen({ best, onStart }: { best: number; onStart: () => void }) {
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
           <Button size="lg" onClick={onStart}>
             {best > 0 ? `Beat ${best} DPM` : "Start 60 seconds"}
-            <span className="text-[11px] opacity-60">Enter</span>
+            <span className="text-[11px] opacity-75">Enter</span>
           </Button>
           <ButtonLink href="/" variant="secondary" size="lg">
             Back to home
@@ -116,7 +116,7 @@ function IdleScreen({ best, onStart }: { best: number; onStart: () => void }) {
 function Row({ left, right }: { left: string; right: string }) {
   return (
     <div className="flex items-baseline gap-4 px-5 py-3.5">
-      <span className="w-24 shrink-0 text-[11px] uppercase tracking-[0.13em] text-faint">
+      <span className="w-24 shrink-0 text-[11px] uppercase tracking-[0.13em] text-muted">
         {left}
       </span>
       <span className="text-sm text-muted">{right}</span>
@@ -170,7 +170,7 @@ function Board({ game }: { game: ReturnType<typeof useQuickGame> }) {
             >
               {seconds}
             </span>
-            <span className="text-[11px] uppercase tracking-[0.13em] text-faint">sec</span>
+            <span className="text-[11px] uppercase tracking-[0.13em] text-muted">sec</span>
           </div>
 
           <div className="flex items-center gap-5">
@@ -183,7 +183,7 @@ function Board({ game }: { game: ReturnType<typeof useQuickGame> }) {
               <p className="tabular text-xl font-semibold leading-none text-ink">
                 {correctCount}
               </p>
-              <p className="text-[10px] uppercase tracking-[0.13em] text-faint">correct</p>
+              <p className="text-[10px] uppercase tracking-[0.13em] text-muted">correct</p>
             </div>
           </div>
         </div>
@@ -256,7 +256,11 @@ function SideButton({
       <span className="text-[15px] font-semibold uppercase leading-tight tracking-[0.04em] text-ink sm:text-lg">
         {label}
       </span>
-      <span className="min-h-4 text-[11px] tracking-[0.1em] text-faint">
+      <span
+        className={`min-h-4 text-[11px] tracking-[0.1em] ${
+          isCorrectSide && feedback ? "text-pos" : feedback ? "text-ink" : "text-muted"
+        }`}
+      >
         {isCorrectSide && feedback ? (
           "CORRECT ANSWER"
         ) : (
@@ -333,7 +337,7 @@ function ResultsScreen({
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button size="lg" onClick={onReplay}>
           Go again
-          <span className="text-[11px] opacity-60">Enter</span>
+          <span className="text-[11px] opacity-75">Enter</span>
         </Button>
         <ButtonLink href="/operator" variant="secondary" size="lg">
           Take the Operator Test
@@ -383,7 +387,7 @@ function Cell({
   const color = tone === "pos" ? "text-pos" : tone === "neg" ? "text-neg" : "text-ink";
   return (
     <div className="border-b border-line-soft px-4 py-4 text-center last:border-b-0 sm:border-b-0">
-      <p className="text-[10px] uppercase tracking-[0.13em] text-faint">{label}</p>
+      <p className="text-[10px] uppercase tracking-[0.13em] text-muted">{label}</p>
       <p className={`tabular mt-1 text-2xl font-semibold ${color}`}>{value}</p>
     </div>
   );
