@@ -1,61 +1,92 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-
-const SLUG = "_example";
+import { GuideArticle } from "@/components/GuideArticle";
+import { GUIDES, getGuide } from "@/content/guides";
+import { absoluteUrl } from "@/lib/site";
 
 export const dynamicParams = false;
 
 export function generateStaticParams() {
-  return [{ slug: SLUG }];
+  return GUIDES.map((guide) => ({ slug: guide.slug }));
 }
 
-export const metadata: Metadata = {
-  title: "Article prose example — Think Operator",
-  description:
-    "Sample guide page for Think Operator article typography. It is not listed in the sitemap.",
-  robots: { index: false, follow: false },
-};
-
-export default async function GuideExamplePage({
-  params,
-}: {
+export async function generateMetadata(props: {
   params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
-  if (slug !== SLUG) notFound();
+}): Promise<Metadata> {
+  const { slug } = await props.params;
+  const guide = getGuide(slug);
+  if (!guide) {
+    return { title: "Guide not found — Think Operator" };
+  }
+  const title = `${guide.title} — Think Operator`;
+  const canonical = absoluteUrl(`/guides/${guide.slug}`);
+  const image = `/og/guides/${guide.slug}.png`;
+  return {
+    title,
+    description: guide.description,
+    alternates: { canonical },
+    openGraph: {
+      title,
+      description: guide.description,
+      url: canonical,
+      type: "article",
+      images: [{ url: image, width: 1200, height: 630, alt: guide.title }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: guide.description,
+      images: [image],
+    },
+  };
+}
+
+export default async function GuidePage(props: { params: Promise<{ slug: string }> }) {
+  const { slug } = await props.params;
+  const guide = getGuide(slug);
+  if (!guide) notFound();
+
+  const canonical = absoluteUrl(`/guides/${guide.slug}`);
+  const graph = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Article",
+        headline: guide.title,
+        description: guide.description,
+        datePublished: "2026-10-17",
+        dateModified: "2026-10-17",
+        mainEntityOfPage: canonical,
+        image: `https://thinkoperator.com/og/guides/${guide.slug}.png`,
+        author: {
+          "@type": "Organization",
+          name: "Think Operator",
+          url: "https://thinkoperator.com/",
+        },
+        publisher: {
+          "@type": "Organization",
+          name: "Think Operator",
+          url: "https://thinkoperator.com/",
+        },
+      },
+      {
+        "@type": "FAQPage",
+        mainEntity: guide.faqs.map((faq) => ({
+          "@type": "Question",
+          name: faq.question,
+          acceptedAnswer: { "@type": "Answer", text: faq.answer },
+        })),
+      },
+    ],
+  };
 
   return (
-    <article className="prose-guide py-14 sm:py-16">
-      <h2>How to read a business situation</h2>
-      <p>
-        Every scenario contains the facts you need. The work is to find the constraint, ignore
-        the noise, and choose the move that changes the outcome.
-      </p>
-      <p>
-        Strong operators do not collect more information by default. They ask which number, if it
-        moved, would change the decision.
-      </p>
-      <h3>What to look for</h3>
-      <ul>
-        <li>The step that is already at capacity</li>
-        <li>The cost of waiting versus the cost of a wrong hire</li>
-        <li>Whether the next dollar belongs in sales or in delivery</li>
-      </ul>
-      <p>
-        When two options both sound reasonable, prefer the one that <strong>removes the bottleneck</strong>{" "}
-        rather than the one that adds activity around it.
-      </p>
-      <p>
-        Practice the full mix on the <Link href="/operator">Operator Test</Link>, or stay with one
-        skill on the <Link href="/skills">skill tests</Link>.
-      </p>
-      <h3>A short sequence</h3>
-      <ol>
-        <li>Name the constraint in one sentence.</li>
-        <li>Reject options that do not move it.</li>
-        <li>Commit, then read why that call was best.</li>
-      </ol>
-    </article>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(graph).replace(/</g, "\\u003c") }}
+      />
+      <GuideArticle guide={guide} />
+    </>
   );
 }

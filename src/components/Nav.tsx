@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
 
@@ -9,7 +10,11 @@ const LINKS = [
   { href: "/operator", label: "Operator Test", short: "Operator" },
   { href: "/quick", label: "Quick Decisions", short: "Quick" },
   { href: "/skills", label: "Skills", short: "Skills" },
+  { href: "/guides", label: "Guides", short: "Guides" },
   { href: "/daily", label: "Daily", short: "Daily" },
+  ...(leaderboardVisible()
+    ? [{ href: "/leaderboard", label: "Leaderboard", short: "Board" }]
+    : []),
   { href: "/progress", label: "My progress", short: "Progress" },
 ];
 

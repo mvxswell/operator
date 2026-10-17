@@ -9,7 +9,7 @@ export const HOME = {
     "Test your judgment across real-world business scenarios. Train your weaknesses. Make better decisions faster.",
 };
 
-/** Public routes, in sitemap order. The prose demo is intentionally absent. */
+/** Public routes, in sitemap order. Guide articles are added beside this list. */
 export const PUBLIC_PAGES: { path: string; title: string; description: string }[] = [
   { path: "/", ...HOME },
   {
@@ -41,6 +41,18 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
     title: "My Progress — Think Operator",
     description:
       "Your Operator Score trend, skill bests, streaks, and recent sessions, stored in this browser.",
+  },
+  {
+    path: "/guides",
+    title: "Guides — Think Operator",
+    description:
+      "Practical guides for owners who need a decision: delegation, hiring, pricing, cash, bottlenecks, sales, systems, and where your next dollar should go.",
+  },
+  {
+    path: "/leaderboard",
+    title: "Leaderboard — Think Operator",
+    description:
+      "Global scores for the Operator Test, Quick Decisions, and each skill test. Post a nickname. No account required.",
   },
   {
     path: "/privacy",
