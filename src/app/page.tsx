@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { CountUp } from "@/components/CountUp";
+import { LeaderboardTeaser } from "@/components/LeaderboardTeaser";
+import { SiteFooter } from "@/components/SiteFooter";
 import { ButtonLink, CategoryIcon, Eyebrow, Panel } from "@/components/ui";
 import { BANK_STATS } from "@/data";
 import { CATEGORIES } from "@/lib/categories";
@@ -150,6 +152,8 @@ export default function HomePage() {
         </div>
       </section>
 
+      <LeaderboardTeaser />
+
       {/* --------------------------------- Skills -------------------------------- */}
       <section className="border-t border-line-soft py-14 sm:py-16">
         <Eyebrow>What gets measured</Eyebrow>
@@ -179,11 +183,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <footer className="border-t border-line-soft py-8 text-[12px] text-faint">
-        <span className="font-medium text-muted">Think Operator</span> · Scores and history are stored in this browser.
-        <Link href="/progress" className="ml-3 underline">My progress</Link>
-        <Link href="/privacy" className="ml-3 underline">Your data</Link>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

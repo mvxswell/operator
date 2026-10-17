@@ -50,6 +50,8 @@ export interface QuickGame {
   correctCount: number;
   attempts: QuickAttemptRecord[];
   result: QuickResult | null;
+  /** Wall-clock milliseconds of the 60-second round. */
+  durationMs: number;
   /** Screen-space labels for the current card. */
   labels: { left: string; right: string } | null;
   start: () => void;
@@ -70,6 +72,8 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
   const [attempts, setAttempts] = useState<QuickAttemptRecord[]>([]);
   const [streak, setStreak] = useState(0);
   const [result, setResult] = useState<QuickResult | null>(null);
+  const [durationMs, setDurationMs] = useState(0);
+  const roundStartedRef = useRef(0);
 
   const levelRef = useRef(1);
   const usedRef = useRef<Set<string>>(new Set());
@@ -103,6 +107,9 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
 
   const finish = useCallback(() => {
     clearTimers();
+    if (roundStartedRef.current > 0) {
+      setDurationMs(Math.max(1, Math.round(performance.now() - roundStartedRef.current)));
+    }
     setPhase("done");
     setCard(null);
     setFeedback(null);
@@ -128,6 +135,7 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
   /* -------------------------------- Controls ------------------------------- */
 
   const beginRound = useCallback(() => {
+    roundStartedRef.current = performance.now();
     deadlineRef.current = performance.now() + ROUND_MS;
     setRemainingMs(ROUND_MS);
     setPhase("running");
@@ -142,6 +150,8 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
     setAttempts([]);
     setStreak(0);
     setResult(null);
+    setDurationMs(0);
+    roundStartedRef.current = 0;
     setCard(null);
     setFeedback(null);
     setCountdown(COUNTDOWN_STEPS);
@@ -199,6 +209,8 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
     setCard(null);
     setFeedback(null);
     setResult(null);
+    setDurationMs(0);
+    roundStartedRef.current = 0;
     setAttempts([]);
     attemptsRef.current = [];
     setRemainingMs(ROUND_MS);
@@ -239,6 +251,7 @@ export function useQuickGame(pool: readonly QuickQuestion[]): QuickGame {
     correctCount: attempts.filter((a) => a.correct).length,
     attempts,
     result,
+    durationMs,
     labels,
     start,
     press,

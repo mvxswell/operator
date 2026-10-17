@@ -18,6 +18,20 @@ const presenceOrigin = env.NEXT_PUBLIC_PRESENCE_URL
   : "";
 if (presenceOrigin && !presenceOrigin.startsWith("https://")) throw new Error("Presence service must use HTTPS");
 
+function httpsOrigin(name, value) {
+  if (!value) return "";
+  let url;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error(`${name} is not a valid URL`);
+  }
+  if (url.protocol !== "https:") throw new Error(`${name} must use HTTPS`);
+  return url.origin;
+}
+
+const supabaseOrigin = httpsOrigin("NEXT_PUBLIC_SUPABASE_URL", env.NEXT_PUBLIC_SUPABASE_URL);
+
 // Run Next's JS entry with the current node binary. Resolving the shell shim
 // (`npx.cmd`) is unreliable under spawn on Windows.
 const require = createRequire(import.meta.url);
@@ -39,4 +53,4 @@ const flatten = spawnSync(
   { stdio: "inherit", env },
 );
 if (flatten.status !== 0) process.exit(flatten.status ?? 1);
-console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true)} HTML files`);
+console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true, supabaseOrigin)} HTML files`);

@@ -117,6 +117,9 @@ test("export CSP hashes inline scripts without allowing arbitrary inline JS", as
   assert.match(withAnalytics, /script-src[^;]*https:\/\/static\.cloudflareinsights\.com\/beacon\.min\.js/);
   assert.match(withAnalytics, /connect-src[^;]*https:\/\/cloudflareinsights\.com/);
   assert.equal(secureHtml(withAnalytics, "https://example.workers.dev", true), withAnalytics);
+  const withSupabase = secureHtml(html, "https://example.workers.dev", true, "https://example.supabase.co");
+  assert.match(withSupabase, /connect-src[^;]*https:\/\/example\.supabase\.co/);
+  assert.equal(secureHtml(withSupabase, "https://example.workers.dev", true, "https://example.supabase.co"), withSupabase);
 });
 
 test("cross-tab events invalidate cached progress and unsubscribe removes listener", () => {

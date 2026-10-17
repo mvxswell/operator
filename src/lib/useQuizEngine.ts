@@ -51,6 +51,8 @@ export interface QuizEngine {
   highestServed: number;
   streak: number;
   result: OperatorResult | null;
+  /** Wall-clock milliseconds from start to the results screen. */
+  durationMs: number;
   start: () => void;
   answer: (choiceId: string) => void;
   next: () => void;
@@ -70,6 +72,13 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
   const categoryCountsRef = useRef<Partial<Record<CategoryId, number>>>({});
   const shownAtRef = useRef<number>(0);
   const answeredRef = useRef(false);
+  const startedAtRef = useRef<number | null>(null);
+  const [durationMs, setDurationMs] = useState(0);
+
+  const freezeDuration = useCallback(() => {
+    if (startedAtRef.current == null) return;
+    setDurationMs(Math.max(1, Math.round(performance.now() - startedAtRef.current)));
+  }, []);
 
   /** Effective run length can never exceed what the pool can supply. */
   const total = useMemo(() => {
@@ -90,6 +99,7 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
       });
 
       if (!question) {
+        freezeDuration();
         setPhase("complete");
         return;
       }
@@ -105,13 +115,15 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
       answeredRef.current = false;
       shownAtRef.current = performance.now();
     },
-    [pool, restrictTo],
+    [pool, restrictTo, freezeDuration],
   );
 
   const start = useCallback(() => {
     askedRef.current = new Set();
     categoryCountsRef.current = {};
     setAttempts([]);
+    startedAtRef.current = performance.now();
+    setDurationMs(0);
     const fresh = createAdaptiveState(startLevel);
     setAdaptive(fresh);
     present(fresh, 0);
@@ -149,15 +161,18 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
     if (phase !== "feedback" || !current) return;
     const nextIndex = current.index + 1;
     if (nextIndex >= total) {
+      freezeDuration();
       setPhase("complete");
       return;
     }
     present(adaptive, nextIndex);
-  }, [phase, current, total, present, adaptive]);
+  }, [phase, current, total, present, adaptive, freezeDuration]);
 
   const reset = useCallback(() => {
     askedRef.current = new Set();
     categoryCountsRef.current = {};
+    startedAtRef.current = null;
+    setDurationMs(0);
     setAttempts([]);
     setCurrent(null);
     setSelectedChoiceId(null);
@@ -184,6 +199,7 @@ export function useQuizEngine(config: QuizConfig): QuizEngine {
     highestServed: adaptive.highestServed,
     streak: adaptive.streak,
     result,
+    durationMs,
     start,
     answer,
     next,

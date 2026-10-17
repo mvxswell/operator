@@ -117,8 +117,10 @@ version resets rather than crashes.
 
 ## Not built yet
 
-Authentication, a database, global leaderboards, AI-generated scenarios, and CEO
-Mode are all deliberately out of scope for this version.
+Authentication, cloud sync of full progress, AI-generated scenarios, and CEO
+Mode are not in this version. A public leaderboard is optional: it stays hidden
+until `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` are set.
+Practical guides live at `/guides`.
 
 ## Deploying
 

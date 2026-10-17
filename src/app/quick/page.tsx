@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { PostScore } from "@/components/PostScore";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { QUICK_QUESTIONS } from "@/data";
@@ -60,6 +61,7 @@ export default function QuickDecisionsPage() {
     return (
       <ResultsScreen
         result={game.result}
+        durationMs={game.durationMs}
         previousBest={bestAtStart}
         missedIds={game.attempts.filter((a) => !a.correct).map((a) => a.questionId)}
         onReplay={startRun}
@@ -276,11 +278,13 @@ function SideButton({
 
 function ResultsScreen({
   result,
+  durationMs,
   previousBest,
   missedIds,
   onReplay,
 }: {
   result: QuickResult;
+  durationMs: number;
   previousBest: number;
   missedIds: string[];
   onReplay: () => void;
@@ -333,6 +337,8 @@ function ResultsScreen({
           Guessing does not pay here.
         </p>
       ) : null}
+
+      <PostScore mode="quick" score={result.dpm} durationMs={durationMs} />
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button size="lg" onClick={onReplay}>

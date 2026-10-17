@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { PostScore } from "@/components/PostScore";
 import { QuestionCard } from "@/components/QuestionCard";
 import { Calculator } from "@/components/Calculator";
 import { CountUp } from "@/components/CountUp";
@@ -23,6 +24,8 @@ export interface AssessmentProps {
   restrictTo?: readonly CategoryId[];
   personalBest: number;
   onComplete: (result: OperatorResult) => void;
+  /** Leaderboard mode. Operator Test uses "operator"; skill tests pass the skill slug. */
+  boardMode?: string;
   /** Extra links rendered under the results actions. */
   backHref?: string;
   backLabel?: string;
@@ -192,6 +195,7 @@ function Results({
   onComplete,
   backHref,
   backLabel,
+  boardMode = "operator",
   engine,
 }: AssessmentProps & { engine: Engine }) {
   const { result, attempts, reset, start } = engine;
@@ -254,6 +258,8 @@ function Results({
       {variant === "operator" ? <SkillSection result={result} /> : null}
 
       {missed.length ? <ReviewSection missedIds={missed.map((m) => m.questionId)} /> : null}
+
+      <PostScore mode={boardMode} score={result.score} durationMs={engine.durationMs} />
 
       {/* Actions */}
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
