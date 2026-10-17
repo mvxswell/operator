@@ -1,0 +1,5 @@
+User-Agent: *
+Allow: /
+
+Host: https://thinkoperator.com
+Sitemap: https://thinkoperator.com/sitemap.xml
