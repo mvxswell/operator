@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
+import { leaderboardEnabled } from "@/lib/leaderboard";
 
 const LINKS = [
   { href: "/operator", label: "Operator Test", short: "Operator" },
@@ -11,6 +12,8 @@ const LINKS = [
   { href: "/skills", label: "Skills", short: "Skills" },
   { href: "/daily", label: "Daily", short: "Daily" },
   { href: "/progress", label: "My progress", short: "Progress" },
+  ...(leaderboardEnabled ? [{ href: "/leaderboard", label: "Leaderboard", short: "Ranks" }] : []),
+  { href: "/guides", label: "Guides", short: "Guides" },
 ];
 
 export function Nav() {

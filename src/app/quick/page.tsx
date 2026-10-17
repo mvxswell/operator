@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { CountUp } from "@/components/CountUp";
+import { PostScore } from "@/components/PostScore";
 import { Button, ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { QUICK_QUESTIONS } from "@/data";
 import { dpmTier, type QuickResult } from "@/lib/scoring";
@@ -333,6 +334,8 @@ function ResultsScreen({
           Guessing does not pay here.
         </p>
       ) : null}
+
+      <PostScore mode="quick" score={result.dpm} durationMs={ROUND_MS} />
 
       <div className="mt-8 flex flex-col gap-3 sm:flex-row">
         <Button size="lg" onClick={onReplay}>

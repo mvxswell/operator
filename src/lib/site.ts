@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { CATEGORIES } from "./categories";
+import { GUIDE_SLUGS } from "@/content/guides";
+import { leaderboardEnabled } from "./leaderboard";
 
 export const SITE_ORIGIN = "https://thinkoperator.com";
 
@@ -46,8 +48,10 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
     path: "/privacy",
     title: "Your data — Think Operator",
     description:
-      "Scores stay in this browser. What is stored, what the online counter sends, and how to export or delete progress.",
+      "How browser progress and optional public leaderboard posts are stored, plus what the online counter sends and how to export or delete local progress.",
   },
+  { path: "/guides", title: "Business decision guides — Think Operator", description: "Practical guides for better decisions in hiring, pricing, cash flow, operations, sales and strategy." },
+  ...(leaderboardEnabled ? [{ path: "/leaderboard", title: "Leaderboard — Think Operator", description: "Compare scores across Think Operator tests." }] : []),
 ];
 
 export function pageMetadata(path: string): Metadata {
@@ -73,5 +77,6 @@ export function sitemapEntries(): { path: string }[] {
   return [
     ...PUBLIC_PAGES.map((page) => ({ path: page.path })),
     ...CATEGORIES.map((category) => ({ path: `/skills/${category.id}` })),
+    ...GUIDE_SLUGS.map((slug) => ({ path: `/guides/${slug}` })),
   ];
 }

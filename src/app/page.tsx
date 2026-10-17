@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { CountUp } from "@/components/CountUp";
+import { LeaderboardTable } from "@/components/LeaderboardTable";
 import { ButtonLink, CategoryIcon, Eyebrow, Panel } from "@/components/ui";
 import { BANK_STATS } from "@/data";
 import { CATEGORIES } from "@/lib/categories";
 import { operatorTier } from "@/lib/scoring";
+import { leaderboardEnabled } from "@/lib/leaderboard";
 import type { OperatorRun } from "@/lib/storage";
 import { useProfile } from "@/lib/useProfile";
 
@@ -116,6 +118,16 @@ export default function HomePage() {
         </Panel>
       </section>
 
+      {leaderboardEnabled ? (
+        <section className="border-t border-line-soft py-14 sm:py-16">
+          <div className="mb-5 flex items-end justify-between gap-4">
+            <div><Eyebrow>Community scores</Eyebrow><h2 className="mt-2 text-2xl font-semibold text-ink">Top 5 Operators</h2></div>
+            <Link href="/leaderboard" className="text-sm text-accent hover:underline">Full leaderboard →</Link>
+          </div>
+          <LeaderboardTable compact />
+        </section>
+      ) : null}
+
       {/* --------------------------------- Modes --------------------------------- */}
       <section className="border-t border-line-soft py-14 sm:py-16">
         <div className="grid gap-3 sm:grid-cols-2">
@@ -180,7 +192,7 @@ export default function HomePage() {
       </section>
 
       <footer className="border-t border-line-soft py-8 text-[12px] text-faint">
-        <span className="font-medium text-muted">Think Operator</span> · Scores and history are stored in this browser.
+        <span className="font-medium text-muted">Think Operator</span> · Progress stays in this browser; leaderboard posts are optional and public.
         <Link href="/progress" className="ml-3 underline">My progress</Link>
         <Link href="/privacy" className="ml-3 underline">Your data</Link>
       </footer>

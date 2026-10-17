@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { Calculator } from "@/components/Calculator";
+import { PostScore } from "@/components/PostScore";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
 import { findQuestion } from "@/data";
@@ -186,6 +187,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
 
 function Results({
   variant,
+  restrictTo,
   title,
   scoreLabel,
   personalBest,
@@ -216,6 +218,7 @@ function Results({
   const tier = operatorTier(result.score);
   const isRecord = result.score > previousBest;
   const missed = attempts.filter((a) => !a.correct);
+  const durationMs = attempts.reduce((sum, attempt) => sum + attempt.elapsedMs, 0);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -254,6 +257,9 @@ function Results({
       {variant === "operator" ? <SkillSection result={result} /> : null}
 
       {missed.length ? <ReviewSection missedIds={missed.map((m) => m.questionId)} /> : null}
+
+      <PostScore mode={variant === "operator" ? "operator" : restrictTo?.[0] ?? "operator"}
+        score={result.score} durationMs={durationMs} />
 
       {/* Actions */}
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">

@@ -8,6 +8,11 @@ import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { secureExport } from "./secure-export.mjs";
 
+const require = createRequire(import.meta.url);
+// Match Next's .env loading before building the exported CSP. Otherwise Next
+// embeds the public Supabase URL while connect-src still blocks the requests.
+require("@next/env").loadEnvConfig(process.cwd(), false);
+
 const env = {
   ...process.env,
   GITHUB_PAGES: "true",
@@ -17,13 +22,16 @@ const presenceOrigin = env.NEXT_PUBLIC_PRESENCE_URL
   ? new URL(env.NEXT_PUBLIC_PRESENCE_URL).origin
   : "";
 if (presenceOrigin && !presenceOrigin.startsWith("https://")) throw new Error("Presence service must use HTTPS");
+const supabaseOrigin = env.NEXT_PUBLIC_SUPABASE_URL
+  ? new URL(env.NEXT_PUBLIC_SUPABASE_URL).origin
+  : "";
+if (supabaseOrigin && !supabaseOrigin.startsWith("https://")) throw new Error("Supabase URL must use HTTPS");
 
 // Run Next's JS entry with the current node binary. Resolving the shell shim
 // (`npx.cmd`) is unreliable under spawn on Windows.
-const require = createRequire(import.meta.url);
 const nextBin = require.resolve("next/dist/bin/next");
 
-const build = spawnSync(process.execPath, [nextBin, "build"], {
+const build = spawnSync(process.execPath, [nextBin, "build", "--webpack"], {
   stdio: "inherit",
   env,
 });
@@ -39,4 +47,4 @@ const flatten = spawnSync(
   { stdio: "inherit", env },
 );
 if (flatten.status !== 0) process.exit(flatten.status ?? 1);
-console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true)} HTML files`);
+console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true, supabaseOrigin)} HTML files`);

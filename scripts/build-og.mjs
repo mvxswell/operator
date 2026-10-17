@@ -117,8 +117,24 @@ const response = new ImageResponse(image, {
   ],
 });
 const png = Buffer.from(await response.arrayBuffer());
+const guideImage = h(
+  "div",
+  { style: { width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "center", backgroundColor: "#08090b", padding: "88px 96px" } },
+  h("img", { src: markSrc, width: 82, height: 82 }),
+  h("div", { style: { marginTop: 42, fontFamily: "Geist", fontSize: 22, letterSpacing: 6, color: "#f2b441" } }, "THINK OPERATOR · GUIDES"),
+  h("div", { style: { marginTop: 22, fontFamily: "Geist", fontSize: 68, fontWeight: 700, lineHeight: 1.1, color: "#f3f5f7" } }, "Make the better call."),
+  h("div", { style: { marginTop: 28, fontFamily: "Geist", fontSize: 30, color: "#b4bac2" } }, "Practical frameworks for business decisions."),
+);
+const guideResponse = new ImageResponse(guideImage, {
+  width: 1200, height: 630,
+  fonts: [
+    { name: "Geist", data: regular, weight: 400, style: "normal" },
+    { name: "Geist", data: bold, weight: 700, style: "normal" },
+  ],
+});
 await Promise.all([
   writeFile(join(root, "src/app/opengraph-image.png"), png),
   writeFile(join(root, "src/app/twitter-image.png"), png),
+  writeFile(join(root, "public/guides/share.png"), Buffer.from(await guideResponse.arrayBuffer())),
 ]);
 console.log(`opengraph: wrote ${png.length} bytes`);
