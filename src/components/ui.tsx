@@ -106,7 +106,7 @@ export function Stat({
 }) {
   return (
     <div>
-      <p className="text-[11px] uppercase tracking-[0.14em] text-faint">{label}</p>
+      <p className="text-[11px] uppercase tracking-[0.14em] text-muted">{label}</p>
       <p className="tabular mt-1 text-2xl font-semibold text-ink sm:text-[28px]">{value}</p>
       {hint ? <p className="mt-0.5 text-xs text-muted">{hint}</p> : null}
     </div>
@@ -126,7 +126,7 @@ export function DataTable({ data }: { data: DataBlock }) {
               {data.columns!.map((col, i) => (
                 <th
                   key={i}
-                  className={`px-3 py-2 text-[11px] font-medium uppercase tracking-[0.12em] text-faint ${
+                  className={`px-3 py-2 text-[11px] font-medium uppercase tracking-[0.12em] text-muted ${
                     i === 0 ? "text-left" : "text-right"
                   }`}
                 >
@@ -211,7 +211,7 @@ export function SkillBar({
 
   return (
     <div className="flex items-center gap-3 py-2">
-      <span className="shrink-0 text-muted" style={{ color: meta.accent }}>
+      <span className="shrink-0 text-accent">
         <CategoryIcon category={category} />
       </span>
       <div className="min-w-0 flex-1">
@@ -223,11 +223,8 @@ export function SkillBar({
         </div>
         <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-line-soft">
           <div
-            className="h-full rounded-full transition-[width] duration-700 ease-out"
-            style={{
-              width: `${pct}%`,
-              backgroundColor: score === null ? "transparent" : meta.accent,
-            }}
+            className={`h-full rounded-full transition-[width] duration-700 ease-out ${score === null ? "" : "bg-accent"}`}
+            style={{ width: `${pct}%` }}
           />
         </div>
         {detail ? <p className="mt-1 text-[11px] text-faint">{detail}</p> : null}

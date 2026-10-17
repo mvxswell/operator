@@ -15,7 +15,7 @@
   --color-line-soft: #1a1d22;
   --color-ink: #f3f5f7;
   --color-muted: #8b929c;
-  --color-faint: #5b616a;
+  --color-faint: #7d848e;
   --color-accent: #f2b441;
   --color-accent-soft: #3a2c11;
   --color-pos: #52d18b;
@@ -132,9 +132,10 @@ body {
 .brand-card {
   background-image: radial-gradient(ellipse at 100% 0%, rgba(242,180,65,0.055), transparent 65%), linear-gradient(145deg, rgba(255,255,255,0.04), transparent 65%);
   box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset, 0 12px 32px rgba(0,0,0,0.18);
-  transition: border-color 150ms ease, box-shadow 150ms ease;
+  transition: background-color 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
 }
 .brand-card:hover {
+  background-color: #1a1e23;
   border-color: rgba(242,180,65,0.4);
   box-shadow: 0 1px 0 rgba(255,255,255,0.05) inset, 0 16px 36px rgba(0,0,0,0.24);
 }
@@ -180,6 +181,65 @@ body {
 .no-select {
   user-select: none;
   -webkit-user-select: none;
+}
+
+/* Article body for /guides pages. Kept off the quiz surfaces. */
+.prose-guide {
+  max-width: 680px;
+  margin-inline: auto;
+  padding-inline: 20px;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  color: #b4bac2;
+}
+.prose-guide > :first-child {
+  margin-top: 0;
+}
+.prose-guide p,
+.prose-guide ul,
+.prose-guide ol {
+  margin-top: 1.1em;
+  margin-bottom: 0;
+}
+.prose-guide h2 {
+  margin-top: 2.2em;
+  margin-bottom: 0;
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: #f3f5f7;
+}
+.prose-guide h3 {
+  margin-top: 1.8em;
+  margin-bottom: 0;
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: #f3f5f7;
+}
+.prose-guide a {
+  color: #f2b441;
+  text-decoration: none;
+}
+.prose-guide a:hover {
+  text-decoration: underline;
+}
+.prose-guide ul,
+.prose-guide ol {
+  padding-left: 1.5em;
+}
+.prose-guide ul {
+  list-style: disc;
+}
+.prose-guide ol {
+  list-style: decimal;
+}
+.prose-guide li + li {
+  margin-top: 0.5em;
+}
+.prose-guide strong {
+  color: #f3f5f7;
+  font-weight: 600;
 }
 
 @media (prefers-reduced-motion: reduce) {

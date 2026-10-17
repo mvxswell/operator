@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
 import { Nav } from "@/components/Nav";
 import { StorageNotice } from "@/components/StorageNotice";
+import { HOME } from "@/lib/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -17,15 +18,16 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://thinkoperator.com"),
-  title: "Think Operator — Test your business judgment",
-  description:
-    "Test your judgment across real-world business scenarios. Train your weaknesses. Make better decisions faster.",
+  title: HOME.title,
+  description: HOME.description,
+  alternates: { canonical: "./" },
   openGraph: {
-    title: "Think Operator",
-    description: "Test your judgment across real-world business scenarios.",
-    url: "https://thinkoperator.com",
     siteName: "Think Operator",
     type: "website",
+    url: "./",
+  },
+  twitter: {
+    card: "summary_large_image",
   },
 };
 

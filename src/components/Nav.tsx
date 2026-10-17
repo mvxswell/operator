@@ -42,7 +42,10 @@ export function Nav() {
             </Link>
           ))}
         </div>
-        <OnlineNow />
+        {/* Fixed slot so the badge can appear without shifting the links. */}
+        <div className="flex h-8 w-[6.75rem] shrink-0 items-center justify-end">
+          <OnlineNow />
+        </div>
       </nav>
     </header>
   );

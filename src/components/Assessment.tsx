@@ -133,7 +133,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
     <div className="mx-auto max-w-2xl px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-12">
       {/* Progress header */}
       <div className="panel-depth mb-8 rounded-xl border border-line bg-surface p-4">
-        <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-faint">
+        <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-muted">
           <span>
             Question {current.index + 1} of {total}
           </span>
@@ -173,7 +173,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
             </span>
             <Button className="ml-auto" onClick={next}>
               {answeredCount >= total ? "See results" : "Next"}
-              <span className="hidden text-[11px] opacity-60 sm:inline">Enter</span>
+              <span className="hidden text-[11px] opacity-75 sm:inline">Enter</span>
             </Button>
           </div>
         </div>
@@ -283,7 +283,7 @@ function Results({
 function ResultStat({ label, value }: { label: string; value: string | number }) {
   return (
     <div className="px-4 py-5 text-center">
-      <p className="text-[11px] uppercase tracking-[0.13em] text-faint">{label}</p>
+      <p className="text-[11px] uppercase tracking-[0.13em] text-muted">{label}</p>
       <p className="tabular mt-1.5 text-2xl font-semibold text-ink">{value}</p>
     </div>
   );
@@ -298,7 +298,7 @@ function ScoreBreakdown({ result }: { result: OperatorResult }) {
 
   return (
     <div className="mt-3 flex flex-col gap-1.5 rounded-xl border border-line bg-surface px-5 py-4">
-      <p className="mb-1 text-[11px] uppercase tracking-[0.13em] text-faint">Where the score came from</p>
+      <p className="mb-1 text-[11px] uppercase tracking-[0.13em] text-muted">Where the score came from</p>
       {parts.map((part) => (
         <div key={part.label} className="flex items-center gap-3">
           <p className="w-[128px] shrink-0 text-[12px] text-muted sm:w-[150px]">{part.label}</p>
@@ -345,7 +345,7 @@ function SkillSection({ result }: { result: OperatorResult }) {
       {strongest && weakest && strongest.category !== weakest.category ? (
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           <div className="rounded-xl border border-line bg-surface p-5">
-            <p className="text-[11px] uppercase tracking-[0.13em] text-faint">Strongest skill</p>
+            <p className="text-[11px] uppercase tracking-[0.13em] text-muted">Strongest skill</p>
             <p className="mt-1.5 text-lg font-semibold text-ink">
               {CATEGORY_MAP[strongest.category].name}
             </p>
@@ -354,7 +354,7 @@ function SkillSection({ result }: { result: OperatorResult }) {
             </p>
           </div>
           <div className="rounded-xl border border-accent/25 bg-accent-soft/40 p-5">
-            <p className="text-[11px] uppercase tracking-[0.13em] text-accent/80">
+            <p className="text-[11px] uppercase tracking-[0.13em] text-accent">
               Biggest opportunity
             </p>
             <p className="mt-1.5 text-lg font-semibold text-ink">
@@ -394,10 +394,7 @@ function ReviewSection({ missedIds }: { missedIds: string[] }) {
           {questions.map((q) => (
             <div key={q.id} className="rounded-xl border border-line bg-surface p-5">
               <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className="text-[11px] font-medium uppercase tracking-[0.12em]"
-                  style={{ color: CATEGORY_MAP[q.category].accent }}
-                >
+                <span className="text-[11px] font-medium uppercase tracking-[0.12em] text-accent">
                   {CATEGORY_MAP[q.category].name}
                 </span>
                 <Link

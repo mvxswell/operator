@@ -41,7 +41,7 @@ src/
     index.ts                the only entry point into the bank
   lib/
     types.ts                Question / QuickQuestion / DailyQuestion shapes
-    categories.ts           the 8 skills: names, descriptions, icons, accents
+    categories.ts           the 8 skills: names, descriptions, icons
     adaptive.ts             difficulty state machine + question selection
     scoring.ts              Operator Score, skill scores, DPM, tier labels
     storage.ts              ProfileStore — all persistence lives behind this
