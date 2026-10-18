@@ -2,11 +2,14 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
+import { ShareScoreButton } from "@/components/ShareScoreButton";
 import { Calculator } from "@/components/Calculator";
 import { ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { dailyQuestionFor } from "@/data";
 import { CATEGORY_MAP } from "@/lib/categories";
+import { dailyShareText } from "@/lib/shareResult";
 import { recordDaily, todayKey } from "@/lib/storage";
+import { track } from "@/lib/track";
 import { useProfile } from "@/lib/useProfile";
 
 export default function DailyPage() {
@@ -23,6 +26,7 @@ export default function DailyPage() {
     (choiceId: string) => {
       if (revealed) return;
       setLocalChoice(choiceId);
+      track("daily:answer");
       recordDaily({
         date: dateKey,
         questionId: question.id,
@@ -103,6 +107,21 @@ export default function DailyPage() {
               This scenario tests {CATEGORY_MAP[question.category].name.toLowerCase()} at level{" "}
               {question.difficulty}.
             </p>
+          </div>
+
+          <div className="mt-4">
+            <ShareScoreButton
+              text={
+                dailyShareText(
+                  dateKey,
+                  selected === question.correctChoiceId,
+                  question.difficulty,
+                  streak,
+                ).text
+              }
+              event="daily:share"
+              className="w-full sm:w-auto"
+            />
           </div>
 
           <Distribution question={question} selected={selected} />

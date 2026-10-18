@@ -58,7 +58,7 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
     path: "/privacy",
     title: "Your data — Think Operator",
     description:
-      "Scores stay in this browser. What is stored, what the online counter sends, and how to export or delete progress.",
+      "Scores stay in this browser. What is stored, what the online counter and anonymous event counts send, and how to export or delete progress.",
   },
 ];
 

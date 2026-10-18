@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { GuideScenario } from "@/components/GuideScenario";
+import { GuideTestCta } from "@/components/GuideTestCta";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ButtonLink } from "@/components/ui";
 import { getGuide, type Guide } from "@/content/guides";
@@ -19,6 +20,12 @@ export function GuideArticle({ guide }: { guide: Guide }) {
         </p>
         <h1>{guide.title}</h1>
         <p>{guide.answer}</p>
+        <div className="guide-cta flex flex-col items-start gap-3 rounded-xl border border-line bg-surface px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm leading-relaxed text-muted">
+            Practice {skill.name} with ten scored questions. The test opens on the first one.
+          </p>
+          <GuideTestCta skill={guide.skill} skillName={skill.name} slug={guide.slug} size="md" />
+        </div>
         {guide.blocks.map((block, index) => {
           if (block.type === "p") return <p key={index}><Rich text={block.text} /></p>;
           if (block.type === "h2") return <h2 key={index}>{block.text}</h2>;
@@ -90,9 +97,7 @@ export function GuideArticle({ guide }: { guide: Guide }) {
       </article>
 
       <div className="mx-auto mt-10 flex max-w-[680px] flex-col gap-3 px-5 sm:flex-row sm:flex-wrap">
-        <ButtonLink href={`/skills/${guide.skill}`} size="lg">
-          Take the {skill.name} test
-        </ButtonLink>
+        <GuideTestCta skill={guide.skill} skillName={skill.name} slug={guide.slug} />
         <ButtonLink href="/quick" variant="secondary" size="lg">
           Quick Decisions — 60 sec
         </ButtonLink>

@@ -43,6 +43,7 @@ export function SkillTest({ category }: { category: CategoryId }) {
       personalBest={profile.skills[category]?.best ?? 0}
       onComplete={handleComplete}
       boardMode={category}
+      category={category}
       backHref="/skills"
       backLabel="All skills"
     />

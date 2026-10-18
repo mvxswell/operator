@@ -9,8 +9,16 @@ Use a Cloudflare **Workers Free** account with the SQLite Durable Object declare
 ## Activate
 
 1. Confirm the Cloudflare account is still on Workers Free. Sign in locally with `npx wrangler login` in this repository if needed; the owner must complete any sign-in prompts.
-2. Deploy with `npx wrangler deploy`. The configuration creates one SQLite Durable Object namespace and a rate limiter set to 10 requests per IP per minute. The current Worker URL is `https://think-operator-presence.mrm1244.workers.dev/online`.
+2. Deploy with `npx wrangler deploy`. The configuration creates one SQLite Durable Object namespace and two rate limiters: 10 requests per IP per minute for the online badge, and 30 per IP per minute for funnel counts. The current Worker URL is `https://think-operator-presence.mrm1244.workers.dev/online`. Funnel counts use the same origin at `/e`. Redeploy after that route changes, or the site will send events that the previous Worker answers with 404 and nothing is stored.
 3. Run `npm run build:pages`. The build script sets the deployed Worker URL by default and adds its origin to the page's CSP. Set `NEXT_PUBLIC_PRESENCE_URL` only to override that URL.
 4. Publish the `out` directory to the existing Pages branch as usual. Test from `https://thinkoperator.com`, with two browsers and a hidden tab, and confirm the count vanishes if the Worker is unavailable.
 
-Do not put a Cloudflare API token in the web app, repository, `.env` committed to Git, or GitHub Pages output. The browser sends only a random ID; the service does not collect test scores. The ID is cleared when the user resets progress. The public privacy page explains the counter.
+Do not put a Cloudflare API token in the web app, repository, `.env` committed to Git, or GitHub Pages output. The browser sends only a random ID to `/online`; the service does not collect test scores. The ID is cleared when the user resets progress. The public privacy page explains the counter.
+
+## Funnel counts (`POST /e`)
+
+`POST /e` accepts `Content-Type: text/plain` and a body that is exactly one event name from `src/lib/funnelEvents.ts` (80 characters or fewer). The Worker increments `counters(day, event, n)` in the same Durable Object, using the UTC date as `day`. The request does not include a visitor ID. The IP address is used only as the rate-limit key and is not written into storage.
+
+The browser helper is `src/lib/track.ts`. It does not run during `next dev`. Production builds send to the origin of `NEXT_PUBLIC_PRESENCE_URL` (the `/online` URL already set by `npm run build:pages`) with the path replaced by `/e`. Counts stay at zero until this Worker is deployed with the `EVENTS_RATE` binding in `wrangler.jsonc`.
+
+There is no public read API. After deploy, open the Presence Durable Object in the Cloudflare dashboard and read the `counters` table, or query it from a one-off Worker script. Each row is a UTC day, an event name, and a total.
