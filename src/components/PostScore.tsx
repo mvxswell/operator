@@ -5,6 +5,7 @@ import { useState, useSyncExternalStore, type FormEvent } from "react";
 import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { postScore, rememberedNickname, subscribeNickname, type PostResult } from "@/lib/leaderboard";
 import { nicknameError } from "@/lib/leaderboardRules";
+import { track } from "@/lib/track";
 import { Button } from "./ui";
 
 export function PostScore({
@@ -32,6 +33,7 @@ export function PostScore({
       setError(problem);
       return;
     }
+    track("result:post");
     setPending(true);
     setError(null);
     try {

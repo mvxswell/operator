@@ -11,6 +11,7 @@
     "Presence": { "type": "durable-object", "storage": "sqlite" }
   },
   "ratelimits": [
-    { "name": "PRESENCE_RATE", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } }
+    { "name": "PRESENCE_RATE", "namespace_id": "1001", "simple": { "limit": 10, "period": 60 } },
+    { "name": "EVENTS_RATE", "namespace_id": "1002", "simple": { "limit": 30, "period": 60 } }
   ]
 }

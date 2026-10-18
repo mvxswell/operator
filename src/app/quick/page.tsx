@@ -2,11 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PostScore } from "@/components/PostScore";
+import { ShareScoreButton } from "@/components/ShareScoreButton";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { QUICK_QUESTIONS } from "@/data";
 import { dpmTier, type QuickResult } from "@/lib/scoring";
+import { quickShareText } from "@/lib/shareResult";
 import { newId, recordQuickRun } from "@/lib/storage";
+import { track } from "@/lib/track";
 import type { QuickQuestion } from "@/lib/types";
 import { useProfile } from "@/lib/useProfile";
 import { ROUND_MS, useQuickGame, type Side } from "@/lib/useQuickGame";
@@ -37,6 +40,7 @@ export default function QuickDecisionsPage() {
   }, [game.phase, game.result]);
 
   const startRun = useCallback(() => {
+    track(game.phase === "done" ? "quick:again" : "quick:start");
     // Snapshot the record to beat before this run's result overwrites it.
     setBestAtStart(best);
     savedRef.current = null;
@@ -293,6 +297,11 @@ function ResultsScreen({
   const tier = dpmTier(result.dpm);
   const isRecord = result.dpm > previousBest;
   const recent = profile.quick.runs.slice(0, 6);
+  const shared = quickShareText(result.dpm, tier.label);
+
+  useEffect(() => {
+    track("quick:complete");
+  }, []);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -316,6 +325,9 @@ function ResultsScreen({
           ) : null}
         </div>
         <p className="mt-3 text-sm text-muted">{tier.note}</p>
+        <div className="mt-8 flex justify-center">
+          <ShareScoreButton text={shared.text} event="result:share" className="w-full sm:w-auto" />
+        </div>
       </div>
 
       <Panel className="mt-9 grid grid-cols-2 divide-line-soft sm:grid-cols-4 sm:divide-x">

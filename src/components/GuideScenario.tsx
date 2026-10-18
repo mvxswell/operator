@@ -2,7 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { CATEGORY_MAP } from "@/lib/categories";
+import { track } from "@/lib/track";
 import type { Guide } from "@/content/guides/types";
+import { GuideTestCta } from "./GuideTestCta";
 import { CategoryIcon } from "./ui";
 
 const LETTERS = ["A", "B", "C", "D"];
@@ -12,6 +14,11 @@ export function GuideScenario({ guide }: { guide: Guide }) {
   const meta = CATEGORY_MAP[guide.skill];
   const [selected, setSelected] = useState<string | null>(null);
   const revealed = selected !== null;
+
+  useEffect(() => {
+    if (!revealed) return;
+    track(`guide:${guide.slug}:scenario`);
+  }, [revealed, guide.slug]);
 
   useEffect(() => {
     if (revealed) return;
@@ -83,6 +90,10 @@ export function GuideScenario({ guide }: { guide: Guide }) {
             </div>
           ) : null}
           <p className="mt-3 text-sm leading-relaxed text-muted">{scenario.explanation}</p>
+          <div className="mt-4 flex flex-col items-start gap-3 border-t border-line pt-4">
+            <p className="text-sm text-ink">That was a {meta.name} call.</p>
+            <GuideTestCta skill={guide.skill} skillName={meta.name} slug={guide.slug} />
+          </div>
         </div>
       ) : (
         <p className="mt-3 text-[12px] text-faint">Pick an answer to see the call and why.</p>

@@ -1,16 +1,21 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { PostScore } from "@/components/PostScore";
 import { QuestionCard } from "@/components/QuestionCard";
+import { ShareScoreButton } from "@/components/ShareScoreButton";
 import { Calculator } from "@/components/Calculator";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
 import { findQuestion } from "@/data";
 import { CATEGORY_MAP } from "@/lib/categories";
+import { nextSkillToTrain } from "@/lib/nextSkill";
 import { operatorTier, type OperatorResult } from "@/lib/scoring";
+import { operatorShareText, skillShareText } from "@/lib/shareResult";
+import { track } from "@/lib/track";
 import type { CategoryId, Question } from "@/lib/types";
+import { useProfile } from "@/lib/useProfile";
 import { useQuizEngine } from "@/lib/useQuizEngine";
 
 export interface AssessmentProps {
@@ -29,11 +34,26 @@ export interface AssessmentProps {
   /** Extra links rendered under the results actions. */
   backHref?: string;
   backLabel?: string;
+  /** Skill tests pass the skill id so results and events name that skill. */
+  category?: CategoryId;
 }
 
 export function Assessment(props: AssessmentProps) {
-  const { pool, length, restrictTo } = props;
+  const { pool, length, restrictTo, variant, category } = props;
   const engine = useQuizEngine({ pool, length, restrictTo });
+  const { start } = engine;
+  const autoStarted = useRef(false);
+
+  useLayoutEffect(() => {
+    if (autoStarted.current) return;
+    if (new URLSearchParams(window.location.search).get("start") !== "1") return;
+    autoStarted.current = true;
+    const name = flowEvent(variant, category, "start");
+    if (name) track(name);
+    start();
+  }, [start, variant, category]);
+
+  useOperatorProgress(variant, engine);
 
   switch (engine.phase) {
     case "intro":
@@ -49,7 +69,72 @@ type Engine = ReturnType<typeof useQuizEngine>;
 
 /* ---------------------------------- Intro --------------------------------- */
 
+function flowEvent(
+  variant: AssessmentProps["variant"],
+  category: CategoryId | undefined,
+  action: "intro" | "start" | "complete",
+): string | null {
+  if (variant === "operator") return `operator:${action}`;
+  if (!category) return null;
+  return `skill:${category}:${action}`;
+}
+
+function useOperatorProgress(variant: AssessmentProps["variant"], engine: Engine) {
+  const sentAbandon = useRef<number | null>(null);
+  const sentCheckpoint = useRef(0);
+  const active = variant === "operator" && (engine.phase === "question" || engine.phase === "feedback");
+  const questionNumber = (engine.current?.index ?? 0) + 1;
+  const activeRef = useRef(active);
+  const questionRef = useRef(questionNumber);
+
+  useEffect(() => {
+    activeRef.current = active;
+    questionRef.current = questionNumber;
+  }, [active, questionNumber]);
+
+  useEffect(() => {
+    if (variant !== "operator") return;
+    const n = engine.answeredCount;
+    if (n !== 1 && n !== 5 && n !== 10 && n !== 15 && n !== 20) return;
+    if (sentCheckpoint.current === n) return;
+    sentCheckpoint.current = n;
+    track(`operator:q:${n}`);
+  }, [variant, engine.answeredCount]);
+
+  useEffect(() => {
+    if (!active) return;
+    const send = () => {
+      const n = questionRef.current;
+      if (sentAbandon.current === n) return;
+      sentAbandon.current = n;
+      track(`operator:abandon:${n}`);
+    };
+    const onHide = () => {
+      if (document.visibilityState === "hidden") send();
+    };
+    window.addEventListener("pagehide", send);
+    document.addEventListener("visibilitychange", onHide);
+    return () => {
+      window.removeEventListener("pagehide", send);
+      document.removeEventListener("visibilitychange", onHide);
+    };
+  }, [active, questionNumber]);
+
+  useEffect(() => {
+    if (variant !== "operator") return;
+    return () => {
+      if (!activeRef.current) return;
+      const n = questionRef.current;
+      if (sentAbandon.current === n) return;
+      sentAbandon.current = n;
+      track(`operator:abandon:${n}`);
+    };
+  }, [variant]);
+}
+
 function Intro({
+  variant,
+  category,
   title,
   introBody,
   personalBest,
@@ -59,6 +144,11 @@ function Intro({
   backHref,
   backLabel,
 }: AssessmentProps & { total: number; onStart: () => void }) {
+  useEffect(() => {
+    const name = flowEvent(variant, category, "intro");
+    if (name) track(name);
+  }, [variant, category]);
+
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
       <div className="brand-hero stack-rise">
@@ -84,7 +174,14 @@ function Intro({
         ) : null}
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button size="lg" onClick={onStart}>
+          <Button
+            size="lg"
+            onClick={() => {
+              const name = flowEvent(variant, category, "start");
+              if (name) track(name);
+              onStart();
+            }}
+          >
             {personalBest > 0 ? `Beat ${personalBest}` : "Start"}
           </Button>
           {backHref ? (
@@ -189,6 +286,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
 
 function Results({
   variant,
+  category,
   title,
   scoreLabel,
   personalBest,
@@ -209,17 +307,35 @@ function Results({
     }
   }, [result, onComplete]);
 
+  useEffect(() => {
+    const name = flowEvent(variant, category, "complete");
+    if (name) track(name);
+  }, [variant, category]);
+
   const replay = useCallback(() => {
+    track("result:retake");
     savedRef.current = false;
     reset();
     start();
   }, [reset, start]);
+
+  const { profile, hydrated } = useProfile();
 
   if (!result) return null;
 
   const tier = operatorTier(result.score);
   const isRecord = result.score > previousBest;
   const missed = attempts.filter((a) => !a.correct);
+  const trainId =
+    variant === "operator"
+      ? (result.weakest?.category ?? null)
+      : category && hydrated
+        ? nextSkillToTrain(category, profile.skills)
+        : null;
+  const shared =
+    variant === "skill" && category
+      ? skillShareText(result.score, tier.label, title, category)
+      : operatorShareText(result.score, tier.label);
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
@@ -244,6 +360,22 @@ function Results({
           ) : null}
         </div>
         <p className="mt-3 text-sm text-muted">{tier.note}</p>
+        <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
+          {trainId ? (
+            <ButtonLink
+              href={`/skills/${trainId}`}
+              size="lg"
+              className="w-full sm:w-auto"
+              onClick={() => track("result:train")}
+            >
+              Train {CATEGORY_MAP[trainId].name}
+            </ButtonLink>
+          ) : null}
+          <ShareScoreButton text={shared.text} event="result:share" className="w-full sm:w-auto" />
+          <Button size="lg" variant="ghost" className="w-full sm:w-auto" onClick={replay}>
+            Retake
+          </Button>
+        </div>
       </div>
 
       {/* Headline stats */}
@@ -261,21 +393,15 @@ function Results({
 
       <PostScore mode={boardMode} score={result.score} durationMs={engine.durationMs} />
 
-      {/* Actions */}
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-        <ButtonLink href="/progress" variant="secondary" size="lg">View my progress</ButtonLink>
-        {variant === "operator" && result.weakest ? (
-          <ButtonLink href={`/skills/${result.weakest.category}`} size="lg">
-            Train {CATEGORY_MAP[result.weakest.category].name}
-          </ButtonLink>
-        ) : null}
-        <Button
+        <ButtonLink
+          href="/progress"
+          variant="secondary"
           size="lg"
-          variant={variant === "operator" ? "secondary" : "primary"}
-          onClick={replay}
+          onClick={() => track("result:progress")}
         >
-          Retake {title}
-        </Button>
+          View my progress
+        </ButtonLink>
         {backHref ? (
           <ButtonLink href={backHref} variant="ghost" size="lg">
             {backLabel ?? "Back"}
