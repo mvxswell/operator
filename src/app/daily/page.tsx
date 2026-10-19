@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ShareScoreButton } from "@/components/ShareScoreButton";
 import { Calculator } from "@/components/Calculator";
 import { ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { dailyQuestionFor } from "@/data";
 import { CATEGORY_MAP } from "@/lib/categories";
+import { consecutiveDailyStreak, nextScenarioLabel, shiftDateKey } from "@/lib/dailyStreak";
 import { dailyShareText } from "@/lib/shareResult";
 import { recordDaily, todayKey } from "@/lib/storage";
 import { track } from "@/lib/track";
@@ -38,11 +39,15 @@ export default function DailyPage() {
     [revealed, dateKey, question],
   );
 
-  const completedDays = hydrated ? Object.keys(profile.daily).length : 0;
-  const streak = useMemo(
-    () => (hydrated ? currentStreak(profile.daily, dateKey) : 0),
-    [hydrated, profile.daily, dateKey],
-  );
+  const heldStreak = hydrated ? consecutiveDailyStreak(profile.daily, shiftDateKey(dateKey, -1)) : 0;
+  const todayStreak = hydrated ? consecutiveDailyStreak(profile.daily, dateKey) : 0;
+  const streak = !hydrated
+    ? 0
+    : revealed
+      ? profile.daily[dateKey]
+        ? todayStreak
+        : heldStreak + 1
+      : heldStreak;
 
   const prettyDate = useMemo(
     () =>
@@ -54,28 +59,34 @@ export default function DailyPage() {
     [dateKey],
   );
 
+  const correct = selected === question.correctChoiceId;
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
-      <div className="brand-hero mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div>
-          <Eyebrow>Daily Decision</Eyebrow>
-          <h1 className="mt-2 text-2xl font-semibold tracking-[-0.01em] text-ink sm:text-3xl">
-            {prettyDate}
-          </h1>
-        </div>
-        {completedDays > 0 ? (
-          <div className="flex gap-6">
-            <div className="text-right">
-              <p className="tabular text-xl font-semibold text-ink">{streak}</p>
-              <p className="text-[10px] uppercase tracking-[0.13em] text-muted">day streak</p>
-            </div>
-            <div className="text-right">
-              <p className="tabular text-xl font-semibold text-ink">{completedDays}</p>
-              <p className="text-[10px] uppercase tracking-[0.13em] text-muted">completed</p>
-            </div>
-          </div>
-        ) : null}
+      <div className="brand-hero mb-6">
+        <Eyebrow>Daily Decision</Eyebrow>
+        <h1 className="mt-2 text-2xl font-semibold tracking-[-0.01em] text-ink sm:text-3xl">
+          {prettyDate}
+        </h1>
       </div>
+
+      {hydrated ? (
+        <Panel className="mb-6 flex items-center justify-between gap-4 px-4 py-4 sm:px-5">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">Streak</p>
+            <p className="mt-1 text-sm text-muted">
+              {revealed
+                ? streak === 1
+                  ? "Day 1 is in. Come back tomorrow."
+                  : "Today is done. Come back tomorrow to extend it."
+                : streak > 0
+                  ? "Answer today to keep it."
+                  : "Answer today to start one."}
+            </p>
+          </div>
+          <p className="tabular text-4xl font-semibold leading-none text-accent">{streak}</p>
+        </Panel>
+      ) : null}
 
       <Panel className="p-5 sm:p-7">
         <QuestionCard
@@ -93,15 +104,11 @@ export default function DailyPage() {
         <>
           <div
             className={`mt-4 rounded-xl border px-5 py-4 ${
-              selected === question.correctChoiceId
-                ? "border-pos/40 bg-pos-soft"
-                : "border-neg/40 bg-neg-soft"
+              correct ? "border-pos/40 bg-pos-soft" : "border-neg/40 bg-neg-soft"
             }`}
           >
             <p className="text-sm font-semibold text-ink">
-              {selected === question.correctChoiceId
-                ? "You made the best call."
-                : "Not the best call today."}
+              {correct ? "You made the best call." : "Not the best call today."}
             </p>
             <p className="mt-1 text-[13px] text-muted">
               This scenario tests {CATEGORY_MAP[question.category].name.toLowerCase()} at level{" "}
@@ -109,22 +116,15 @@ export default function DailyPage() {
             </p>
           </div>
 
+          <ReturnTomorrow streak={streak} />
+
           <div className="mt-4">
             <ShareScoreButton
-              text={
-                dailyShareText(
-                  dateKey,
-                  selected === question.correctChoiceId,
-                  question.difficulty,
-                  streak,
-                ).text
-              }
+              text={dailyShareText(dateKey, correct, question.difficulty, streak).text}
               event="daily:share"
               className="w-full sm:w-auto"
             />
           </div>
-
-          <Distribution question={question} selected={selected} />
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/quick" size="lg">
@@ -134,97 +134,37 @@ export default function DailyPage() {
               Take the Operator Test
             </ButtonLink>
           </div>
-
-          <p className="mt-6 text-[13px] text-faint">
-            A new scenario unlocks tomorrow. Everyone sees the same one each day.
-          </p>
         </>
       ) : (
         <p className="mt-5 text-center text-[13px] text-faint">
-          Answer to see the explanation and an illustrative response distribution.
+          Everyone sees the same scenario today. A new one unlocks tomorrow.
         </p>
       )}
     </div>
   );
 }
 
-function Distribution({
-  question,
-  selected,
-}: {
-  question: ReturnType<typeof dailyQuestionFor>;
-  selected: string | null;
-}) {
-  const letters = ["A", "B", "C", "D"];
+function ReturnTomorrow({ streak }: { streak: number }) {
+  const [when, setWhen] = useState("at midnight");
+
+  useEffect(() => {
+    const update = () => setWhen(nextScenarioLabel());
+    update();
+    const id = window.setInterval(update, 30_000);
+    return () => window.clearInterval(id);
+  }, []);
+
+  const headline = streak <= 1 ? "Day 1 streak started." : `${streak}-day streak.`;
+  const next = streak <= 1 ? "Come back tomorrow and make it 2." : `Come back tomorrow and make it ${streak + 1}.`;
 
   return (
-    <section className="mt-8">
-      <div className="flex items-baseline justify-between gap-3">
-        <h2 className="text-sm font-semibold uppercase tracking-[0.14em] text-faint">
-          Example response distribution
-        </h2>
-        <span className="rounded-md border border-line bg-surface-2 px-2 py-0.5 text-[10px] uppercase tracking-[0.1em] text-muted">
-          Simulated
-        </span>
-      </div>
-
-      <Panel className="mt-3 divide-y divide-line-soft">
-        {question.choices.map((choice, i) => {
-          const pct = question.distribution[choice.id] ?? 0;
-          const isCorrect = choice.id === question.correctChoiceId;
-          const isYours = choice.id === selected;
-
-          return (
-            <div key={choice.id} className="px-5 py-3.5">
-              <div className="flex items-baseline gap-3">
-                <span className="w-4 shrink-0 text-[12px] font-semibold text-faint">
-                  {letters[i]}
-                </span>
-                <p className="min-w-0 flex-1 truncate text-[13px] text-muted">{choice.text}</p>
-                {isYours ? (
-                  <span className="shrink-0 text-[10px] uppercase tracking-[0.1em] text-accent">
-                    Your pick
-                  </span>
-                ) : null}
-                <span className="tabular w-12 shrink-0 text-right text-sm font-semibold text-ink">
-                  {pct}%
-                </span>
-                <span className="w-3 shrink-0 text-pos">{isCorrect ? "✓" : ""}</span>
-              </div>
-              <div className="mt-2 h-1 overflow-hidden rounded-full bg-line-soft">
-                <div
-                  className={`h-full rounded-full transition-[width] duration-700 ease-out ${
-                    isCorrect ? "bg-pos" : "bg-line"
-                  }`}
-                  style={{ width: `${pct}%` }}
-                />
-              </div>
-            </div>
-          );
-        })}
-      </Panel>
-
-      <p className="mt-3 text-[12px] leading-relaxed text-faint">
-        Community percentages are simulated for this preview and do not represent real players.
-        They will be replaced by live results once accounts ship.
+    <section className="mt-4 rounded-xl border border-accent/30 bg-accent-soft px-5 py-5">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-accent">Tomorrow</p>
+      <h2 className="mt-2 text-xl font-semibold tracking-[-0.01em] text-ink">{headline}</h2>
+      <p className="mt-2 text-sm leading-relaxed text-muted">{next}</p>
+      <p className="mt-3 text-sm text-ink">
+        Next scenario unlocks <span className="tabular font-semibold text-accent">{when}</span>.
       </p>
     </section>
   );
-}
-
-/** Consecutive days completed, counting back from today. */
-function currentStreak(daily: Record<string, unknown>, today: string): number {
-  let streak = 0;
-  const cursor = new Date(`${today}T12:00:00`);
-  while (true) {
-    const key = [
-      cursor.getFullYear(),
-      String(cursor.getMonth() + 1).padStart(2, "0"),
-      String(cursor.getDate()).padStart(2, "0"),
-    ].join("-");
-    if (!daily[key]) break;
-    streak += 1;
-    cursor.setDate(cursor.getDate() - 1);
-  }
-  return streak;
 }

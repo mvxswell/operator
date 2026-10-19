@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import type { QuizSave } from "@/lib/quizProgress";
 import { PostScore } from "@/components/PostScore";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ShareScoreButton } from "@/components/ShareScoreButton";
@@ -13,10 +14,11 @@ import { CATEGORY_MAP } from "@/lib/categories";
 import { nextSkillToTrain } from "@/lib/nextSkill";
 import { operatorTier, type OperatorResult } from "@/lib/scoring";
 import { operatorShareText, skillShareText } from "@/lib/shareResult";
+import { setQuizGuard } from "@/lib/quizGuard";
 import { track } from "@/lib/track";
 import type { CategoryId, Question } from "@/lib/types";
 import { useProfile } from "@/lib/useProfile";
-import { useQuizEngine } from "@/lib/useQuizEngine";
+import { useQuizEngine, type QuizEngine } from "@/lib/useQuizEngine";
 
 export interface AssessmentProps {
   variant: "operator" | "skill";
@@ -40,7 +42,7 @@ export interface AssessmentProps {
 
 export function Assessment(props: AssessmentProps) {
   const { pool, length, restrictTo, variant, category } = props;
-  const engine = useQuizEngine({ pool, length, restrictTo });
+  const engine = useQuizEngine({ pool, length, restrictTo, persist: { variant, category } });
   const { start } = engine;
   const autoStarted = useRef(false);
 
@@ -55,9 +57,30 @@ export function Assessment(props: AssessmentProps) {
 
   useOperatorProgress(variant, engine);
 
+  const quizRunning = engine.phase === "question" || engine.phase === "feedback";
+  const quizQuestion = engine.current ? engine.current.index + 1 : 0;
+  const quizTotal = engine.total;
+
+  useEffect(() => {
+    if (!quizRunning || quizQuestion === 0) {
+      setQuizGuard(null);
+      return;
+    }
+    setQuizGuard({ question: quizQuestion, total: quizTotal });
+    return () => setQuizGuard(null);
+  }, [quizRunning, quizQuestion, quizTotal]);
+
   switch (engine.phase) {
     case "intro":
-      return <Intro {...props} total={engine.total} onStart={engine.start} />;
+      return (
+        <Intro
+          {...props}
+          total={engine.total}
+          pending={engine.pending}
+          onStart={engine.start}
+          onResume={engine.resume}
+        />
+      );
     case "complete":
       return <Results {...props} engine={engine} />;
     default:
@@ -65,7 +88,7 @@ export function Assessment(props: AssessmentProps) {
   }
 }
 
-type Engine = ReturnType<typeof useQuizEngine>;
+type Engine = QuizEngine;
 
 /* ---------------------------------- Intro --------------------------------- */
 
@@ -140,14 +163,29 @@ function Intro({
   personalBest,
   scoreLabel,
   total,
+  pending,
   onStart,
+  onResume,
   backHref,
   backLabel,
-}: AssessmentProps & { total: number; onStart: () => void }) {
+}: AssessmentProps & {
+  total: number;
+  pending: QuizSave | null;
+  onStart: () => void;
+  onResume: () => void;
+}) {
   useEffect(() => {
     const name = flowEvent(variant, category, "intro");
     if (name) track(name);
   }, [variant, category]);
+
+  // Resume uses the existing start event. A separate name would need a new
+  // allow-list entry and a matching privacy-page line.
+  const begin = (run: () => void) => {
+    const name = flowEvent(variant, category, "start");
+    if (name) track(name);
+    run();
+  };
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
@@ -174,22 +212,29 @@ function Intro({
         ) : null}
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-          <Button
-            size="lg"
-            onClick={() => {
-              const name = flowEvent(variant, category, "start");
-              if (name) track(name);
-              onStart();
-            }}
-          >
-            {personalBest > 0 ? `Beat ${personalBest}` : "Start"}
-          </Button>
+          {pending ? (
+            <>
+              <Button size="lg" onClick={() => begin(onResume)}>
+                Resume · question {pending.index + 1} of {total}
+              </Button>
+              <Button size="lg" variant="secondary" onClick={() => begin(onStart)}>
+                Start over
+              </Button>
+            </>
+          ) : (
+            <Button size="lg" onClick={() => begin(onStart)}>
+              {personalBest > 0 ? `Beat ${personalBest}` : "Start"}
+            </Button>
+          )}
           {backHref ? (
-            <ButtonLink href={backHref} variant="secondary" size="lg">
+            <ButtonLink href={backHref} variant={pending ? "ghost" : "secondary"} size="lg">
               {backLabel ?? "Back"}
             </ButtonLink>
           ) : null}
         </div>
+        {pending ? (
+          <p className="mt-3 text-[13px] text-faint">Saved on this device for 24 hours.</p>
+        ) : null}
       </div>
     </div>
   );
@@ -236,6 +281,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
         <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-muted">
           <span>
             Question {current.index + 1} of {total}
+            <span className="text-faint"> · saved</span>
           </span>
           <span className="flex items-center gap-3">
             {streak >= 3 ? (
