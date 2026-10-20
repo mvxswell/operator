@@ -94,11 +94,11 @@ test("share text is a score or daily line plus the canonical url", () => {
   const operator = share.operatorShareText(742, "Operator");
   assert.equal(
     operator.text,
-    "I scored 742 (Operator tier) on the Operator Test. Can you beat it?\nhttps://thinkoperator.com/operator/?ref=share",
+    "I scored 742 (Operator tier) on the Operator Test. Can you beat it?\nhttps://thinkoperator.com/operator/?ref=share&q=operator&score=742&utm_source=copy",
   );
   const skill = share.skillShareText(680, "Manager", "Financial Judgment", "financial");
   assert.match(skill.line, /680 \(Manager tier\) on the Financial Judgment test/);
-  assert.equal(skill.url, "https://thinkoperator.com/skills/financial/?ref=share");
+  assert.equal(skill.url, "https://thinkoperator.com/skills/financial/?ref=share&q=financial&score=680&utm_source=copy");
   const quick = share.quickShareText(24, "Sharp");
   assert.match(quick.line, /24 DPM \(Sharp tier\)/);
   assert.equal(
@@ -109,7 +109,7 @@ test("share text is a score or daily line plus the canonical url", () => {
     share.dailyShareText("2026-10-18", false, 3, 1).line,
     "Daily Decision Oct 18: ❌ L3, 1-day streak",
   );
-  assert.equal(share.dailyShareText("2026-10-18", true, 3, 4).url, "https://thinkoperator.com/daily/?ref=share");
+  assert.equal(share.dailyShareText("2026-10-18", true, 3, 4).url, "https://thinkoperator.com/daily/?ref=share&q=daily&score=1&utm_source=copy");
 });
 
 test("the next skill to train is an untried skill, then the lowest best", () => {
@@ -120,4 +120,35 @@ test("the next skill to train is an untried skill, then the lowest best", () => 
   );
   assert.equal(nextSkillToTrain("people", seen), "financial");
   assert.notEqual(nextSkillToTrain("financial", seen), "financial");
+});
+
+test("shared landing scores are bounded integers for the intended quiz only", () => {
+  for (const quiz of ["operator", "quick", ...CATEGORY_IDS]) {
+    assert.equal(share.sharedScore(`?ref=share&q=${quiz}&score=278`, quiz), 278);
+    assert.equal(share.sharedScore(`?ref=share&q=${quiz}&score=0`, quiz), 0);
+    for (const score of ["-1", "1001", "1e2", "2.5", "NaN", "Infinity", "", "01", "<script>alert(1)</script>", "9".repeat(100)]) {
+      assert.equal(share.sharedScore(`?ref=share&q=${quiz}&score=${encodeURIComponent(score)}`, quiz), null);
+    }
+  }
+  assert.equal(share.sharedScore("?ref=share&q=daily&score=1", "daily"), 1);
+  assert.equal(share.sharedScore("?ref=share&q=daily&score=2", "daily"), null);
+  assert.equal(share.sharedScore("?ref=share&q=quick&score=301", "quick"), null);
+  assert.equal(share.sharedScore("?ref=share&q=unknown&score=1", "unknown"), null);
+  for (const search of ["?q=operator&score=278", "?ref=share&q=quick&score=278", "?ref=share&q=operator&score=278&score=5", "?ref=share&q=operator&q=operator&score=278"]) {
+    assert.equal(share.sharedScore(search, "operator"), null);
+  }
+});
+
+test("each share channel keeps the quiz and score while setting attribution", () => {
+  const payload = share.operatorShareText(278, "Manager");
+  for (const channel of ["copy", "x", "linkedin", "native", "download"]) {
+    const url = new URL(share.channelUrl(payload.url, channel));
+    assert.equal(url.origin, "https://thinkoperator.com");
+    assert.equal(url.pathname, "/operator/");
+    assert.equal(url.searchParams.get("utm_source"), channel);
+    assert.equal(share.sharedScore(url.search, "operator"), 278);
+    assert.equal(events.funnelEventFromBody("text/plain", `share_click:${channel}`), `share_click:${channel}`);
+  }
+  for (const channel of ["copy", "x", "linkedin", "native"]) assert.equal(events.isFunnelEvent(`share_visit:${channel}`), true);
+  for (const event of ["share_click:email", "share_click:x:278", "share_visit:evil", "share_visit:copy\n278"]) assert.equal(events.isFunnelEvent(event), false);
 });

@@ -37,7 +37,8 @@ const supabaseOrigin = httpsOrigin("NEXT_PUBLIC_SUPABASE_URL", env.NEXT_PUBLIC_S
 const require = createRequire(import.meta.url);
 const nextBin = require.resolve("next/dist/bin/next");
 
-const build = spawnSync(process.execPath, [nextBin, "build"], {
+// Webpack also works on Windows hosts where Turbopack's CSS worker cannot start.
+const build = spawnSync(process.execPath, [nextBin, "build", "--webpack"], {
   stdio: "inherit",
   env,
 });

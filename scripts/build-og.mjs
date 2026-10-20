@@ -261,3 +261,11 @@ for (const card of cards) {
   await writeFile(stampPath, signature);
   console.log(`opengraph: ${card.slug} ${bytes.length} bytes`);
 }
+
+// Quiz previews are real PNGs included in the static export.
+const quizOut = join(root, "public/og/quizzes");
+await mkdir(quizOut, { recursive: true });
+const quizCards = { operator: "Operator Test", quick: "Quick Decisions", daily: "Daily Decision", ...SKILL_LABEL };
+for (const [quiz, title] of Object.entries(quizCards)) {
+  await writeFile(join(quizOut, quiz + ".png"), await guideCard(title, "Think you can beat it? · thinkoperator.com"));
+}

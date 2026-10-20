@@ -65,13 +65,23 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
 export function pageMetadata(path: string): Metadata {
   const page = PUBLIC_PAGES.find((entry) => entry.path === path);
   if (!page) throw new Error(`No metadata for ${path}`);
-  return { title: page.title, description: page.description };
+  return socialMetadata(page.title, page.description, path);
 }
 
 export function skillMetadata(name: string, description: string): Metadata {
+  const category = CATEGORIES.find((entry) => entry.name === name);
+  return socialMetadata(`${name} skill test — Think Operator`, description, `/skills/${category?.id ?? ""}`);
+}
+
+/** Explicit social copy and static previews without a runtime image route. */
+function socialMetadata(title: string, description: string, path: string): Metadata {
+  const quiz = path.split("/").at(-1)!;
+  const isQuiz = ["operator", "quick", "daily"].includes(quiz) || path.startsWith("/skills/");
+  const images = isQuiz ? [{ url: `/og/quizzes/${quiz}.png`, width: 1200, height: 630, alt: title }] : undefined;
   return {
-    title: `${name} skill test — Think Operator`,
-    description,
+    title, description,
+    openGraph: { title, description, siteName: "Think Operator", type: "website", url: absoluteUrl(path), ...(images ? { images } : {}) },
+    twitter: { card: "summary_large_image", title, description, ...(images ? { images } : {}) },
   };
 }
 

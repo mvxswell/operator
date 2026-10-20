@@ -36,7 +36,7 @@ const SKILL = FUNNEL_SKILLS.join("|");
 const GUIDE = FUNNEL_GUIDE_SLUGS.join("|");
 
 const FUNNEL_EVENT = new RegExp(
-  `^(?:operator:(?:intro|start|complete|q:(?:1|5|10|15|20)|abandon:(?:[1-9]|1\\d|20))|skill:(?:${SKILL}):(?:intro|start|complete)|result:(?:train|retake|share|post|progress|guide)|quick:(?:start|complete|again)|daily:(?:answer|share)|guide:(?:${GUIDE}):(?:scenario|cta))$`,
+  `^(?:share_click:(?:copy|x|linkedin|native|download)|share_visit:(?:copy|x|linkedin|native)|operator:(?:intro|start|complete|q:(?:1|5|10|15|20)|abandon:(?:[1-9]|1\\d|20))|skill:(?:${SKILL}):(?:intro|start|complete)|result:(?:train|retake|share|post|progress|guide)|quick:(?:start|complete|again)|daily:(?:answer|share)|guide:(?:${GUIDE}):(?:scenario|cta))$`,
 );
 
 export function isFunnelEvent(value: string): boolean {
