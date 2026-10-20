@@ -1,4 +1,5 @@
 import { CATEGORY_IDS } from "./categories";
+import { clearQuizSaves } from "./quizProgress";
 import type { CategoryId, Difficulty } from "./types";
 
 /**
@@ -231,6 +232,7 @@ class LocalProfileStore implements ProfileStore {
       try {
         window.localStorage.removeItem(STORAGE_KEY);
         window.localStorage.removeItem("operator.presence.visitor.v1");
+        clearQuizSaves();
         setStorageWarning("");
       } catch {
         setStorageWarning("Browser storage could not be cleared. Remove this site's data in your browser settings.");
