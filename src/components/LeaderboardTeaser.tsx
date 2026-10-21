@@ -34,7 +34,7 @@ export function LeaderboardTeaser() {
           <Eyebrow>Top 5</Eyebrow>
           <h2 className="mt-3 text-2xl font-semibold tracking-[-0.01em] text-ink">Operator Test</h2>
         </div>
-        <Link href="/leaderboard" className="text-[13px] font-medium text-accent">
+        <Link href="/leaderboard?quiz=operator" className="text-[13px] font-medium text-accent">
           Full leaderboard
         </Link>
       </div>
