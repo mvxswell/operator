@@ -5,7 +5,8 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react
 import type { QuizSave } from "@/lib/quizProgress";
 import { PostScore } from "@/components/PostScore";
 import { QuestionCard } from "@/components/QuestionCard";
-import { ShareScoreButton } from "@/components/ShareScoreButton";
+import { ShareResultCard } from "@/components/ShareResultCard";
+import { SharedChallenge } from "@/components/SharedChallenge";
 import { Calculator } from "@/components/Calculator";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
@@ -189,6 +190,7 @@ function Intro({
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <SharedChallenge quiz={variant === "skill" ? category ?? "" : "operator"} />
       <div className="brand-hero stack-rise">
         <Eyebrow>{total} questions · adaptive difficulty</Eyebrow>
         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
@@ -417,12 +419,13 @@ function Results({
               Train {CATEGORY_MAP[trainId].name}
             </ButtonLink>
           ) : null}
-          <ShareScoreButton text={shared.text} event="result:share" className="w-full sm:w-auto" />
           <Button size="lg" variant="ghost" className="w-full sm:w-auto" onClick={replay}>
             Retake
           </Button>
         </div>
       </div>
+
+      <ShareResultCard title={title} score={String(result.score)} verdict={tier.label} shared={shared} />
 
       {/* Headline stats */}
       <Panel className="mt-10 grid grid-cols-3 divide-x divide-line-soft">

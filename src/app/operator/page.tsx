@@ -7,7 +7,7 @@ import { newId, recordOperatorRun } from "@/lib/storage";
 import type { OperatorResult } from "@/lib/scoring";
 import { useProfile } from "@/lib/useProfile";
 
-export const OPERATOR_TEST_LENGTH = 20;
+const OPERATOR_TEST_LENGTH = 20;
 
 export default function OperatorTestPage() {
   const { profile } = useProfile();

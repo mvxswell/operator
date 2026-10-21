@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import { PostScore } from "@/components/PostScore";
-import { ShareScoreButton } from "@/components/ShareScoreButton";
+import { ShareResultCard } from "@/components/ShareResultCard";
+import { SharedChallenge } from "@/components/SharedChallenge";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { QUICK_QUESTIONS } from "@/data";
@@ -51,6 +52,7 @@ export default function QuickDecisionsPage() {
   useEffect(() => {
     if (game.phase !== "idle" && game.phase !== "done") return;
     const onKey = (e: KeyboardEvent) => {
+      if (e.defaultPrevented || e.repeat || (e.target instanceof HTMLElement && e.target.closest('button, a, input, textarea, select, [contenteditable="true"]'))) return;
       if (e.key === "Enter" || e.key === " ") {
         e.preventDefault();
         startRun();
@@ -80,6 +82,7 @@ export default function QuickDecisionsPage() {
 function IdleScreen({ best, onStart }: { best: number; onStart: () => void }) {
   return (
     <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <SharedChallenge quiz="quick" />
       <div className="brand-hero stack-rise">
         <Eyebrow>60 seconds · two choices</Eyebrow>
         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
@@ -325,10 +328,9 @@ function ResultsScreen({
           ) : null}
         </div>
         <p className="mt-3 text-sm text-muted">{tier.note}</p>
-        <div className="mt-8 flex justify-center">
-          <ShareScoreButton text={shared.text} event="result:share" className="w-full sm:w-auto" />
-        </div>
       </div>
+
+      <ShareResultCard title="Quick Decisions" score={`${result.dpm} DPM`} verdict={tier.label} shared={shared} />
 
       <Panel className="mt-9 grid grid-cols-2 divide-line-soft sm:grid-cols-4 sm:divide-x">
         <Cell label="Decisions made" value={result.made} />
