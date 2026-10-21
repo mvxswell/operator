@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { CATEGORIES } from "@/lib/categories";
 import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { fetchLeaderboard, rememberedNickname, subscribeNickname, type BoardRow } from "@/lib/leaderboard";
-import { formatDuration, isLeaderboardMode } from "@/lib/leaderboardRules";
+import { formatDuration, quizLabel, selectedQuiz } from "@/lib/leaderboardRules";
 import { Eyebrow } from "./ui";
 
 const TABS = [
@@ -18,8 +18,8 @@ const TABS = [
 export function LeaderboardBoard() {
   const router = useRouter();
   const params = useSearchParams();
-  const requested = params.get("mode") ?? "operator";
-  const mode = isLeaderboardMode(requested) ? requested : "operator";
+  const mode = selectedQuiz(params.get("quiz"), params.get("mode"));
+  const label = quizLabel(mode);
   const [loaded, setLoaded] = useState<{ mode: string; rows: BoardRow[]; error: string | null } | null>(null);
   const nickname = useSyncExternalStore(subscribeNickname, rememberedNickname, () => "");
 
@@ -65,24 +65,43 @@ export function LeaderboardBoard() {
   const mine = nickname.trim().toLowerCase();
   const caption =
     mode === "quick"
-      ? "Score is correct decisions per minute. Ties go to the faster run."
-      : "Highest score ranks first. Ties go to the faster run.";
+      ? "This board is only Quick Decisions. Score is correct decisions per minute. Ties go to the faster run."
+      : "This board is only this quiz. Highest score ranks first. Ties go to the faster run.";
+  const ownRow = rows?.find((row) => mine.length > 0 && row.nickname.trim().toLowerCase() === mine);
+
+  function openQuiz(quiz: string) {
+    if (quiz === mode) return;
+    router.replace(`/leaderboard?quiz=${quiz}`, { scroll: false });
+  }
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16">
-      <Eyebrow>Global board</Eyebrow>
-      <h1 className="mt-3 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">Leaderboard</h1>
+      <Eyebrow>Leaderboard</Eyebrow>
+      <h1 className="mt-3 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">{label}</h1>
       <p className="mt-3 max-w-xl text-[15px] leading-relaxed text-muted">{caption}</p>
 
-      <div className="-mx-4 mt-8 flex gap-1 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:px-0 [&::-webkit-scrollbar]:hidden">
+      <label className="mt-8 block sm:hidden">
+        <span className="sr-only">Quiz</span>
+        <select
+          value={mode}
+          onChange={(event) => openQuiz(event.target.value)}
+          className="h-12 w-full rounded-lg border border-line bg-surface-2 px-4 text-[15px] text-ink"
+        >
+          {TABS.map((tab) => (
+            <option key={tab.id} value={tab.id}>
+              {tab.label}
+            </option>
+          ))}
+        </select>
+      </label>
+
+      <div className="-mx-4 mt-8 hidden gap-1 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:flex sm:px-0 [&::-webkit-scrollbar]:hidden">
         {TABS.map((tab) => (
           <button
             key={tab.id}
             type="button"
-            onClick={() => {
-              if (tab.id === mode) return;
-              router.replace(`/leaderboard?mode=${tab.id}`, { scroll: false });
-            }}
+            aria-current={mode === tab.id ? "true" : undefined}
+            onClick={() => openQuiz(tab.id)}
             className={`shrink-0 rounded-md px-3 py-1.5 text-[13px] transition-colors ${
               mode === tab.id ? "bg-surface-2 text-ink" : "text-muted hover:text-ink"
             }`}
@@ -92,14 +111,21 @@ export function LeaderboardBoard() {
         ))}
       </div>
 
-      <div className="mt-4 overflow-x-auto rounded-xl border border-line bg-surface">
-        <table className="w-full min-w-[520px] text-left text-sm">
+      {ownRow ? (
+        <p className="mt-4 text-sm text-ink">
+          Your rank on this quiz is <span className="font-semibold text-accent">#{ownRow.rank}</span>.
+        </p>
+      ) : null}
+
+      <div className="mt-4 overflow-hidden rounded-xl border border-line bg-surface">
+        <table className="w-full text-left text-sm">
+          <caption className="sr-only">{label} leaderboard</caption>
           <thead className="border-b border-line text-[11px] uppercase tracking-[0.12em] text-muted">
             <tr>
-              <th className="px-4 py-3 font-medium">Rank</th>
-              <th className="px-4 py-3 font-medium">Nickname</th>
-              <th className="px-4 py-3 text-right font-medium">Score</th>
-              <th className="px-4 py-3 text-right font-medium">Time</th>
+              <th className="px-3 py-3 font-medium sm:px-4">Rank</th>
+              <th className="px-3 py-3 font-medium sm:px-4">Nickname</th>
+              <th className="px-3 py-3 text-right font-medium sm:px-4">Score</th>
+              <th className="px-3 py-3 text-right font-medium sm:px-4">Time</th>
             </tr>
           </thead>
           <tbody>
@@ -110,12 +136,12 @@ export function LeaderboardBoard() {
                   key={`${row.rank}-${row.nickname}`}
                   className={`border-b border-line-soft last:border-0 ${own ? "bg-accent-soft text-ink" : ""}`}
                 >
-                  <td className={`tabular px-4 py-3 ${own ? "font-semibold text-accent" : "text-muted"}`}>
+                  <td className={`tabular px-3 py-3 sm:px-4 ${own ? "font-semibold text-accent" : "text-muted"}`}>
                     {row.rank}
                   </td>
-                  <td className="px-4 py-3 text-ink">{row.nickname}</td>
-                  <td className="font-mono tabular px-4 py-3 text-right text-ink">{row.score}</td>
-                  <td className="tabular px-4 py-3 text-right text-muted">{formatDuration(row.durationMs)}</td>
+                  <td className="max-w-[9rem] truncate px-3 py-3 text-ink sm:max-w-none sm:px-4">{row.nickname}</td>
+                  <td className="font-mono tabular px-3 py-3 text-right text-ink sm:px-4">{row.score}</td>
+                  <td className="tabular px-3 py-3 text-right text-muted sm:px-4">{formatDuration(row.durationMs)}</td>
                 </tr>
               );
             })}

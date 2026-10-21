@@ -9,7 +9,7 @@ import {
   maxScoreForMode,
   minDurationForMode,
   nicknameError,
-  rankBestRuns,
+  rankQuizRuns,
   type RankInput,
 } from "./leaderboardRules";
 
@@ -211,7 +211,8 @@ function stubRows(mode: string): RankInput[] {
 }
 
 function stubBoard(mode: string, limit: number): BoardRow[] {
-  return rankBestRuns(stubRows(mode))
+  const tagged = stubRows(mode).map((row) => ({ ...row, quiz: mode }));
+  return rankQuizRuns(tagged, mode)
     .slice(0, limit)
     .map((row) => ({
       rank: row.rank,
@@ -238,7 +239,10 @@ function stubPost(input: {
     mode: input.mode,
   } as RankInput & { mode: string });
   window.localStorage.setItem(STUB_KEY, JSON.stringify(store));
-  const ranked = rankBestRuns(stubRows(input.mode));
+  const ranked = rankQuizRuns(
+    stubRows(input.mode).map((row) => ({ ...row, quiz: input.mode })),
+    input.mode,
+  );
   const mine = ranked.find((row) => row.nickname.trim().toLowerCase() === input.nickname.toLowerCase());
   const isBest = Boolean(
     mine && mine.score === input.score && mine.durationMs === input.durationMs && mine.createdAt === createdAt,
