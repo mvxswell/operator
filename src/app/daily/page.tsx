@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
-import { ShareScoreButton } from "@/components/ShareScoreButton";
+import { ShareResultCard } from "@/components/ShareResultCard";
+import { SharedChallenge } from "@/components/SharedChallenge";
 import { Calculator } from "@/components/Calculator";
 import { ButtonLink, Eyebrow, Panel } from "@/components/ui";
 import { dailyQuestionFor } from "@/data";
@@ -63,6 +64,7 @@ export default function DailyPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 sm:px-6 sm:py-16">
+      {!revealed ? <SharedChallenge quiz="daily" /> : null}
       <div className="brand-hero mb-6">
         <Eyebrow>Daily Decision</Eyebrow>
         <h1 className="mt-2 text-2xl font-semibold tracking-[-0.01em] text-ink sm:text-3xl">
@@ -98,7 +100,7 @@ export default function DailyPage() {
         />
       </Panel>
 
-      <Calculator />
+      {!revealed ? <Calculator /> : null}
 
       {revealed ? (
         <>
@@ -118,13 +120,9 @@ export default function DailyPage() {
 
           <ReturnTomorrow streak={streak} />
 
-          <div className="mt-4">
-            <ShareScoreButton
-              text={dailyShareText(dateKey, correct, question.difficulty, streak).text}
-              event="daily:share"
-              className="w-full sm:w-auto"
-            />
-          </div>
+          <ShareResultCard title={`Daily Decision · ${prettyDate}`} score={correct ? "1/1" : "0/1"}
+            verdict={correct ? "You made the best call." : "Not the best call today."}
+            shared={dailyShareText(dateKey, correct, question.difficulty, streak)} daily />
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <ButtonLink href="/quick" size="lg">
