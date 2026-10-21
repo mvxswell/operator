@@ -8,6 +8,7 @@ export function SiteFooter() {
       <Link href="/guides" className="ml-3 underline">
         Guides
       </Link>
+      <Link href="/tests/" className="ml-3 underline">Tests</Link>
       {leaderboardVisible() ? (
         <Link href="/leaderboard" className="ml-3 underline">
           Leaderboard
