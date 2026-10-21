@@ -6,17 +6,18 @@ All new content is emitted as static HTML with ordinary links. Guide pages use t
 
 The original guide registry remains the 15 guides recognized by the deployed event allow-list. Public pages use `src/content/guides/collection/index.ts` for the complete collection. New guide-specific events are dropped by the existing allow-list; no Worker or Supabase changes are required.
 
-## Current build blocker
+## Build verification
 
-The normal full static build is not green on the requested base (`bfdeda1`). On this Windows host, the existing Turbopack CSS subprocess fails. Running the production build step with Webpack compiles the content but fails TypeScript because `src/app/operator/page.tsx` exports `OPERATOR_TEST_LENGTH`, which Next.js rejects as a page export. That one-line fix is in PR #6, whose files are protected by the task scope. No PR #6 files, Worker files, or Supabase files were changed. No type-check suppression or build bypass was committed.
+Verified October 21, 2026 after merging `origin/main` at `119aafb` (merged PR #6). The normal `npm run build:pages` command passes, including TypeScript, static generation, payload flattening, and export security processing for 67 HTML files. The PR diff against main does not modify any PR #6 file, Worker file, or Supabase file.
 
-A preview HTML snapshot passed the 48-page SEO audit, including all 46 Article graphs, canonical URLs, unique metadata, generated PNG dimensions, sitemap/llms coverage, and crawl paths from home. This is validation of initial HTML from the development renderer, not a claim that the full static build passed. Browser previews checked the topic hub, article scenario, quiz destination, and 390px mobile layouts.
+The audit of the actual `out/` export passes for all 48 editorial pages, including 46 Article graphs, unique metadata, canonical URLs, generated PNG dimensions, sitemap/llms coverage, and crawl paths from home. Browser checks against the exported files verify the topic hub, article scenario interaction, one-click quiz launch, and desktop/390px mobile layouts. Screenshots were refreshed from the production export.
 
 ## Validation
 
-- `npm test`: editorial format, 35-guide topic coverage, matching quiz targets, and llms.txt coverage alongside existing tests.
-- `npm run lint`
-- `node scripts/check-editorial-export.cjs`: inspect the actual `out/` HTML for metadata, Article JSON-LD, canonicals, OG image dimensions, sitemap entries, llms.txt entries, and reachability from home without JavaScript. Run after a successful static build.
+- `npm run build:pages`: passes; all routes static or SSG, 67 HTML files secured.
+- `npm test`: all 24 tests pass, including editorial format, 35-guide topic coverage, matching quiz targets, and llms.txt coverage alongside existing tests.
+- `npm run lint`: passes.
+- `node scripts/check-editorial-export.cjs`: inspect the actual `out/` HTML for metadata, Article JSON-LD, canonicals, OG image dimensions, sitemap entries, llms.txt entries, and reachability from home without JavaScript. Passed against the full production export.
 
 ## New URLs
 
