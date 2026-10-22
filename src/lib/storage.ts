@@ -1,3 +1,5 @@
+import { dismissCelebrations, queueBadgeCelebrations } from "./badgeCelebration";
+import { marksAfterRank, marksAfterShare, newBadgeIds, reviveMarks, type BadgeMarks } from "./badges";
 import { CATEGORY_IDS } from "./categories";
 import { clearQuizSaves } from "./quizProgress";
 import type { CategoryId, Difficulty } from "./types";
@@ -62,6 +64,8 @@ export interface Profile {
   quick: { bestDpm: number; runs: QuickRun[]; recentQuestionIds: string[] };
   skills: Record<CategoryId, { best: number; runs: SkillRun[] }>;
   daily: Record<string, DailyRecord>;
+  /** Facts saved runs do not already contain: a shared result, and a leaderboard rank. */
+  marks: BadgeMarks;
 }
 
 /** Every category always has an entry, so new skills cannot produce holes. */
@@ -82,6 +86,7 @@ export function emptyProfile(): Profile {
     quick: { bestDpm: 0, runs: [], recentQuestionIds: [] },
     skills: buildSkills(),
     daily: {},
+    marks: { sharedAt: null, bestRank: null },
   };
 }
 
@@ -170,6 +175,7 @@ export function reviveProfile(raw: unknown): Profile {
     // Merge onto the full category map so a newly added skill does not crash.
     skills,
     daily,
+    marks: reviveMarks(parsed.marks),
   };
 }
 
@@ -227,6 +233,7 @@ class LocalProfileStore implements ProfileStore {
   }
 
   clear(): void {
+    dismissCelebrations();
     this.cache = emptyProfile();
     if (typeof window !== "undefined") {
       try {
@@ -272,6 +279,13 @@ function trim<T>(runs: T[]): T[] {
   return runs.slice(0, MAX_RUNS_KEPT);
 }
 
+function commitProfile(before: Profile, next: Profile): Profile {
+  profileStore.save(next);
+  const after = typeof window === "undefined" ? reviveProfile(next) : profileStore.load();
+  queueBadgeCelebrations(newBadgeIds(before, after));
+  return after;
+}
+
 export function recordOperatorRun(run: OperatorRun): Profile {
   const profile = profileStore.load();
   const next: Profile = {
@@ -281,8 +295,7 @@ export function recordOperatorRun(run: OperatorRun): Profile {
       runs: trim([run, ...profile.operator.runs.filter((item) => item.id !== run.id)]),
     },
   };
-  profileStore.save(next);
-  return next;
+  return commitProfile(profile, next);
 }
 
 export function recordQuickRun(run: QuickRun): Profile {
@@ -295,8 +308,7 @@ export function recordQuickRun(run: QuickRun): Profile {
       runs: trim([run, ...profile.quick.runs.filter((item) => item.id !== run.id)]),
     },
   };
-  profileStore.save(next);
-  return next;
+  return commitProfile(profile, next);
 }
 
 export function rememberQuickQuestion(id: string): void {
@@ -319,8 +331,7 @@ export function recordSkillRun(run: SkillRun): Profile {
       },
     },
   };
-  profileStore.save(next);
-  return next;
+  return commitProfile(profile, next);
 }
 
 export function recordDaily(record: DailyRecord): Profile {
@@ -329,8 +340,21 @@ export function recordDaily(record: DailyRecord): Profile {
     ...profile,
     daily: { ...profile.daily, [record.date]: record },
   };
-  profileStore.save(next);
-  return next;
+  return commitProfile(profile, next);
+}
+
+export function recordResultShared(at: string = new Date().toISOString()): Profile {
+  const before = profileStore.load();
+  const marks = marksAfterShare(before.marks, at);
+  if (marks === before.marks) return before;
+  return commitProfile(before, { ...before, marks });
+}
+
+export function recordBestRank(rank: number): Profile {
+  const before = profileStore.load();
+  const marks = marksAfterRank(before.marks, rank);
+  if (marks === before.marks) return before;
+  return commitProfile(before, { ...before, marks });
 }
 
 export function resetProfile(): void {

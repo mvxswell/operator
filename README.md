@@ -12,6 +12,7 @@ Then open http://localhost:3000.
 ## User readiness
 
 `/progress` shows browser-local training history, trends, streaks and backups.
+`/badges` shows badges earned in this browser from saved quizzes, streaks, a top-10 finish, and sharing a result.
 `/privacy` explains storage and data controls. Accounts and cloud sync are not active.
 See [security audit](docs/SECURITY-AUDIT.md) and [launch plan](docs/LAUNCH-PLAN.md).
 Website visit metrics are in [Cloudflare Web Analytics](docs/ANALYTICS.md); the online badge is a separate service.
@@ -111,8 +112,10 @@ wrong answers, mashing scores well below real play.
 ## Storage
 
 Everything is in `localStorage` under `operator.profile.v1`: Operator best and
-recent runs, Quick Decisions best DPM and recent runs, per-skill bests, and daily
-completions. The payload is versioned and revived defensively — an unknown
+recent runs, Quick Decisions best DPM and recent runs, per-skill bests, daily
+completions, and badge marks (the first time a result was shared, and the best
+leaderboard rank returned to this browser). Badges are calculated from that
+payload. The payload is versioned and revived defensively — an unknown
 version resets rather than crashes.
 
 ## Not built yet

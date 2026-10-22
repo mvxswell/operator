@@ -1,5 +1,11 @@
 /** The preview and downloaded PNG use the same pixels, entirely in the browser. */
-export async function drawResult(canvas: HTMLCanvasElement, title: string, score: string, verdict: string) {
+export async function drawResult(
+  canvas: HTMLCanvasElement,
+  title: string,
+  score: string,
+  verdict: string,
+  prompt = "Think you can beat it?",
+) {
   await document.fonts.ready;
   const font = getComputedStyle(document.body).fontFamily;
   canvas.width = 1200;
@@ -33,7 +39,7 @@ export async function drawResult(canvas: HTMLCanvasElement, title: string, score
   ctx.fillText(verdict, 64, 440);
   ctx.fillStyle = "#8b929c";
   ctx.font = `400 24px ${font}`;
-  ctx.fillText("Think you can beat it?", 64, 536);
+  ctx.fillText(prompt, 64, 536);
   ctx.fillStyle = "#f2b441";
   ctx.textAlign = "right";
   ctx.fillText("thinkoperator.com", 1136, 536);

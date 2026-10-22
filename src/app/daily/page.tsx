@@ -131,6 +131,9 @@ export default function DailyPage() {
             <ButtonLink href="/operator" variant="secondary" size="lg">
               Take the Operator Test
             </ButtonLink>
+            <ButtonLink href="/badges" variant="ghost" size="lg">
+              Badges
+            </ButtonLink>
           </div>
         </>
       ) : (

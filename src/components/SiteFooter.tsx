@@ -13,6 +13,9 @@ export function SiteFooter() {
           Leaderboard
         </Link>
       ) : null}
+      <Link href="/badges" className="ml-3 underline">
+        Badges
+      </Link>
       <Link href="/progress" className="ml-3 underline">
         My progress
       </Link>

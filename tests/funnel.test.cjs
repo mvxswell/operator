@@ -54,6 +54,9 @@ test("funnel names match the published skills and guides and reject anything els
     "quick:again",
     "daily:answer",
     "daily:share",
+    "badge_earned:first-call",
+    "badge_earned:streak-30",
+    "badge_earned:top-ten",
   ]) {
     assert.equal(events.isFunnelEvent(name), true, name);
   }
@@ -70,6 +73,9 @@ test("funnel names match the published skills and guides and reject anything els
     "guide:missing:cta",
     "daily:answer:correct",
     "result:share:742",
+    "badge_earned:nope",
+    "badge_earned:first-call:742",
+    "badge_earned:top-ten:1",
     "00000000-0000-4000-8000-000000000000",
   ]) {
     assert.equal(events.isFunnelEvent(name), false, name);

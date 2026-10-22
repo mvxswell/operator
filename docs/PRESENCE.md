@@ -17,7 +17,7 @@ Do not put a Cloudflare API token in the web app, repository, `.env` committed t
 
 ## Funnel counts (`POST /e`)
 
-`POST /e` accepts `Content-Type: text/plain` and a body that is exactly one event name from `src/lib/funnelEvents.ts` (80 characters or fewer). The Worker increments `counters(day, event, n)` in the same Durable Object, using the UTC date as `day`. The request does not include a visitor ID. The IP address is used only as the rate-limit key and is not written into storage.
+`POST /e` accepts `Content-Type: text/plain` and a body that is exactly one event name from `src/lib/funnelEvents.ts` (80 characters or fewer). The Worker increments `counters(day, event, n)` in the same Durable Object, using the UTC date as `day`. The request does not include a visitor ID. The IP address is used only as the rate-limit key and is not written into storage. Adding a name, including `badge_earned:<id>`, requires redeploying this Worker before the site that sends it is published. Until then `/e` rejects the new name and stores nothing. The badge event is the id only, never a score or rank.
 
 The browser helper is `src/lib/track.ts`. It does not run during `next dev`. Production builds send to the origin of `NEXT_PUBLIC_PRESENCE_URL` (the `/online` URL already set by `npm run build:pages`) with the path replaced by `/e`. Counts stay at zero until this Worker is deployed with the `EVENTS_RATE` binding in `wrangler.jsonc`.
 

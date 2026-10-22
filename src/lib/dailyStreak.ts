@@ -25,6 +25,17 @@ export function consecutiveDailyStreak(daily: Record<string, unknown>, from: str
   return streak;
 }
 
+/** Longest run of consecutive answered days anywhere in saved history. */
+export function longestDailyStreak(daily: Record<string, unknown>): number {
+  let best = 0;
+  for (const date of Object.keys(daily)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) continue;
+    const length = consecutiveDailyStreak(daily, date);
+    if (length > best) best = length;
+  }
+  return best;
+}
+
 /** Local time until the next midnight, for the daily return line. */
 export function nextScenarioLabel(now: Date = new Date()): string {
   const next = new Date(now);

@@ -451,6 +451,9 @@ function Results({
         >
           View my progress
         </ButtonLink>
+        <ButtonLink href="/badges" variant="ghost" size="lg">
+          Badges
+        </ButtonLink>
         {backHref ? (
           <ButtonLink href={backHref} variant="ghost" size="lg">
             {backLabel ?? "Back"}

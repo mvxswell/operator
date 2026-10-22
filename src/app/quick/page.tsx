@@ -362,6 +362,9 @@ function ResultsScreen({
         <ButtonLink href="/operator" variant="secondary" size="lg">
           Take the Operator Test
         </ButtonLink>
+        <ButtonLink href="/badges" variant="ghost" size="lg">
+          Badges
+        </ButtonLink>
       </div>
 
       {missedIds.length ? <MissedReview ids={missedIds} /> : null}

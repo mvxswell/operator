@@ -79,6 +79,7 @@ async function handleOnline(request, env, headers) {
 /**
  * POST /e
  * Body: text/plain event name from src/lib/funnelEvents.ts, at most 80 characters.
+ * badge_earned:<id> counts a badge and sends no score or rank.
  * Stores one increment in counters(day, event, n) for the UTC day.
  * Does not read or store a visitor id, IP, score, or answer.
  * Rate limit: EVENTS_RATE, separate from the online-badge limiter.

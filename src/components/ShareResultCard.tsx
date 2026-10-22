@@ -3,34 +3,63 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { channelUrl, copyWithSelection, type ShareChannel } from "@/lib/shareResult";
 import { drawResult } from "@/lib/resultCanvas";
+import { recordResultShared } from "@/lib/storage";
 import { track } from "@/lib/track";
 import { Button } from "./ui";
 
 const subscribeToCapabilities = () => () => {};
 
-export function ShareResultCard({ title, score, verdict, shared, daily = false }: {
-  title: string; score: string; verdict: string;
-  shared: { line: string; url: string }; daily?: boolean;
+export function ShareResultCard({
+  title,
+  score,
+  verdict,
+  shared,
+  daily = false,
+  shareKind,
+  heading,
+  blurb,
+  prompt,
+  headingId,
+  downloadName = "thinkoperator-result.png",
+}: {
+  title: string;
+  score: string;
+  verdict: string;
+  shared: { line: string; url: string };
+  daily?: boolean;
+  /** Quiz results count as a share. A badge card does not earn Challenger by itself. */
+  shareKind?: "result" | "daily" | "badge";
+  heading?: string;
+  blurb?: string;
+  prompt?: string;
+  headingId?: string;
+  downloadName?: string;
 }) {
+  const kind = shareKind ?? (daily ? "daily" : "result");
+  const canvasPrompt = prompt ?? "Think you can beat it?";
   const canvas = useRef<HTMLCanvasElement>(null);
   const [file, setFile] = useState<File | null>(null);
   const native = useSyncExternalStore(subscribeToCapabilities, () => typeof navigator.share === "function", () => false);
   const [status, setStatus] = useState("");
   useEffect(() => {
     let active = true;
-    if (canvas.current) void drawResult(canvas.current, title, score, verdict).then(() => {
+    if (canvas.current) void drawResult(canvas.current, title, score, verdict, canvasPrompt).then(() => {
       if (!active) return;
       canvas.current?.toBlob((blob) => {
-        if (active && blob) setFile(new File([blob], "thinkoperator-result.png", { type: "image/png" }));
+        if (active && blob) setFile(new File([blob], downloadName, { type: "image/png" }));
         else if (active) setStatus("Image unavailable. You can still share your link.");
       }, "image/png");
     }).catch(() => { if (active) setStatus("Image unavailable. You can still share your link."); });
     return () => { active = false; };
-  }, [title, score, verdict]);
+  }, [title, score, verdict, canvasPrompt, downloadName]);
 
   const clicked = (channel: ShareChannel) => {
-    track(daily ? "daily:share" : "result:share");
+    if (kind === "daily") track("daily:share");
+    else if (kind === "result") track("result:share");
     track(`share_click:${channel}`);
+  };
+  const markShared = () => {
+    if (kind !== "badge") recordResultShared();
   };
   const socialText = daily ? `${shared.line}. Think you can beat it?` : shared.line;
   const x = new URL("https://twitter.com/intent/tweet");
@@ -48,8 +77,12 @@ export function ShareResultCard({ title, score, verdict, shared, daily = false }
       if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(url);
       else if (!copyWithSelection(url)) throw new Error("clipboard unavailable");
       setStatus("Link copied.");
+      markShared();
     } catch {
-      setStatus(copyWithSelection(url) ? "Link copied." : "Could not copy. Select the link below to copy it.");
+      if (copyWithSelection(url)) {
+        setStatus("Link copied.");
+        markShared();
+      } else setStatus("Could not copy. Select the link below to copy it.");
     }
   }
 
@@ -57,21 +90,25 @@ export function ShareResultCard({ title, score, verdict, shared, daily = false }
     clicked("native");
     const data: ShareData = { title, text: socialText, url: channelUrl(shared.url, "native") };
     if (file && navigator.canShare?.({ files: [file] })) data.files = [file];
-    try { await navigator.share(data); setStatus("Result shared."); }
-    catch (error) {
+    try {
+      await navigator.share(data);
+      setStatus(kind === "badge" ? "Badge shared." : "Result shared.");
+      markShared();
+    } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError")) setStatus("Sharing unavailable. Use Copy link or Download image.");
     }
   }
 
-  return <section className="mt-8 rounded-xl border border-line bg-surface p-4 sm:p-5" aria-label="Share your result">
-    <h2 className="text-sm font-semibold text-ink">Share your result</h2>
-    <p className="mt-1 text-sm text-muted">Challenge a friend to make the better call.</p>
+  return <section className="mt-8 rounded-xl border border-line bg-surface p-4 sm:p-5" aria-label={heading ?? "Share your result"}>
+    <h2 id={headingId} tabIndex={headingId ? -1 : undefined} className="text-sm font-semibold text-ink outline-none">{heading ?? "Share your result"}</h2>
+    <p className="mt-1 text-sm text-muted">{blurb ?? "Challenge a friend to make the better call."}</p>
     <canvas ref={canvas} role="img" aria-label={`${title}: ${score}. ${verdict}. thinkoperator.com`}
       className="mt-4 aspect-[1200/630] w-full rounded-lg border border-line" />
     <div className="mt-4 grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
       <Button variant="secondary" disabled={!file} onClick={() => {
         if (!file) return;
         clicked("download");
+        markShared();
         const url = URL.createObjectURL(file);
         const a = document.createElement("a");
         a.href = url; a.download = file.name; a.click();
@@ -79,8 +116,8 @@ export function ShareResultCard({ title, score, verdict, shared, daily = false }
         setStatus("Image downloaded.");
       }}>Download image</Button>
       <Button variant="secondary" onClick={() => { void copy(); }}>Copy link</Button>
-      <a href={x.toString()} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => clicked("x")}>Share to X</a>
-      <a href={linkedin.toString()} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => clicked("linkedin")}>Share to LinkedIn</a>
+      <a href={x.toString()} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => { clicked("x"); markShared(); }}>Share to X</a>
+      <a href={linkedin.toString()} target="_blank" rel="noopener noreferrer" className={linkClass} onClick={() => { clicked("linkedin"); markShared(); }}>Share to LinkedIn</a>
       {native ? <Button variant="secondary" onClick={() => { void share(); }}>Share…</Button> : null}
     </div>
     <p role="status" aria-live="polite" className="mt-2 text-xs text-muted">{status}</p>

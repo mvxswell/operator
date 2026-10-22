@@ -43,6 +43,12 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
       "Your Operator Score trend, skill bests, streaks, and recent sessions, stored in this browser.",
   },
   {
+    path: "/badges",
+    title: "Badges — Think Operator",
+    description:
+      "Badges earned in this browser for finishing quizzes, reaching a score, keeping a daily streak, placing in the top 10, and sharing a result.",
+  },
+  {
     path: "/guides",
     title: "Guides — Think Operator",
     description:

@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import Script from "next/script";
+import { BadgeEarned } from "@/components/BadgeEarned";
 import { Nav } from "@/components/Nav";
 import { StorageNotice } from "@/components/StorageNotice";
 import { HOME } from "@/lib/site";
@@ -46,6 +47,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         <Nav />
         <StorageNotice />
         <main id="main-content" className="flex-1">{children}</main>
+        <BadgeEarned />
         {process.env.GITHUB_PAGES === "true" && (
           <Script
             src="https://static.cloudflareinsights.com/beacon.min.js"
