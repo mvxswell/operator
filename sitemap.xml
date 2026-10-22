@@ -31,6 +31,11 @@
 <priority>0.8</priority>
 </url>
 <url>
+<loc>https://thinkoperator.com/badges/</loc>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
+<url>
 <loc>https://thinkoperator.com/guides/</loc>
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
