@@ -52,7 +52,7 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
     path: "/leaderboard",
     title: "Leaderboard — Think Operator",
     description:
-      "Global scores for the Operator Test, Quick Decisions, and each skill test. Post a nickname. No account required.",
+      "A separate board for the Operator Test, Quick Decisions, and each skill test. Highest score wins. A faster finish breaks a tie.",
   },
   {
     path: "/privacy",
@@ -73,15 +73,30 @@ export function skillMetadata(name: string, description: string): Metadata {
   return socialMetadata(`${name} skill test — Think Operator`, description, `/skills/${category?.id ?? ""}`);
 }
 
+/** Same line as src/app/opengraph-image.alt.txt, the image /privacy used before explicit social metadata. */
+const BRAND_SHARE_ALT =
+  "Think Operator — Test your judgment. Train your weaknesses. Make better decisions faster.";
+
+function shareImage(url: string, alt: string) {
+  return [{ url, width: 1200, height: 630, alt }];
+}
+
 /** Explicit social copy and static previews without a runtime image route. */
 function socialMetadata(title: string, description: string, path: string): Metadata {
   const quiz = path.split("/").at(-1)!;
   const isQuiz = ["operator", "quick", "daily"].includes(quiz) || path.startsWith("/skills/");
-  const images = isQuiz ? [{ url: `/og/quizzes/${quiz}.png`, width: 1200, height: 630, alt: title }] : undefined;
+  // Quiz pages use their preview. /privacy sets Open Graph on the page, which drops the
+  // root opengraph-image file, so the brand image is attached here. Other pages still
+  // inherit that file from their layout and must not list it a second time.
+  const images = isQuiz ? shareImage(`/og/quizzes/${quiz}.png`, title) : undefined;
+  const privacyImage = path === "/privacy" ? shareImage("/opengraph-image.png", BRAND_SHARE_ALT) : undefined;
+  const privacyTwitter = path === "/privacy" ? shareImage("/twitter-image.png", BRAND_SHARE_ALT) : undefined;
+  const openGraphImages = images ?? privacyImage;
+  const twitterImages = images ?? privacyTwitter;
   return {
     title, description,
-    openGraph: { title, description, siteName: "Think Operator", type: "website", url: absoluteUrl(path), ...(images ? { images } : {}) },
-    twitter: { card: "summary_large_image", title, description, ...(images ? { images } : {}) },
+    openGraph: { title, description, siteName: "Think Operator", type: "website", url: absoluteUrl(path), ...(openGraphImages ? { images: openGraphImages } : {}) },
+    twitter: { card: "summary_large_image", title, description, ...(twitterImages ? { images: twitterImages } : {}) },
   };
 }
 

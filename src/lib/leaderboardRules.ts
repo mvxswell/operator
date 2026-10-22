@@ -1,6 +1,10 @@
-import { CATEGORY_IDS } from "./categories";
+import { CATEGORIES, CATEGORY_IDS } from "./categories";
 
-/** Modes the leaderboard accepts. Skill slugs match the quiz categories. */
+/**
+ * Quizzes with a public board. Skill slugs match the quiz categories.
+ * Daily Decision is not a board: it is one shared scenario and a private streak,
+ * and the privacy page does not publish how other people answered.
+ */
 export const LEADERBOARD_MODES = ["operator", "quick", ...CATEGORY_IDS] as const;
 
 export type LeaderboardMode = (typeof LEADERBOARD_MODES)[number];
@@ -14,6 +18,31 @@ const STANDARD_MAX = 1000;
 
 export function isLeaderboardMode(value: string): value is LeaderboardMode {
   return (LEADERBOARD_MODES as readonly string[]).includes(value);
+}
+
+/**
+ * Board selected by the leaderboard page.
+ * `quiz` is the public query param. `mode` still works so older links keep opening the same board.
+ */
+export function selectedQuiz(
+  quiz: string | null | undefined,
+  mode: string | null | undefined,
+): LeaderboardMode {
+  if (quiz && isLeaderboardMode(quiz)) return quiz;
+  if (mode && isLeaderboardMode(mode)) return mode;
+  return "operator";
+}
+
+export function quizLabel(quiz: string): string {
+  if (quiz === "operator") return "Operator Test";
+  if (quiz === "quick") return "Quick Decisions";
+  return CATEGORIES.find((category) => category.id === quiz)?.name ?? "Operator Test";
+}
+
+/** Link to one quiz's board. Unknown slugs open the Operator Test board. */
+export function quizBoardPath(quiz: string): string {
+  const slug = isLeaderboardMode(quiz) ? quiz : "operator";
+  return `/leaderboard?quiz=${slug}`;
 }
 
 /** Inclusive upper bound posted scores may use for a mode. */
@@ -81,12 +110,21 @@ export function compareRank(a: RankInput, b: RankInput): number {
 }
 
 /** One best run per nickname, then ranked. */
-export function rankBestRuns(rows: readonly RankInput[]): (RankInput & { rank: number })[] {
-  const best = new Map<string, RankInput>();
+export function rankBestRuns<T extends RankInput>(rows: readonly T[]): (T & { rank: number })[] {
+  const best = new Map<string, T>();
   for (const row of rows) {
     const key = row.nickname.trim().toLowerCase();
     const current = best.get(key);
     if (!current || compareRank(row, current) < 0) best.set(key, row);
   }
   return [...best.values()].sort(compareRank).map((row, index) => ({ ...row, rank: index + 1 }));
+}
+
+/** Best run per nickname on one quiz. Other quizzes are left out. */
+export function rankQuizRuns<T extends RankInput & { quiz: string }>(
+  rows: readonly T[],
+  quiz: string,
+): (T & { rank: number })[] {
+  if (!isLeaderboardMode(quiz)) return [];
+  return rankBestRuns(rows.filter((row) => row.quiz === quiz));
 }
