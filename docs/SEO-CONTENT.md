@@ -8,14 +8,14 @@ The original guide registry remains the 15 guides recognized by the deployed eve
 
 ## Build verification
 
-Verified October 21, 2026 after merging `origin/main` at `119aafb` (merged PR #6). The normal `npm run build:pages` command passes, including TypeScript, static generation, payload flattening, and export security processing for 67 HTML files. The PR diff against main does not modify any PR #6 file, Worker file, or Supabase file.
+Verified October 21, 2026 after merging `origin/main` at `05c5844` (share cards and per-quiz leaderboards). The normal `npm run build:pages` command passes, including TypeScript, static generation, payload flattening, and export security processing for 67 HTML files. The PR diff against main does not modify any PR #6 file, Worker file, or Supabase file.
 
 The audit of the actual `out/` export passes for all 48 editorial pages, including 46 Article graphs, unique metadata, canonical URLs, generated PNG dimensions, sitemap/llms coverage, and crawl paths from home. Browser checks against the exported files verify the topic hub, article scenario interaction, one-click quiz launch, and desktop/390px mobile layouts. Screenshots were refreshed from the production export.
 
 ## Validation
 
 - `npm run build:pages`: passes; all routes static or SSG, 67 HTML files secured.
-- `npm test`: all 24 tests pass, including editorial format, 35-guide topic coverage, matching quiz targets, and llms.txt coverage alongside existing tests.
+- `npm test`: all 28 tests pass, including editorial format, 35-guide topic coverage, matching quiz targets, and llms.txt coverage alongside existing tests.
 - `npm run lint`: passes.
 - `node scripts/check-editorial-export.cjs`: inspect the actual `out/` HTML for metadata, Article JSON-LD, canonicals, OG image dimensions, sitemap entries, llms.txt entries, and reachability from home without JavaScript. Passed against the full production export.
 
