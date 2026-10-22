@@ -39,6 +39,13 @@ export function quickShareText(dpm: number, tierLabel: string): { line: string; 
   );
 }
 
+/** Badge link. No score query — the page shows how to earn it. */
+export function badgeShareText(name: string, id: string): { line: string; url: string; text: string } {
+  const url = `${absoluteUrl("/badges")}#${encodeURIComponent(id)}`;
+  const line = `I earned the ${name} badge on Think Operator.`;
+  return { line, url, text: `${line}\n${url}` };
+}
+
 /** Wordle-style daily line, for example "Daily Decision Oct 18: ✅ L3, 4-day streak". */
 export function dailyShareText(
   dateKey: string,

@@ -17,6 +17,7 @@ const LINKS = [
   ...(leaderboardVisible()
     ? [{ href: "/leaderboard", label: "Leaderboard", compact: "Leaderboard" }]
     : []),
+  { href: "/badges", label: "Badges", compact: "Badges" },
   { href: "/progress", label: "My progress", compact: "Progress" },
 ];
 

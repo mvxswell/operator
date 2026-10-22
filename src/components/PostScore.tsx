@@ -12,6 +12,7 @@ import {
   type PostResult,
 } from "@/lib/leaderboard";
 import { formatDuration, nicknameError, quizBoardPath, quizLabel } from "@/lib/leaderboardRules";
+import { recordBestRank } from "@/lib/storage";
 import { track } from "@/lib/track";
 import { Button } from "./ui";
 
@@ -46,7 +47,9 @@ export function PostScore({
     setPending(true);
     setError(null);
     try {
-      setPosted(await postScore({ mode, score, durationMs, nickname }));
+      const result = await postScore({ mode, score, durationMs, nickname });
+      setPosted(result);
+      recordBestRank(result.rank);
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "Could not reach the leaderboard. Try again.");
     } finally {

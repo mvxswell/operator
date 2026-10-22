@@ -55,7 +55,10 @@ export default function ProgressPage() {
       <div className="flex flex-wrap items-end justify-between gap-5">
         <div><Eyebrow>Your training record</Eyebrow><h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">My progress</h1>
           <p className="mt-3 max-w-xl text-sm leading-relaxed text-muted">See what is improving and choose what to train next. Your progress is saved on this browser; it does not sync between devices.</p></div>
-        <ButtonLink href="/operator">Take the test</ButtonLink>
+        <div className="flex flex-wrap gap-3">
+          <ButtonLink href="/operator">Take the test</ButtonLink>
+          <ButtonLink href="/badges" variant="secondary">Badges</ButtonLink>
+        </div>
       </div>
       {!hydrated ? <p className="mt-8 text-muted">Loading your progress…</p> : <>
         <section className="progress-hero mt-8 flex flex-col gap-7 rounded-2xl border border-accent/20 p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8" aria-label="Training momentum">
