@@ -1,0 +1,70 @@
+# Think Operator
+
+> Business judgment practice for owners, operators, and CEOs. Read a decision framework, then practice it with a quiz or scenario.
+
+The site is a static export. Assessment scores and practice history are calculated and stored in the browser. Scores are practice feedback, not a professional certification or a validated hiring assessment. Optional public leaderboard posting is separate.
+
+## Start here
+
+- [Guide hub](https://thinkoperator.com/guides/): 35 practical frameworks grouped into hiring, finance, ops cadence, strategy, and people.
+- [Test hub](https://thinkoperator.com/tests/): what each existing quiz and scenario set tests.
+- [Daily Decision](https://thinkoperator.com/daily/): one dated prompt and a browser-local streak.
+
+## Tests and scenario sets
+
+- [Operator Test: Business Judgment Assessment](https://thinkoperator.com/tests/operator/): 20 questions · adaptive difficulty · Operator Score.
+- [Quick Decisions: 60-Second Business Judgment Quiz](https://thinkoperator.com/tests/quick/): 60 seconds · two choices · decisions per minute.
+- [Daily Decision: A Business Scenario to Practice Each Day](https://thinkoperator.com/tests/daily/): One daily scenario · explanation · browser-local streak.
+- [Bottleneck Detection Skill Test](https://thinkoperator.com/tests/bottleneck/): 10 questions · adaptive difficulty · skill score.
+- [Prioritization Skill Test](https://thinkoperator.com/tests/prioritization/): 10 questions · adaptive difficulty · skill score.
+- [Resource Allocation Skill Test](https://thinkoperator.com/tests/resource/): 10 questions · adaptive difficulty · skill score.
+- [Financial Judgment Skill Test](https://thinkoperator.com/tests/financial/): 10 questions · adaptive difficulty · skill score.
+- [Sales & Marketing Skill Test](https://thinkoperator.com/tests/sales/): 10 questions · adaptive difficulty · skill score.
+- [Operations Skill Test](https://thinkoperator.com/tests/operations/): 10 questions · adaptive difficulty · skill score.
+- [People & Delegation Skill Test](https://thinkoperator.com/tests/people/): 10 questions · adaptive difficulty · skill score.
+- [Strategy Skill Test](https://thinkoperator.com/tests/strategy/): 10 questions · adaptive difficulty · skill score.
+
+## Decision guides
+
+- [What to Do When Your Best Employee Quits](https://thinkoperator.com/guides/what-to-do-when-your-best-employee-quits/): When your best employee quits, do not counter in the doorway. Protect the work within 48 hours, transfer what they know, then decide whether the role returns.
+- [How to Delegate as a Business Owner](https://thinkoperator.com/guides/how-to-delegate/): Delegate frequent work you already understand. Hand off the outcome, the limit, and a review date. Inspect the finished result instead of every keystroke.
+- [When to Hire Your First Employee](https://thinkoperator.com/guides/when-to-hire-your-first-employee/): Hire when you turn away paid work or repeat tasks fill the week. Price the full cost against the hours or revenue freed. Hire the bottleneck, not comfort.
+- [How to Price a Service Business](https://thinkoperator.com/guides/how-to-price-a-service-business/): Price a service from hours you can sell and the pay you must cover, then check the market and the job's worth. A near-perfect close rate means the price is low.
+- [How to Improve Cash Flow in a Small Business](https://thinkoperator.com/guides/how-to-improve-cash-flow/): Profit is not cash. Collect what you are owed, take deposits on lumpy jobs, and time bills. Build a 13-week view before you cut what creates the next sale.
+- [How to Find the Bottleneck in Your Business](https://thinkoperator.com/guides/how-to-find-the-bottleneck/): The bottleneck is where the queue keeps growing, not the busiest person. Measure what each step finishes. Improve that step, pace the others, and spend last.
+- [Why Is My Business Not Growing](https://thinkoperator.com/guides/why-is-my-business-not-growing/): Growth stalls in one place: demand, conversion, capacity, delivery, retention, or you. Put one number on each and fix the branch that is actually stuck.
+- [How to Prioritize as a Business Owner](https://thinkoperator.com/guides/how-to-prioritize/): Rank work by revenue, margin, cash, or risk, then by effort. Loud tasks can wait. When you add a commitment, name what drops. Review the short list weekly.
+- [Why Are Sales Down](https://thinkoperator.com/guides/why-are-sales-down/): Sales equal traffic times conversion times order value times repeat buys. Find which term moved before changing the offer. A floor story is a clue, not a plan.
+- [How to Get More Customers for a Small Business](https://thinkoperator.com/guides/how-to-get-more-customers/): Win customers through the channel they already use. Ask for referrals, contact lapsed buyers, then test one new channel. Keep it if they are worth the cost.
+- [How to Create SOPs and Systemize Your Business](https://thinkoperator.com/guides/how-to-create-sops/): Write procedures for tasks that pull you back in. Record the work, turn it into a short page, and have someone else run it. Name an owner and a review date.
+- [How to Scale Operations Without Losing Quality](https://thinkoperator.com/guides/how-to-scale-operations/): Keep quality as you grow by standardizing the work, checking each handoff, and watching rework. Automate a step only after it is stable. Volume multiplies mess.
+- [Should I Raise Prices](https://thinkoperator.com/guides/should-i-raise-prices/): Raise prices when costs moved, you are full, or almost every quote is a yes. Set the date, say who keeps the old price, and watch close rate and margin after.
+- [How to Decide Whether to Expand to a New Location or Market](https://thinkoperator.com/guides/should-you-expand/): Expand when the offer runs without you, someone else can run a normal day, and cash covers a slow start. Test small, and write the numbers that make you stop.
+- [How to Allocate a Limited Budget](https://thinkoperator.com/guides/where-to-invest-next-dollar/): Put the next dollar on the constraint. Compare return, how fast cash comes back, and the cost of being wrong. Ignore sunk spend. Keep a buffer for payroll.
+- [How to Run a Weekly Operating Review](https://thinkoperator.com/guides/how-to-run-a-weekly-operating-review/): Run a weekly operating review that turns missed targets into decisions. Choose a small scorecard, diagnose exceptions, and leave with owners and due dates.
+- [How to Choose Business KPIs That Lead to Decisions](https://thinkoperator.com/guides/how-to-choose-business-kpis/): Choose business KPIs by starting with decisions, not dashboards. Define outcomes, leading signals, owners, and review rules that reveal the real constraint.
+- [How to Fix Missed Deadlines Without Adding More Chasing](https://thinkoperator.com/guides/how-to-fix-missed-deadlines/): Fix missed deadlines by separating bad estimates, overloaded queues, and blocked decisions. Reset promises with evidence, then change how work gets released.
+- [How to Plan Capacity Before Taking On More Work](https://thinkoperator.com/guides/how-to-plan-capacity-before-taking-on-more-work/): Check capacity before accepting more work. Estimate the constrained step, account for rework and existing promises, and compare hiring, pricing, and timing.
+- [When to Hire Your First Operations Manager](https://thinkoperator.com/guides/when-to-hire-your-first-operations-manager/): Decide when to hire your first operations manager. Separate a management gap from broken processes, define decision rights, and test whether the role can pay.
+- [How to Write a Hiring Scorecard](https://thinkoperator.com/guides/how-to-write-a-hiring-scorecard/): Write a hiring scorecard around outcomes, evidence, and decision rights. Compare candidates consistently and separate essential capability from preferences.
+- [How to Decide Between Hiring and Outsourcing](https://thinkoperator.com/guides/how-to-decide-between-hiring-and-outsourcing/): Compare hiring and outsourcing using workload, control, ramp time, and total cost. Choose a reversible pilot before committing to a role or supplier contract.
+- [How to Onboard a New Manager Without Keeping All the Decisions](https://thinkoperator.com/guides/how-to-onboard-a-new-manager/): Onboard a manager with clear outcomes, decision rights, and staged ownership. Set a baseline, transfer context, and review the handoff without undermining it.
+- [What to Do When Cash Runway Drops Below Six Months](https://thinkoperator.com/guides/what-to-do-when-cash-runway-drops-below-six-months/): When cash runway falls below six months, build a weekly cash view, test downside assumptions, and rank actions by cash timing before making broad spending cuts.
+- [How to Build a 13-Week Cash Flow Forecast](https://thinkoperator.com/guides/how-to-build-a-13-week-cash-flow-forecast/): Build a 13-week cash flow forecast from bank balances, receipts, and committed payments. Track uncertainty, explain variances, and turn shortfalls into action.
+- [How to Handle a Customer Who Pays Late](https://thinkoperator.com/guides/how-to-handle-a-customer-who-pays-late/): Handle a late-paying customer by separating invoice errors, disputes, and cash problems. Set a clear collection plan and decide whether to extend more credit.
+- [How to Decide Whether to Drop an Unprofitable Customer](https://thinkoperator.com/guides/how-to-decide-whether-to-drop-an-unprofitable-customer/): Decide whether to keep, reprice, or exit an unprofitable customer. Separate avoidable costs from overhead and compare cash timing, capacity, and alternatives.
+- [How to Decide Which Product to Shut Down](https://thinkoperator.com/guides/how-to-decide-which-product-to-shut-down/): Decide which product to stop by comparing future contribution, strategic fit, and avoidable complexity. Test a focused repair and plan the customer transition.
+- [How to Test a New Market Before Expanding](https://thinkoperator.com/guides/how-to-test-a-new-market-before-expanding/): Test a new market before committing fixed costs. Define the buyer and offer, seek paid demand, measure delivery economics, and set an explicit expansion gate.
+- [How to Set Quarterly Business Priorities](https://thinkoperator.com/guides/how-to-set-quarterly-business-priorities/): Set quarterly priorities around the business constraint. Choose outcomes, price the capacity tradeoff, stop competing projects, and review evidence each week.
+- [How to Decide Whether to Discount a Deal](https://thinkoperator.com/guides/how-to-decide-whether-to-discount-a-deal/): Decide whether to discount a deal by checking the real buying obstacle, contribution, capacity, and concessions. Trade price for something instead of hoping.
+- [How to Handle an Underperforming Manager](https://thinkoperator.com/guides/how-to-handle-an-underperforming-manager/): Handle an underperforming manager with clear evidence, decision rights, and a bounded improvement plan. Separate a capability gap from a broken role or process.
+- [How to Stop Every Decision Coming to the CEO](https://thinkoperator.com/guides/how-to-stop-every-decision-coming-to-the-ceo/): Stop decisions returning to the CEO. Map the approval queue, assign decision rights, define escalation rules, and review outcomes without taking work back.
+- [How to Resolve Conflict Between Sales and Operations](https://thinkoperator.com/guides/how-to-resolve-conflict-between-sales-and-operations/): Resolve sales and operations conflict by tracing promises, capacity, and handoffs. Set an acceptance rule and make exceptions visible before a deal is sold.
+- [How to Run Effective One-on-One Meetings](https://thinkoperator.com/guides/how-to-run-effective-one-on-one-meetings/): Run one-on-one meetings that unblock decisions and build judgment. Use the employee's agenda, specific feedback, commitments, and a reliable follow-up loop.
+
+## Site information
+
+- [Sitemap](https://thinkoperator.com/sitemap.xml): canonical public page URLs.
+- [Privacy](https://thinkoperator.com/privacy/): local storage, optional leaderboard, and anonymous counts.
+
+Illustrative scenarios and worked numbers are examples, not reports about real companies. For navigation, prefer the canonical page links above rather than URLs with start, referral, or other query parameters.
