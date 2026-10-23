@@ -76,6 +76,27 @@ test("a quiz board ranks by score, then faster time, then earlier post", () => {
   assert.equal(higherScore[0].nickname, "High");
 });
 
+test("rejected posts stay ordinary submit errors", () => {
+  assert.equal(
+    rules.leaderboardErrorMessage("rate_limited"),
+    "Too many posts from this browser. Wait and try again.",
+  );
+  assert.equal(
+    rules.leaderboardErrorMessage("rate_limited_nickname"),
+    "Too many posts for this nickname. Wait and try again.",
+  );
+  assert.equal(
+    rules.leaderboardErrorMessage("rate_limited_global"),
+    "The leaderboard is busy. Wait a minute and try again.",
+  );
+  assert.equal(rules.leaderboardErrorMessage("implausible_duration"), "This run was too short to post.");
+  assert.equal(rules.leaderboardErrorMessage("invalid_score"), "That score is outside the range for this mode.");
+  assert.equal(
+    rules.leaderboardErrorMessage("new unexpected failure"),
+    "Could not reach the leaderboard. Try again.",
+  );
+});
+
 test("privacy keeps the brand share image the metadata helper had dropped", () => {
   const alt = fs.readFileSync("src/app/opengraph-image.alt.txt", "utf8").trim();
   const privacy = site.pageMetadata("/privacy");

@@ -84,6 +84,9 @@ export function leaderboardErrorMessage(raw: string): string {
   if (raw.includes("invalid_nickname")) {
     return "Use 2–20 characters: letters, numbers, spaces, _ and -.";
   }
+  // Specific codes first: each of them also contains "rate_limited".
+  if (raw.includes("rate_limited_nickname")) return "Too many posts for this nickname. Wait and try again.";
+  if (raw.includes("rate_limited_global")) return "The leaderboard is busy. Wait a minute and try again.";
   if (raw.includes("rate_limited")) return "Too many posts from this browser. Wait and try again.";
   if (raw.includes("implausible_duration")) return "This run was too short to post.";
   if (raw.includes("invalid_score")) return "That score is outside the range for this mode.";
