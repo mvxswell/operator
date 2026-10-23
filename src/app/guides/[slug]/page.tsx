@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { GuideArticle } from "@/components/GuideArticle";
-import { GUIDES, getGuide } from "@/content/guides";
+import { GUIDES, getGuide } from "@/content/guides/collection";
 import { absoluteUrl } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -54,8 +54,8 @@ export default async function GuidePage(props: { params: Promise<{ slug: string 
         "@type": "Article",
         headline: guide.title,
         description: guide.description,
-        datePublished: "2026-10-17",
-        dateModified: "2026-10-17",
+        datePublished: `${guide.datePublished ?? "2026-10-17"}T12:00:00-04:00`,
+        dateModified: `${guide.dateModified ?? "2026-10-17"}T12:00:00-04:00`,
         mainEntityOfPage: canonical,
         image: `https://thinkoperator.com/og/guides/${guide.slug}.png`,
         author: {

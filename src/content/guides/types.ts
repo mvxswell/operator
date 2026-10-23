@@ -31,6 +31,8 @@ export interface GuideLink {
 }
 
 export interface Guide {
+  datePublished?: string;
+  dateModified?: string;
   slug: string;
   skill: CategoryId;
   title: string;

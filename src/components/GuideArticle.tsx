@@ -3,7 +3,7 @@ import { GuideScenario } from "@/components/GuideScenario";
 import { GuideTestCta } from "@/components/GuideTestCta";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ButtonLink } from "@/components/ui";
-import { getGuide, type Guide } from "@/content/guides";
+import { getGuide, type Guide } from "@/content/guides/collection";
 import { readMinutes } from "@/content/guides/words";
 import { CATEGORY_MAP } from "@/lib/categories";
 
@@ -15,6 +15,7 @@ export function GuideArticle({ guide }: { guide: Guide }) {
   return (
     <div className="py-14 sm:py-16">
       <article className="prose-guide">
+        <nav aria-label="Breadcrumb"><Link href="/guides/">All operator guides</Link></nav>
         <p className="guide-kicker">
           {skill.name} · {minutes} min read
         </p>
@@ -95,6 +96,8 @@ export function GuideArticle({ guide }: { guide: Guide }) {
           </div>
         ))}
       </article>
+
+      <p className="prose-guide mt-8 text-sm"><Link href={`/tests/${guide.skill}/`}>What the {skill.name} test measures</Link> · <Link href="/guides/">Find another decision framework</Link></p>
 
       <div className="mx-auto mt-10 flex max-w-[680px] flex-col gap-3 px-5 sm:flex-row sm:flex-wrap">
         <GuideTestCta skill={guide.skill} skillName={skill.name} slug={guide.slug} />
