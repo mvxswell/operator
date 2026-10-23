@@ -122,6 +122,36 @@ test("export CSP hashes inline scripts without allowing arbitrary inline JS", as
   assert.equal(secureHtml(withSupabase, "https://example.workers.dev", true, "https://example.supabase.co"), withSupabase);
 });
 
+test("the app never selects public.scores and the board RPC hides browser ids", () => {
+  const sql = fs.readFileSync("supabase/migrations/0002_leaderboard_abuse_limits.sql", "utf8");
+  assert.match(sql, /revoke select on public\.scores from anon, authenticated;/);
+  assert.doesNotMatch(sql, /grant select on (table )?public\.scores/i);
+  assert.match(sql, /security definer/);
+  assert.match(sql, /set search_path = public/);
+  const boardStart = sql.indexOf("function public.leaderboard");
+  const board = sql.slice(boardStart, sql.indexOf("revoke all on function public.submit_score", boardStart));
+  assert.match(board, /security definer/);
+  assert.match(board, /set search_path = public/);
+  assert.doesNotMatch(board, /client_id/i);
+
+  const hits = [];
+  for (const root of ["src", "worker", "scripts"]) {
+    const pending = [root];
+    while (pending.length) {
+      const current = pending.pop();
+      for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+        const path = `${current}/${entry.name}`;
+        if (entry.isDirectory()) pending.push(path);
+        else if (/\.(ts|tsx|js|mjs|cjs)$/.test(entry.name)) {
+          const source = fs.readFileSync(path, "utf8");
+          if (/\.from\(\s*['"]scores['"]\s*\)/.test(source)) hits.push(path);
+        }
+      }
+    }
+  }
+  assert.deepEqual(hits, []);
+});
+
 test("cross-tab events invalidate cached progress and unsubscribe removes listener", () => {
   let handler;
   let notifications = 0;
