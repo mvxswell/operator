@@ -1,4 +1,7 @@
 :HL["/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/css/c2922970a8679198.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"skills","param":null,"prefetchHints":4192,"slots":{"children":{"name":"category","param":{"type":"d","key":"people","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"4-zmsBzVYPETMvcmfLrg_"}
+3:[["children",{"s":"__PAGE__","h":160}]]
+2:[["children",{"s":{"n":"category","t":"d","k":"people","s":[]},"h":96,"c":"$Q3"}]]
+1:[["children",{"s":"skills","h":96,"c":"$Q2"}]]
+0:{"b":"87ZzS4CUS1UxomOGXz7Xr","t":{"t":{"s":"","h":80,"c":"$Q1"}}}

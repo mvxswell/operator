@@ -1,4 +1,7 @@
 :HL["/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/css/c2922970a8679198.css","style"]
-0:{"tree":{"name":"","param":null,"prefetchHints":4176,"slots":{"children":{"name":"guides","param":null,"prefetchHints":4192,"slots":{"children":{"name":"slug","param":{"type":"d","key":"where-to-invest-next-dollar","siblings":[]},"prefetchHints":4192,"slots":{"children":{"name":"__PAGE__","param":null,"prefetchHints":4256,"slots":null}}}}}}},"staleTime":300,"buildId":"4-zmsBzVYPETMvcmfLrg_"}
+3:[["children",{"s":"__PAGE__","h":160}]]
+2:[["children",{"s":{"n":"slug","t":"d","k":"where-to-invest-next-dollar","s":[]},"h":65632,"c":"$Q3"}]]
+1:[["children",{"s":"guides","h":131168,"c":"$Q2"}]]
+0:{"b":"87ZzS4CUS1UxomOGXz7Xr","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
