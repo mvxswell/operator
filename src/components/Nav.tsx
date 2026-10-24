@@ -3,8 +3,11 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
+import { dailyHabitStatus } from "@/lib/dailyStreak";
 import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { blockQuizLeave } from "@/lib/quizGuard";
+import { todayKey } from "@/lib/storage";
+import { useProfile } from "@/lib/useProfile";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
 
@@ -23,6 +26,8 @@ const LINKS = [
 
 export function Nav() {
   const pathname = usePathname();
+  const { profile, hydrated } = useProfile();
+  const daily = hydrated ? dailyHabitStatus(profile.daily, todayKey()) : null;
 
   const isActive = (href: string) =>
     href === "/" ? pathname === "/" : pathname.startsWith(href);
@@ -49,6 +54,7 @@ export function Nav() {
             <Link
               key={link.href}
               href={link.href}
+              aria-label={link.href === "/daily" ? dailyLinkLabel(daily) : undefined}
               onClick={(event) => leaveIfNeeded(event, link.href)}
               className={`shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 ${
                 isActive(link.href)
@@ -56,8 +62,11 @@ export function Nav() {
                   : "text-muted hover:text-ink"
               }`}
             >
-              <span className="lg:hidden">{link.compact}</span>
-              <span className="hidden lg:inline">{link.label}</span>
+              <span className="inline-flex items-center gap-1">
+                <span className="lg:hidden">{link.compact}</span>
+                <span className="hidden lg:inline">{link.label}</span>
+                {link.href === "/daily" ? <DailyMark status={daily} /> : null}
+              </span>
             </Link>
           ))}
         </div>
@@ -68,5 +77,27 @@ export function Nav() {
         </div>
       </nav>
     </header>
+  );
+}
+
+function dailyLinkLabel(status: { answeredToday: boolean; streak: number } | null): string | undefined {
+  if (!status) return undefined;
+  if (status.answeredToday) {
+    const days = status.streak === 1 ? "1-day streak" : `${status.streak}-day streak`;
+    return `Daily, completed today, ${days}`;
+  }
+  return "Daily, today's call waiting";
+}
+
+/** Fixed-width slot so the dot or streak count does not move the nav when it hydrates. */
+function DailyMark({ status }: { status: { answeredToday: boolean; streak: number } | null }) {
+  return (
+    <span className="inline-grid h-4 w-6 place-items-center" aria-hidden="true">
+      {status?.answeredToday ? (
+        <span className="tabular text-[10px] font-semibold leading-none text-accent">{status.streak}</span>
+      ) : status ? (
+        <span className="h-1.5 w-1.5 rounded-full bg-accent" />
+      ) : null}
+    </span>
   );
 }

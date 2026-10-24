@@ -2,13 +2,16 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { QuestionCard } from "@/components/QuestionCard";
+import { DailyReview } from "@/components/DailyReview";
 import { ShareResultCard } from "@/components/ShareResultCard";
 import { SharedChallenge } from "@/components/SharedChallenge";
 import { Calculator } from "@/components/Calculator";
 import { ButtonLink, Eyebrow, Panel } from "@/components/ui";
-import { dailyQuestionFor } from "@/data";
+import { dailyDecisionNumber, dailyQuestionFor } from "@/data";
+import { formatDailyDecisionNumber } from "@/data/dailyCycle";
 import { CATEGORY_MAP } from "@/lib/categories";
 import { consecutiveDailyStreak, nextScenarioLabel, shiftDateKey } from "@/lib/dailyStreak";
+import { guideForSkill } from "@/lib/dailyGuide";
 import { dailyShareText } from "@/lib/shareResult";
 import { recordDaily, todayKey } from "@/lib/storage";
 import { track } from "@/lib/track";
@@ -18,6 +21,9 @@ export default function DailyPage() {
   const { profile, hydrated } = useProfile();
   const dateKey = useMemo(() => todayKey(), []);
   const question = useMemo(() => dailyQuestionFor(dateKey), [dateKey]);
+  const dailyNumber = useMemo(() => dailyDecisionNumber(dateKey), [dateKey]);
+  const guide = guideForSkill(question.category);
+  const skillName = CATEGORY_MAP[question.category].name;
 
   const saved = hydrated ? profile.daily[dateKey] : undefined;
   const [localChoice, setLocalChoice] = useState<string | null>(null);
@@ -67,6 +73,11 @@ export default function DailyPage() {
       {!revealed ? <SharedChallenge quiz="daily" /> : null}
       <div className="brand-hero mb-6">
         <Eyebrow>Daily Decision</Eyebrow>
+        {dailyNumber !== null ? (
+          <p className="mt-2 text-sm font-medium text-accent">
+            {formatDailyDecisionNumber(dailyNumber)}
+          </p>
+        ) : null}
         <h1 className="mt-2 text-2xl font-semibold tracking-[-0.01em] text-ink sm:text-3xl">
           {prettyDate}
         </h1>
@@ -88,6 +99,17 @@ export default function DailyPage() {
           </div>
           <p className="tabular text-4xl font-semibold leading-none text-accent">{streak}</p>
         </Panel>
+      ) : null}
+
+      {hydrated && !revealed ? (
+        <div className="mb-6">
+          <DailyReview
+            dateKey={dateKey}
+            daily={profile.daily}
+            streak={streak}
+            todayAnswered={false}
+          />
+        </div>
       ) : null}
 
       <Panel className="p-5 sm:p-7">
@@ -112,13 +134,35 @@ export default function DailyPage() {
             <p className="text-sm font-semibold text-ink">
               {correct ? "You made the best call." : "Not the best call today."}
             </p>
-            <p className="mt-1 text-[13px] text-muted">
-              This scenario tests {CATEGORY_MAP[question.category].name.toLowerCase()} at level{" "}
-              {question.difficulty}.
+            <p className="mt-2 text-[13px] text-ink">
+              {skillName} · level {question.difficulty}
             </p>
+            <p className="mt-1 text-[13px] text-muted">Subskill: {question.subskill}.</p>
+            <div className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <ButtonLink href={`/skills/${question.category}`} onClick={() => track("result:train")}>
+                Train {skillName}
+              </ButtonLink>
+              <ButtonLink
+                href={`/guides/${guide.slug}`}
+                variant="secondary"
+                onClick={() => track("result:guide")}
+              >
+                Read the guide
+              </ButtonLink>
+            </div>
+            <p className="mt-2 text-[12px] text-faint">{guide.title}</p>
           </div>
 
           <ReturnTomorrow streak={streak} />
+
+          {hydrated ? (
+            <DailyReview
+              dateKey={dateKey}
+              daily={profile.daily}
+              streak={streak}
+              todayAnswered
+            />
+          ) : null}
 
           <ShareResultCard title={`Daily Decision · ${prettyDate}`} score={correct ? "1/1" : "0/1"}
             verdict={correct ? "You made the best call." : "Not the best call today."}
