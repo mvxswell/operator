@@ -34,7 +34,7 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
     path: "/daily",
     title: "Daily Decision — Think Operator",
     description:
-      "One business scenario a day. Make the call, read the explanation, and build a training habit.",
+      "One shared business scenario a day. Make the call, read the tradeoff, and keep a streak that counts only on the day you show up.",
   },
   {
     path: "/progress",

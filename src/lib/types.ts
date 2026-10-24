@@ -75,7 +75,15 @@ export interface QuickQuestion {
 /** A Daily Decision is a standard question plus a community distribution. */
 export interface DailyQuestion extends Omit<Question, "mode"> {
   mode: "daily";
-  /** Simulated community response share per choice id. Must sum to 100. */
+  /**
+   * One line for Home and the daily header. Situation only — no choices and no answer.
+   */
+  teaser: string;
+  /**
+   * Simulated response share per choice id. Must sum to 100.
+   * Kept on the scenario for a future labeled view. The daily page does not
+   * render it: privacy copy says we do not show how other people answered.
+   */
   distribution: Record<string, number>;
 }
 

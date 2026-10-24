@@ -36,6 +36,45 @@ export function longestDailyStreak(daily: Record<string, unknown>): number {
   return best;
 }
 
+/** The `days` calendar keys ending on `dateKey`, oldest first. */
+export function recentDateKeys(dateKey: string, days = 7): string[] {
+  const count = Math.max(1, Math.floor(days));
+  const keys: string[] = [];
+  for (let offset = count - 1; offset >= 0; offset -= 1) {
+    keys.push(shiftDateKey(dateKey, -offset));
+  }
+  return keys;
+}
+
+/**
+ * Streak the home page and nav can show without guessing.
+ * Before today's answer, the live streak is the run that still includes yesterday.
+ */
+export function dailyHabitStatus(
+  daily: Record<string, unknown>,
+  dateKey: string,
+): { answeredToday: boolean; streak: number } {
+  const answeredToday = Boolean(daily[dateKey]);
+  const from = answeredToday ? dateKey : shiftDateKey(dateKey, -1);
+  return { answeredToday, streak: consecutiveDailyStreak(daily, from) };
+}
+
+/** All-time answered days and how often the best call was the one saved. */
+export function summarizeDaily(daily: Record<string, unknown>): {
+  answered: number;
+  correct: number;
+  accuracy: number;
+} {
+  let answered = 0;
+  let correct = 0;
+  for (const [date, value] of Object.entries(daily)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !value || typeof value !== "object") continue;
+    answered += 1;
+    if ((value as { correct?: unknown }).correct === true) correct += 1;
+  }
+  return { answered, correct, accuracy: answered ? correct / answered : 0 };
+}
+
 /** Local time until the next midnight, for the daily return line. */
 export function nextScenarioLabel(now: Date = new Date()): string {
   const next = new Date(now);

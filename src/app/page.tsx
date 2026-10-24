@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useMemo } from "react";
 import { CountUp } from "@/components/CountUp";
+import { DailyCallout } from "@/components/DailyCallout";
 import { LeaderboardTeaser } from "@/components/LeaderboardTeaser";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ButtonLink, CategoryIcon, Eyebrow, Panel } from "@/components/ui";
@@ -118,6 +119,8 @@ export default function HomePage() {
         </Panel>
       </section>
 
+      <DailyCallout />
+
       {/* --------------------------------- Modes --------------------------------- */}
       <section className="border-t border-line-soft py-14 sm:py-16">
         <div className="grid gap-3 sm:grid-cols-2">
@@ -146,7 +149,7 @@ export default function HomePage() {
             href="/daily"
             title="Daily Decision"
             meta="One scenario a day"
-            body="A single hard call each day. Learn from the explanation and build a daily training habit."
+            body="The same hard call for every operator today. Read the tradeoff, then keep a streak that only counts the day you show up."
             accent="#f9a8d4"
           />
         </div>
