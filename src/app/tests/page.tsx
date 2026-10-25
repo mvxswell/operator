@@ -16,12 +16,12 @@ export default function TestsPage() {
     <div className="mt-8 grid gap-4 sm:grid-cols-2">
       {TEST_LANDINGS.map((test) => <article key={test.id} className="rounded-xl border border-line bg-surface p-5">
         <p className="text-xs leading-relaxed text-accent">{test.format}</p>
-        <h2 className="mt-3 text-xl font-semibold text-ink"><Link href={`/tests/${test.id}/`} className="hover:text-accent">{test.title}</Link></h2>
+        <h2 className="mt-3 text-xl font-semibold text-ink"><Link prefetch={false} href={`/tests/${test.id}/`} className="hover:text-accent">{test.title}</Link></h2>
         <p className="mt-3 text-sm leading-relaxed text-muted">{test.summary}</p>
-        <Link href={`/tests/${test.id}/`} className="mt-4 inline-block text-sm text-accent underline underline-offset-4">See what this test measures</Link>
+        <Link prefetch={false} href={`/tests/${test.id}/`} className="mt-4 inline-block text-sm text-accent underline underline-offset-4">See what this test measures</Link>
       </article>)}
     </div>
-    <p className="my-10 text-sm text-muted">Want a framework first? <Link href="/guides/" className="text-accent underline">Browse guides by topic</Link>.</p>
+    <p className="my-10 text-sm text-muted">Want a framework first? <Link prefetch={false} href="/guides/" className="text-accent underline">Browse guides by topic</Link>.</p>
     <SiteFooter />
   </div>;
 }

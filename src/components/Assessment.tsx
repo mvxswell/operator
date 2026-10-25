@@ -8,8 +8,9 @@ import { QuestionCard } from "@/components/QuestionCard";
 import { ShareResultCard } from "@/components/ShareResultCard";
 import { SharedChallenge } from "@/components/SharedChallenge";
 import { Calculator } from "@/components/Calculator";
+import { PracticeLinks } from "@/components/PracticeLinks";
 import { CountUp } from "@/components/CountUp";
-import { Button, ButtonLink, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
+import { Button, ButtonLink, DataTable, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
 import { findQuestion } from "@/data";
 import { CATEGORY_MAP } from "@/lib/categories";
 import { nextSkillToTrain } from "@/lib/nextSkill";
@@ -312,7 +313,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
       <Calculator />
 
       {revealed ? (
-        <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/92 backdrop-blur-md">
+        <div data-quiz-feedback className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/92 backdrop-blur-md">
           <div className="mx-auto flex max-w-2xl items-center gap-4 px-4 py-3.5 sm:px-6">
             <span
               className={`text-sm font-semibold ${correct ? "text-pos" : "text-neg"}`}
@@ -374,6 +375,15 @@ function Results({
   const tier = operatorTier(result.score);
   const isRecord = result.score > previousBest;
   const missed = attempts.filter((a) => !a.correct);
+  const weak = new Map<string, { question: Question; count: number }>();
+  for (const attempt of missed) {
+    const question = findQuestion(attempt.questionId);
+    if (!question) continue;
+    const key = `${question.category}:${question.subskill}`;
+    const previous = weak.get(key);
+    weak.set(key, { question, count: (previous?.count ?? 0) + 1 });
+  }
+  const weakSubskills = [...weak.values()].sort((a, b) => b.count - a.count).slice(0, 3);
   const trainId =
     variant === "operator"
       ? (result.weakest?.category ?? null)
@@ -435,6 +445,10 @@ function Results({
       </Panel>
 
       <ScoreBreakdown result={result} />
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5" aria-label="Recommended practice">
+        <h2 className="font-semibold text-ink">Turn the result into your next good call</h2>
+        {weakSubskills.length ? weakSubskills.map(({ question }) => <PracticeLinks key={question.id} category={question.category} questionId={question.id} subskill={question.subskill} />) : <PracticeLinks category={result.weakest?.category ?? category ?? "financial"} />}
+      </section>
 
       {variant === "operator" ? <SkillSection result={result} /> : null}
 
@@ -590,6 +604,7 @@ function ReviewSection({ missedIds }: { missedIds: string[] }) {
                 <span className="ml-auto text-[11px] text-faint">Level {q.difficulty}</span>
               </div>
               <p className="mt-2 text-sm leading-relaxed text-muted">{q.scenario}</p>
+              {q.data ? <DataTable data={q.data} /> : null}
               <p className="mt-3 text-sm text-ink">
                 <span className="text-pos">Best answer: </span>
                 {q.choices.find((c) => c.id === q.correctChoiceId)?.text}
@@ -600,6 +615,7 @@ function ReviewSection({ missedIds }: { missedIds: string[] }) {
                 </ol>
               ) : null}
               <p className="mt-2 text-sm leading-relaxed text-muted">{q.explanation}</p>
+              <PracticeLinks category={q.category} subskill={q.subskill} questionId={q.id} />
             </div>
           ))}
         </div>

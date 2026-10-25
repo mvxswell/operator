@@ -1,5 +1,31 @@
 @import "tailwindcss";
 
+/* Reading pages paint immediately, without downloading a display font. */
+body:has([data-reading-page]) {
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Consolas, monospace;
+  font-family: var(--font-sans);
+}
+
+/* The mobile drawer gets its own viewport space; it never overlays the case. */
+.calculator-dock { position: fixed; right: 1.5rem; bottom: 5rem; z-index: 50; width: 320px; pointer-events: none; }
+.calculator-toggle { pointer-events: auto; float: right; border-width: 1px; border-radius: 999px; }
+.calculator-panel { pointer-events: auto; position: absolute; right: 0; bottom: calc(100% + 12px); width: 320px; max-height: calc(100dvh - 12rem); border-width: 1px; border-radius: 16px; }
+@media (max-width: 639px) {
+  body:has([data-calculator-root]) { --quiz-action-height: 0px; height: 100dvh; min-height: 100dvh; overflow: hidden; padding-bottom: calc(var(--calculator-height, 52px) + var(--quiz-action-height)); }
+  body:has([data-calculator-root]):has([data-quiz-feedback]) { --quiz-action-height: 72px; }
+  body:has([data-calculator-root]) > header { flex-shrink: 0; }
+  body:has([data-calculator-root]) > main { min-height: 0; overflow-y: auto; overscroll-behavior-y: contain; }
+  [data-quiz-feedback] { height: 72px; }
+  [data-quiz-feedback] > div { height: 100%; }
+  .calculator-dock { right: 0; left: 0; bottom: var(--quiz-action-height, 0px); width: auto; background: #101215; border-top: 1px solid #30343b; padding-bottom: env(safe-area-inset-bottom); }
+  .calculator-toggle { width: 100%; float: none; min-height: 52px; border: 0; border-radius: 0; }
+  .calculator-panel { position: static; width: auto; max-height: 50dvh; padding: 12px; border: 0; border-top: 1px solid #30343b; border-radius: 0; box-shadow: none; }
+  .calculator-header, .calculator-history { display: none; }
+  .calculator-display { margin-top: 0; padding-block: 8px; }
+  .calculator-keys { margin-top: 8px; gap: 4px; }
+}
+
 /*
  * Operator design tokens.
  *

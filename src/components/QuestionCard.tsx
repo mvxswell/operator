@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { CATEGORY_MAP } from "@/lib/categories";
 import type { Choice, DailyQuestion, Question } from "@/lib/types";
 import { CategoryIcon, DataTable } from "./ui";
+import { PracticeLinks } from "./PracticeLinks";
 
 const LETTERS = ["A", "B", "C", "D", "E", "F"];
 
@@ -101,6 +102,7 @@ export function QuestionCard({
             <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-muted">Why it matters</p>
           ) : null}
           <p className="mt-1.5 text-sm leading-relaxed text-muted">{question.explanation}</p>
+          <PracticeLinks category={question.category} subskill={question.subskill} questionId={question.id} />
         </div>
       ) : null}
     </div>

@@ -1,34 +1,41 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { fetchLeaderboard, type BoardRow } from "@/lib/leaderboard";
 import { Eyebrow } from "./ui";
 
 export function LeaderboardTeaser() {
+  const section = useRef<HTMLElement>(null);
   const [rows, setRows] = useState<BoardRow[] | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
     if (!leaderboardVisible()) return;
     let cancelled = false;
-    fetchLeaderboard("operator", 5)
+    const load = () => { if (cancelled) return; void fetchLeaderboard("operator", 5)
       .then((next) => {
         if (!cancelled) setRows(next);
       })
       .catch(() => {
         if (!cancelled) setFailed(true);
-      });
+      }); };
+    const observer = typeof IntersectionObserver === "function" ? new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) { observer?.disconnect(); load(); }
+    }, { rootMargin: "100px" }) : null;
+    if (observer && section.current) observer.observe(section.current);
+    else load();
     return () => {
       cancelled = true;
+      observer?.disconnect();
     };
   }, []);
 
   if (!leaderboardVisible()) return null;
 
   return (
-    <section className="border-t border-line-soft py-14 sm:py-16">
+    <section ref={section} className="border-t border-line-soft py-14 sm:py-16">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
           <Eyebrow>Top 5</Eyebrow>

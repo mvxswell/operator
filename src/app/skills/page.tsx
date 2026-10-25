@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { CategoryIcon, Eyebrow } from "@/components/ui";
-import { questionsForCategory } from "@/data";
+import { CATEGORY_COUNTS } from "@/data/counts";
 import { CATEGORIES } from "@/lib/categories";
 import { useProfile } from "@/lib/useProfile";
 
@@ -28,7 +28,7 @@ export default function SkillsPage() {
           const lastRun = hydrated ? profile.skills[cat.id]?.runs[0] : undefined;
 
           return (
-            <Link
+            <Link prefetch={false}
               key={cat.id}
               href={`/skills/${cat.id}`}
               className="brand-card group flex flex-col rounded-xl border border-line bg-surface p-5 sm:p-6"
@@ -69,7 +69,7 @@ export default function SkillsPage() {
               </div>
 
               <p className="mt-3 text-[11px] text-muted">
-                {questionsForCategory(cat.id).length} scenarios in this skill
+                {CATEGORY_COUNTS[cat.id]} scenarios in this skill
               </p>
             </Link>
           );

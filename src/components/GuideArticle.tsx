@@ -13,9 +13,9 @@ export function GuideArticle({ guide }: { guide: Guide }) {
   const related = guide.related.map((slug) => getGuide(slug)).filter((item): item is Guide => item !== null);
 
   return (
-    <div className="py-14 sm:py-16">
+    <div data-reading-page className="py-14 sm:py-16">
       <article className="prose-guide">
-        <nav aria-label="Breadcrumb"><Link href="/guides/">All operator guides</Link></nav>
+        <nav aria-label="Breadcrumb"><Link prefetch={false} href="/guides/">All operator guides</Link></nav>
         <p className="guide-kicker">
           {skill.name} · {minutes} min read
         </p>
@@ -97,7 +97,7 @@ export function GuideArticle({ guide }: { guide: Guide }) {
         ))}
       </article>
 
-      <p className="prose-guide mt-8 text-sm"><Link href={`/tests/${guide.skill}/`}>What the {skill.name} test measures</Link> · <Link href="/guides/">Find another decision framework</Link></p>
+      <p className="prose-guide mt-8 text-sm"><Link prefetch={false} href={`/tests/${guide.skill}/`}>What the {skill.name} test measures</Link> · <Link prefetch={false} href="/guides/">Find another decision framework</Link></p>
 
       <div className="mx-auto mt-10 flex max-w-[680px] flex-col gap-3 px-5 sm:flex-row sm:flex-wrap">
         <GuideTestCta skill={guide.skill} skillName={skill.name} slug={guide.slug} />
@@ -117,7 +117,7 @@ export function GuideArticle({ guide }: { guide: Guide }) {
           <ul>
             {related.map((item) => (
               <li key={item.slug}>
-                <Link href={`/guides/${item.slug}`}>{item.title}</Link>
+                <Link prefetch={false} href={`/guides/${item.slug}`}>{item.title}</Link>
               </li>
             ))}
           </ul>
@@ -137,7 +137,7 @@ function Rich({ text }: { text: string }) {
     const link = /^\[([^\]]+)\]\((\/[^)\s]+)\)$/.exec(part);
     if (link) {
       return (
-        <Link key={index} href={link[2]}>
+        <Link prefetch={false} key={index} href={link[2]}>
           {link[1]}
         </Link>
       );

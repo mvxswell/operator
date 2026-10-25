@@ -42,7 +42,7 @@ export default async function TestLandingPage({ params }: { params: Promise<{ qu
   return <div className="py-12 sm:py-16">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(graph).replace(/</g, "\\u003c") }} />
     <article className="prose-guide">
-      <nav aria-label="Breadcrumb"><Link href="/tests/">All business judgment tests</Link></nav>
+      <nav aria-label="Breadcrumb"><Link prefetch={false} href="/tests/">All business judgment tests</Link></nav>
       <p className="guide-kicker">{test.format}</p>
       <h1>{test.title}</h1>
       <p>{test.summary}</p>
@@ -66,11 +66,11 @@ export default async function TestLandingPage({ params }: { params: Promise<{ qu
           : <p>Difficulty adapts as you answer. The final score combines accuracy, difficulty handled, and decision speed; accuracy carries the most weight. Read the explanation after each call, then use the result to choose what to train next. A personal best is stored locally, so compare runs in the same browser to follow your practice.</p>}
       <p>These are practice scenarios, not a professional certification or a validated hiring assessment. Use the feedback to examine your reasoning. The information needed to answer is in the case; real operating decisions may require facts and advice beyond a short exercise.</p>
       <h2>Make the next practice useful</h2>
-      <p>Choose one distinction you want to improve, such as cash versus profit, a queue versus slow execution, or responsibility versus decision authority. Read a related framework, apply it to the next case, and review the explanation. Your <Link href="/progress/">progress page</Link> keeps the local history; <Link href="/daily/">Daily Decision</Link> offers a short reason to come back tomorrow.</p>
+      <p>Choose one distinction you want to improve, such as cash versus profit, a queue versus slow execution, or responsibility versus decision authority. Read a related framework, apply it to the next case, and review the explanation. Your <Link prefetch={false} href="/progress/">progress page</Link> keeps the local history; <Link prefetch={false} href="/daily/">Daily Decision</Link> offers a short reason to come back tomorrow.</p>
       <h2>Read the framework first</h2>
-      <ul>{related.map((guide) => <li key={guide.slug}><Link href={`/guides/${guide.slug}/`}>{guide.title}</Link></li>)}</ul>
+      <ul>{related.map((guide) => <li key={guide.slug}><Link prefetch={false} href={`/guides/${guide.slug}/`}>{guide.title}</Link></li>)}</ul>
       <div className="guide-cta"><StartLink href={test.startHref}>{quiz === "daily" ? "Make today's call" : "Start practicing"}</StartLink></div>
-      <p><Link href="/tests/">Choose another test</Link> · <Link href="/guides/">Browse all guides by topic</Link></p>
+      <p><Link prefetch={false} href="/tests/">Choose another test</Link> · <Link prefetch={false} href="/guides/">Browse all guides by topic</Link></p>
     </article>
     <div className="mx-auto mt-12 max-w-6xl px-4 sm:px-6"><SiteFooter /></div>
   </div>;

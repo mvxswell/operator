@@ -58,7 +58,7 @@ export function ButtonLink({
   onClick?: () => void;
 }) {
   return (
-    <Link
+    <Link prefetch={false}
       href={href}
       onClick={onClick}
       className={`${BUTTON_BASE} ${BUTTON_VARIANT[variant]} ${BUTTON_SIZE[size]} ${className}`}
