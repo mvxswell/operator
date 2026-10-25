@@ -1,6 +1,6 @@
 "use client";
 
-import { dailyDecisionNumber, dailyQuestionFor } from "@/data";
+import { dailyDecisionNumber, dailyPreviewFor } from "@/data/dailyPreview";
 import { formatDailyDecisionNumber } from "@/data/dailyCycle";
 import { CATEGORY_MAP } from "@/lib/categories";
 import { dailyHabitStatus } from "@/lib/dailyStreak";
@@ -12,7 +12,7 @@ import { ButtonLink, Eyebrow } from "./ui";
 export function DailyCallout() {
   const { profile, hydrated } = useProfile();
   const dateKey = hydrated ? todayKey() : null;
-  const question = dateKey ? dailyQuestionFor(dateKey) : null;
+  const question = dateKey ? dailyPreviewFor(dateKey) : null;
   const number = dateKey ? dailyDecisionNumber(dateKey) : null;
   const status = dateKey ? dailyHabitStatus(profile.daily, dateKey) : null;
   const skill = question ? CATEGORY_MAP[question.category].name : "";

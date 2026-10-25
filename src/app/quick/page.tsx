@@ -5,8 +5,9 @@ import { PostScore } from "@/components/PostScore";
 import { ShareResultCard } from "@/components/ShareResultCard";
 import { SharedChallenge } from "@/components/SharedChallenge";
 import { CountUp } from "@/components/CountUp";
+import { PracticeLinks } from "@/components/PracticeLinks";
 import { Button, ButtonLink, Eyebrow, Panel } from "@/components/ui";
-import { QUICK_QUESTIONS } from "@/data";
+import { QUICK_QUESTIONS } from "@/data/quick";
 import { dpmTier, type QuickResult } from "@/lib/scoring";
 import { quickShareText } from "@/lib/shareResult";
 import { newId, recordQuickRun } from "@/lib/storage";
@@ -331,6 +332,10 @@ function ResultsScreen({
       </div>
 
       <ShareResultCard title="Quick Decisions" score={`${result.dpm} DPM`} verdict={tier.label} shared={shared} />
+      <section className="mt-6 rounded-xl border border-line bg-surface p-5" aria-label="Recommended practice">
+        <h2 className="font-semibold text-ink">Practice the next call</h2>
+        <PracticeLinks category={QUICK_QUESTIONS.find((question) => question.id === missedIds[0])?.category ?? "prioritization"} />
+      </section>
 
       <Panel className="mt-9 grid grid-cols-2 divide-line-soft sm:grid-cols-4 sm:divide-x">
         <Cell label="Decisions made" value={result.made} />
@@ -450,6 +455,7 @@ function MissedReview({ ids }: { ids: string[] }) {
                 </span>
               </p>
               <p className="mt-2 text-sm leading-relaxed text-muted">{q.explanation}</p>
+              <PracticeLinks category={q.category} />
             </div>
           ))}
         </div>

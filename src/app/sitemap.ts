@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { GUIDES } from "@/content/guides/collection";
+import { CASES } from "@/content/cases/catalog";
 import { TEST_LANDINGS } from "@/content/tests";
 import { leaderboardConfigured } from "@/lib/leaderboardConfig";
 import { absoluteUrl, sitemapEntries } from "@/lib/site";
@@ -11,6 +12,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...sitemapEntries().filter((entry) => entry.path !== "/leaderboard" || leaderboardConfigured()),
     ...GUIDES.map((guide) => ({ path: `/guides/${guide.slug}` })),
     { path: "/tests" },
+    { path: "/cases" },
+    ...CASES.map((item) => ({ path: `/cases/${item.slug}` })),
     ...TEST_LANDINGS.map((test) => ({ path: `/tests/${test.id}` })),
   ];
   return entries.map((entry) => ({

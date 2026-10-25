@@ -2,12 +2,11 @@
 
 import Link from "next/link";
 import { useMemo } from "react";
-import { CountUp } from "@/components/CountUp";
 import { DailyCallout } from "@/components/DailyCallout";
 import { LeaderboardTeaser } from "@/components/LeaderboardTeaser";
 import { SiteFooter } from "@/components/SiteFooter";
 import { ButtonLink, CategoryIcon, Eyebrow, Panel } from "@/components/ui";
-import { BANK_STATS } from "@/data";
+import { BANK_STATS } from "@/data/counts";
 import { CATEGORIES } from "@/lib/categories";
 import { operatorTier } from "@/lib/scoring";
 import type { OperatorRun } from "@/lib/storage";
@@ -48,10 +47,10 @@ export default function HomePage() {
   const displayScore = hasScore ? profile.operator.best : 782;
 
   return (
-    <div className="mx-auto max-w-6xl px-4 sm:px-6">
+    <div data-reading-page className="mx-auto max-w-6xl px-4 sm:px-6">
       {/* ---------------------------------- Hero --------------------------------- */}
       <section className="brand-hero my-8 grid gap-8 sm:my-12 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-10">
-        <div className="stack-rise">
+        <div>
           <Eyebrow>Business decision testing</Eyebrow>
           <h1 className="mt-4 text-[34px] font-semibold leading-[1.1] tracking-[-0.02em] text-ink sm:text-5xl lg:text-[56px]">
             How good are you at making business decisions?
@@ -73,7 +72,7 @@ export default function HomePage() {
         </div>
 
         {/* Sample (or personal) score card */}
-        <Panel className="animate-[var(--animate-pop)] overflow-hidden">
+        <Panel className="overflow-hidden">
           <div className="border-b border-line px-6 py-5">
             <div className="flex items-start justify-between">
               <div>
@@ -81,7 +80,7 @@ export default function HomePage() {
                   Operator Score
                 </p>
                 <p className="tabular mt-1 text-[64px] font-semibold leading-none tracking-[-0.03em] text-accent">
-                  <CountUp value={displayScore} durationMs={1200} />
+                  {displayScore}
                 </p>
               </div>
               <span className="rounded-md border border-accent/30 bg-accent-soft px-2 py-1 text-[11px] font-medium text-accent">
@@ -170,10 +169,9 @@ export default function HomePage() {
 
         <div className="mt-8 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
           {CATEGORIES.map((cat) => (
-            <Link
+            <Link prefetch={false}
               key={cat.id}
               href={`/skills/${cat.id}`}
-              aria-label={cat.name}
               className="brand-card group cursor-pointer rounded-xl border border-line bg-surface p-5"
             >
               <span className="text-accent">
@@ -205,9 +203,8 @@ function ModeCard({
   accent: string;
 }) {
   return (
-    <Link
+    <Link prefetch={false}
       href={href}
-      aria-label={title}
       className="brand-card group relative cursor-pointer rounded-xl border border-line bg-surface p-6"
     >
       <div

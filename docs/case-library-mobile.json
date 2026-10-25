@@ -1,0 +1,60 @@
+{
+  "tool": "Lighthouse 13.5.0",
+  "date": "2026-10-25",
+  "conditions": "Default mobile emulation and simulated throttling; Chrome headless; production out/ served locally with gzip and immutable static asset caching; analytics and presence-worker requests blocked; fresh Lighthouse profile per page.",
+  "target": "95+ performance on every sampled non-quiz page",
+  "targetMet": true,
+  "limitation": "Local lab measurements do not establish live-host performance for every network or device.",
+  "results": [
+    {
+      "page": "/",
+      "lighthouse": "13.5.0",
+      "performance": 95,
+      "accessibility": 100,
+      "fcp": 1843.242775,
+      "lcp": 2751.3237,
+      "tbt": 23.5,
+      "cls": 0
+    },
+    {
+      "page": "/guides/",
+      "lighthouse": "13.5.0",
+      "performance": 95,
+      "accessibility": 100,
+      "fcp": 1533.4933999999998,
+      "lcp": 2894.9867999999997,
+      "tbt": 41,
+      "cls": 0
+    },
+    {
+      "page": "/guides/how-to-price-a-service-business/",
+      "lighthouse": "13.5.0",
+      "performance": 95,
+      "accessibility": 100,
+      "fcp": 1839.2889999999998,
+      "lcp": 2745.052,
+      "tbt": 21,
+      "cls": 0
+    },
+    {
+      "page": "/cases/",
+      "lighthouse": "13.5.0",
+      "performance": 98,
+      "accessibility": 100,
+      "fcp": 1533.4691,
+      "lcp": 2208.9382,
+      "tbt": 41,
+      "cls": 0
+    },
+    {
+      "page": "/cases/gross-margin-volume-discount/",
+      "lighthouse": "13.5.0",
+      "performance": 99,
+      "accessibility": 100,
+      "fcp": 1383.4203499999999,
+      "lcp": 2060.8406999999997,
+      "tbt": 41,
+      "cls": 0
+    }
+  ]
+}

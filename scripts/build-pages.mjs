@@ -7,6 +7,10 @@
 import { spawnSync } from "node:child_process";
 import { createRequire } from "node:module";
 import { secureExport } from "./secure-export.mjs";
+import { preloadExportFont } from "./preload-export-fonts.mjs";
+
+const content = spawnSync(process.execPath, ["scripts/build-case-content.cjs"], { stdio: "inherit" });
+if (content.status !== 0) process.exit(content.status ?? 1);
 
 const env = {
   ...process.env,
@@ -54,4 +58,5 @@ const flatten = spawnSync(
   { stdio: "inherit", env },
 );
 if (flatten.status !== 0) process.exit(flatten.status ?? 1);
+console.log(`font-preload: optimized ${await preloadExportFont("out")} HTML files`);
 console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true, supabaseOrigin)} HTML files`);

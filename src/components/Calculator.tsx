@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 
 type Token = number | "+" | "-" | "*" | "/" | "%" | "(" | ")";
 
@@ -18,6 +18,21 @@ export function Calculator() {
   const [result, setResult] = useState<string | null>(null);
   const [history, setHistory] = useState<string[]>([]);
   const panelRef = useRef<HTMLDivElement>(null);
+  const toggleRef = useRef<HTMLButtonElement>(null);
+  const expressionRef = useRef<HTMLInputElement>(null);
+  const controlsId = useId();
+
+  useEffect(() => {
+    const mobile = window.matchMedia("(max-width: 639px)");
+    const update = () => document.documentElement.style.setProperty("--calculator-height", `${mobile.matches ? Math.ceil(panelRef.current?.getBoundingClientRect().height ?? 52) : 0}px`);
+    const observer = new ResizeObserver(update);
+    if (panelRef.current) observer.observe(panelRef.current);
+    mobile.addEventListener("change", update);
+    update();
+    return () => { observer.disconnect(); mobile.removeEventListener("change", update); document.documentElement.style.removeProperty("--calculator-height"); };
+  }, []);
+
+  function close() { setOpen(false); toggleRef.current?.focus(); }
 
   const display = useMemo(() => expression || result || "0", [expression, result]);
 
@@ -28,9 +43,14 @@ export function Calculator() {
       if (event.key === "Escape") {
         event.preventDefault();
         event.stopImmediatePropagation();
-        setOpen(false);
+        close();
         return;
       }
+      if (!panelRef.current?.contains(document.activeElement)) return;
+      // Native inputs handle editing; Enter still evaluates. Buttons retain
+      // their normal Enter activation (including Close and Collapse).
+      if (event.target === expressionRef.current && event.key !== "Enter" && event.key !== "=") return;
+      if (event.key === "Enter" && event.target instanceof HTMLButtonElement) return;
       if (event.key === "Enter" || event.key === "=") {
         event.preventDefault();
         event.stopImmediatePropagation();
@@ -87,55 +107,59 @@ export function Calculator() {
   }
 
   return (
-    <div ref={panelRef} data-calculator-open={open ? "true" : "false"}>
+    <div ref={panelRef} className="calculator-dock" data-calculator-root data-calculator-open={open ? "true" : "false"}>
       <button
+        ref={toggleRef}
         type="button"
-        onClick={() => setOpen((value) => !value)}
+        onClick={() => { setOpen((value) => !value); if (!open) requestAnimationFrame(() => expressionRef.current?.focus()); }}
         aria-expanded={open}
-        aria-controls="test-calculator"
-        className="fixed bottom-20 right-4 z-50 inline-flex h-11 items-center gap-2 rounded-full border border-accent/35 bg-surface-2 px-4 text-sm font-medium text-ink shadow-[0_16px_50px_rgba(0,0,0,0.45)] transition-colors hover:border-accent sm:right-6"
+        aria-controls={controlsId}
+        className="calculator-toggle inline-flex min-h-12 items-center justify-center gap-2 border-accent/35 bg-surface-2 px-4 text-sm font-medium text-ink transition-colors hover:border-accent"
       >
         <CalculatorIcon />
-        Calculator
+        {open ? "Collapse calculator" : "Calculator"}
       </button>
 
       {open ? (
         <div
-          id="test-calculator"
-          role="dialog"
-          aria-label="Calculator"
-          className="fixed inset-x-3 bottom-36 z-50 max-h-[calc(100dvh-10rem)] overflow-y-auto animate-[var(--animate-pop)] rounded-2xl border border-line bg-surface p-4 shadow-[0_28px_80px_rgba(0,0,0,0.6)] sm:inset-x-auto sm:right-6 sm:w-[320px]"
+          id={controlsId}
+          role="region"
+          aria-label="Scratch calculator"
+          className="calculator-panel overflow-y-auto border-line bg-surface p-4 shadow-[0_28px_80px_rgba(0,0,0,0.6)]"
         >
-          <div className="flex items-center justify-between">
+          <div className="calculator-header flex items-center justify-between">
             <div>
               <p className="text-[11px] font-medium uppercase tracking-[0.14em] text-accent">Scratch calculator</p>
               <p className="mt-0.5 text-[11px] text-faint">Percent means divide by 100 · e.g. 200 × 10%</p>
             </div>
-            <button type="button" onClick={() => setOpen(false)} className="rounded-md px-2 py-1 text-lg text-muted hover:bg-raised hover:text-ink" aria-label="Close calculator">×</button>
+            <button type="button" onClick={close} className="h-11 w-11 rounded-md text-lg text-muted hover:bg-raised hover:text-ink" aria-label="Close calculator">×</button>
           </div>
 
-          <div className="mt-3 rounded-xl border border-line-soft bg-bg px-4 py-3 text-right">
+          <div className="calculator-display mt-3 rounded-xl border border-line-soft bg-bg px-4 py-3 text-right">
             <p className="min-h-5 truncate font-mono text-xs text-faint">{history[0] ?? "Ready"}</p>
-            <p className={`mt-1 min-h-9 break-all font-mono text-2xl font-semibold ${result === "Check the expression" ? "text-neg" : "text-ink"}`}>
+            <label htmlFor={`${controlsId}-expression`} className="sr-only">Calculator expression</label>
+            <input ref={expressionRef} id={`${controlsId}-expression`} value={expression} maxLength={48} autoComplete="off" inputMode="decimal" placeholder="0" onChange={(event) => { setExpression(event.target.value); setResult(null); }} className="mt-1 min-h-11 w-full rounded bg-transparent text-right font-mono text-2xl font-semibold text-ink outline-offset-2" />
+            <p role="status" aria-label="Calculator display" className={result === "Check the expression" ? "mt-1 text-sm text-neg" : "sr-only"}>
               {result === "Check the expression" ? result : pretty(display)}
             </p>
           </div>
 
-          <div className="mt-3 grid grid-cols-4 gap-2">
+          <div className="calculator-keys mt-3 grid grid-cols-4 gap-2">
             {KEYS.map((key) => (
               <button
                 key={key}
                 type="button"
                 onClick={() => press(key)}
-                className={`h-10 rounded-lg border text-sm font-medium transition-colors ${/[+×÷−]/.test(key) ? "border-accent/25 bg-accent-soft text-accent hover:border-accent/60" : "border-line bg-surface-2 text-ink hover:bg-raised"}`}
+                aria-label={key === "C" ? "Clear" : key === "⌫" ? "Backspace" : key}
+                className={`h-11 rounded-lg border text-sm font-medium transition-colors ${/[+×÷−]/.test(key) ? "border-accent/25 bg-accent-soft text-accent hover:border-accent/60" : "border-line bg-surface-2 text-ink hover:bg-raised"}`}
               >
                 {key}
               </button>
             ))}
-            <button type="button" onClick={calculate} className="col-span-4 h-10 rounded-lg bg-accent text-sm font-semibold text-[#16120a] transition-opacity hover:opacity-90">Calculate</button>
+            <button type="button" onClick={calculate} className="col-span-4 h-11 rounded-lg bg-accent text-sm font-semibold text-[#16120a] transition-opacity hover:opacity-90">Calculate</button>
           </div>
           {history.length > 1 ? (
-            <div className="mt-3 border-t border-line-soft pt-3">
+            <div className="calculator-history mt-3 border-t border-line-soft pt-3">
               {history.slice(1).map((item, index) => <p key={`${index}-${item}`} className="truncate font-mono text-[11px] text-faint">{item}</p>)}
             </div>
           ) : null}

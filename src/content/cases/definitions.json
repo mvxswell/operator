@@ -1,0 +1,551 @@
+[
+  {
+    "questionId": "fin-01",
+    "slug": "meal-delivery-unit-economics",
+    "title": "Meal Delivery Unit Economics",
+    "topic": "Finance",
+    "guideSlug": "how-to-price-a-service-business",
+    "takeaway": "Check contribution on one unit before buying more demand."
+  },
+  {
+    "questionId": "fin-02",
+    "slug": "profit-vs-cash-working-capital",
+    "title": "Profit vs Cash: A Working Capital Crunch",
+    "topic": "Finance",
+    "guideSlug": "how-to-improve-cash-flow",
+    "takeaway": "Match invoice timing to the cash you must fund before collection."
+  },
+  {
+    "questionId": "fin-05",
+    "slug": "revenue-growth-vs-operating-expenses",
+    "title": "Revenue Growth vs Operating Expenses",
+    "topic": "Finance",
+    "guideSlug": "how-to-build-a-13-week-cash-flow-forecast",
+    "takeaway": "Bridge the change in profit rather than blaming the largest revenue line."
+  },
+  {
+    "questionId": "fin-06",
+    "slug": "saas-cac-payback-vs-runway",
+    "title": "SaaS CAC Payback vs Cash Runway",
+    "topic": "Finance",
+    "guideSlug": "what-to-do-when-cash-runway-drops-below-six-months",
+    "takeaway": "Profitable customer lifetime value does not fund today's acquisition bill."
+  },
+  {
+    "questionId": "fin-07",
+    "slug": "cash-conversion-cycle-inventory",
+    "title": "Inventory and the Cash Conversion Cycle",
+    "topic": "Finance",
+    "guideSlug": "how-to-improve-cash-flow",
+    "takeaway": "Treat days between supplier payment and collection as a financing requirement."
+  },
+  {
+    "questionId": "fin-08",
+    "slug": "membership-business-break-even",
+    "title": "Membership Business Break-Even",
+    "topic": "Finance",
+    "guideSlug": "should-you-expand",
+    "takeaway": "Prove the current unit's economics before copying its fixed costs."
+  },
+  {
+    "questionId": "fin-03",
+    "slug": "price-discount-gross-profit",
+    "title": "Price Discounts and Gross Profit",
+    "topic": "Pricing",
+    "guideSlug": "how-to-decide-whether-to-discount-a-deal",
+    "takeaway": "Calculate the profit given away, not just the percentage cut in price."
+  },
+  {
+    "questionId": "fin-04",
+    "slug": "gross-margin-volume-discount",
+    "title": "Gross Margin vs a Volume Discount",
+    "topic": "Pricing",
+    "guideSlug": "how-to-decide-whether-to-discount-a-deal",
+    "takeaway": "Require evidence for the additional volume needed to preserve contribution."
+  },
+  {
+    "questionId": "fin-09",
+    "slug": "idle-capacity-special-order-pricing",
+    "title": "Special-Order Pricing on Idle Capacity",
+    "topic": "Pricing",
+    "guideSlug": "how-to-price-a-service-business",
+    "takeaway": "Separate incremental contribution from allocated costs that stay either way."
+  },
+  {
+    "questionId": "fin-11",
+    "slug": "enterprise-pricing-cost-to-serve",
+    "title": "Enterprise Pricing and Hidden Cost to Serve",
+    "topic": "Pricing",
+    "guideSlug": "how-to-decide-whether-to-drop-an-unprofitable-customer",
+    "takeaway": "Include the scarce support work that a shared overhead pool conceals."
+  },
+  {
+    "questionId": "sal-08",
+    "slug": "price-objections-lost-deal-analysis",
+    "title": "Price Objections: Read the Lost-Deal Evidence",
+    "topic": "Pricing",
+    "guideSlug": "how-to-decide-whether-to-discount-a-deal",
+    "takeaway": "Validate the buying obstacle before spending margin on a concession.",
+    "work": [
+      "31 ÷ 40 = 77.5% of reviewed lost deals went to a competitor within 5% of the quote.",
+      "Only 9 reviewed losses fall outside that observed price band; this does not by itself establish causality.",
+      "Pair the price evidence with the stated response-time and scope complaints before changing the offer."
+    ]
+  },
+  {
+    "questionId": "sal-11",
+    "slug": "promotions-full-price-demand",
+    "title": "Promotions and Full-Price Demand",
+    "topic": "Pricing",
+    "guideSlug": "should-i-raise-prices",
+    "takeaway": "Measure whether a promotion creates demand or moves purchases into a cheaper window.",
+    "work": [
+      "Full-price sell-through is down 30%, so an illustrative prior index of 100 is now 70.",
+      "There have been five consecutive predictable end-of-month promotions.",
+      "Compare full-month contribution and purchase timing; the prompt does not provide enough margin data to compute the net profit effect."
+    ]
+  },
+  {
+    "questionId": "btl-02",
+    "slug": "warehouse-pick-pack-capacity",
+    "title": "Warehouse Capacity: Orders and Shipments",
+    "topic": "Operations",
+    "guideSlug": "how-to-find-the-bottleneck",
+    "takeaway": "Increase finished shipments at the binding step, not input to an overloaded queue.",
+    "work": [
+      "Incoming orders = 340/day; shipping capacity = 200/day.",
+      "Daily backlog increase = 340 − 200 = 140 orders.",
+      "Even unlimited additional demand cannot raise shipments above 200/day without fulfillment relief."
+    ]
+  },
+  {
+    "questionId": "btl-04",
+    "slug": "roastery-sequential-capacity",
+    "title": "Roastery Capacity Across Sequential Steps",
+    "topic": "Operations",
+    "guideSlug": "how-to-plan-capacity-before-taking-on-more-work",
+    "takeaway": "The lowest practical capacity sets output in a serial process.",
+    "work": [
+      "Roasting rate = 400 ÷ 8 = 50 lb/hour.",
+      "Serial output ceiling = min(400 roasting, 700 packaging, 520 demand) = 400 lb/day.",
+      "Demand exceeds roasting output by 520 − 400 = 120 lb/day, equivalent to 2.4 extra roasting hours at the stated rate."
+    ]
+  },
+  {
+    "questionId": "btl-05",
+    "slug": "freight-carrier-coverage-bottleneck",
+    "title": "Freight Bookings, Coverage and Delivery",
+    "topic": "Operations",
+    "guideSlug": "how-to-find-the-bottleneck",
+    "takeaway": "Follow each stage of the operating funnel to locate the widening gap.",
+    "work": [
+      "Uncovered loads last month = 310 − 305 = 5; this month = 425 − 342 = 83.",
+      "Bookings grew (425 − 310) ÷ 310 ≈ 37.1%; coverage grew (342 − 305) ÷ 305 ≈ 12.1%.",
+      "The booking-to-coverage gap widened by 78 loads; investigate carrier sourcing before buying more leads."
+    ]
+  },
+  {
+    "questionId": "btl-07",
+    "slug": "machine-upgrade-line-throughput",
+    "title": "Machine Upgrades and Line Throughput",
+    "topic": "Operations",
+    "guideSlug": "how-to-find-the-bottleneck",
+    "takeaway": "A faster non-constraint can create inventory without creating output.",
+    "work": [
+      "Station cycle times are 40, 95 and 55 seconds per unit.",
+      "The 95-second assembly step caps ideal serial throughput at 3,600 ÷ 95 ≈ 37.9 units/hour.",
+      "Changing cutting from 40 to 20 seconds leaves the 95-second maximum unchanged."
+    ]
+  },
+  {
+    "questionId": "btl-12",
+    "slug": "job-mix-shifting-bottlenecks",
+    "title": "Job Mix and Shifting Bottlenecks",
+    "topic": "Operations",
+    "guideSlug": "how-to-plan-capacity-before-taking-on-more-work",
+    "takeaway": "Compare contribution released per constrained hour across job types.",
+    "work": [
+      "Two job types each account for roughly half of revenue, but revenue share is not contribution per hour.",
+      "For each constraint, calculate incremental contribution unlocked ÷ additional constrained hours.",
+      "The prompt does not provide those margins or hours, so it does not support a numerical winner; gather them before choosing."
+    ]
+  },
+  {
+    "questionId": "ops-05",
+    "slug": "manufacturing-scrap-rate-step-change",
+    "title": "Manufacturing Scrap Rate Step Change",
+    "topic": "Operations",
+    "guideSlug": "how-to-fix-missed-deadlines",
+    "takeaway": "Investigate a dated quality change before adding capacity to absorb defects.",
+    "work": [
+      "Week 1 scrap rate = 60 ÷ 2,000 = 3%.",
+      "Week 3 scrap rate = 270 ÷ 2,050 ≈ 13.2%; week 4 = 410 ÷ 2,100 ≈ 19.5%.",
+      "Starts rose only 5% from week 1 to week 4 while passing units fell by 250; trace the change around week 3."
+    ]
+  },
+  {
+    "questionId": "sal-01",
+    "slug": "unanswered-sales-calls",
+    "title": "Unanswered Sales Calls vs More Ad Spend",
+    "topic": "Growth",
+    "guideSlug": "how-to-get-more-customers",
+    "takeaway": "Recover demand you already paid for before purchasing more of it.",
+    "work": [
+      "Unanswered calls = 900 × 40% = 360/month.",
+      "Answered calls = 900 − 360 = 540/month.",
+      "Recover the existing 360 missed opportunities before buying another batch; the prompt does not state their close rate."
+    ]
+  },
+  {
+    "questionId": "sal-03",
+    "slug": "sales-appointments-unused-capacity",
+    "title": "Sales Appointments and Unused Capacity",
+    "topic": "Growth",
+    "guideSlug": "why-are-sales-down",
+    "takeaway": "Match the intervention to appointment supply before adding salespeople.",
+    "work": [
+      "Appointment utilization = 7 ÷ 20 = 35%.",
+      "Unfilled appointment capacity = 20 − 7 = 13 per salesperson per week.",
+      "At the stated close rate, additional qualified appointments could use existing sales capacity; verify lead quality rather than assuming every slot will fill."
+    ]
+  },
+  {
+    "questionId": "sal-04",
+    "slug": "ecommerce-conversion-vs-traffic",
+    "title": "E-Commerce Conversion vs Paid Traffic",
+    "topic": "Growth",
+    "guideSlug": "why-are-sales-down",
+    "takeaway": "Separate conversion economics from traffic volume before increasing spend.",
+    "work": [
+      "Current orders = 60,000 × 0.4% = 240/month.",
+      "Traffic cost = 60,000 × $0.90 = $54,000/month.",
+      "At 0.8% conversion, the same traffic would yield 480 orders; that is a scenario to test, not a guaranteed lift."
+    ]
+  },
+  {
+    "questionId": "sal-05",
+    "slug": "sales-funnel-delivery-capacity",
+    "title": "Sales Funnel vs Delivery Capacity",
+    "topic": "Growth",
+    "guideSlug": "how-to-resolve-conflict-between-sales-and-operations",
+    "takeaway": "A booking is not a delivered job; inspect the full commercial-to-delivery chain.",
+    "work": [
+      "Sales rose from 72 to 94, a gain of 22; completed jobs fell from 70 to 61, a drop of 9.",
+      "This month's sales minus completions = 94 − 61 = 33 jobs, versus 2 last month.",
+      "Investigate production and capacity before adding more demand to the delivery queue."
+    ]
+  },
+  {
+    "questionId": "sal-09",
+    "slug": "customer-acquisition-vs-churn",
+    "title": "Customer Acquisition vs Churn",
+    "topic": "Growth",
+    "guideSlug": "why-is-my-business-not-growing",
+    "takeaway": "Reconcile gross additions with net growth before funding another acquisition push.",
+    "work": [
+      "Net growth = new customers − lost customers.",
+      "Implied departures = 1,200 − 150 = 1,050 customers, assuming no other customer-count movements.",
+      "Only 150 of 1,200 gross additions remain as net growth while acquisition cost is up 12%; diagnose retention first."
+    ]
+  },
+  {
+    "questionId": "sal-12",
+    "slug": "rising-cac-channel-saturation",
+    "title": "Rising CAC and Channel Saturation",
+    "topic": "Growth",
+    "guideSlug": "how-to-test-a-new-market-before-expanding",
+    "takeaway": "Test concentration and audience limits instead of assuming every CAC rise is creative fatigue.",
+    "work": [
+      "A 60% CAC increase turns an illustrative prior CAC of 100 cost units into 160.",
+      "With 80% of growth tied to this channel, a cost shock is concentrated rather than diversified.",
+      "Unchanged conversion weakens a conversion-failure explanation; test audience saturation and alternatives before a large creative commitment."
+    ]
+  },
+  {
+    "questionId": "str-01",
+    "slug": "compete-with-national-chain",
+    "title": "Competing with a National Chain on Price",
+    "topic": "Strategy",
+    "guideSlug": "how-to-test-a-new-market-before-expanding",
+    "takeaway": "Choose a dimension where your capabilities can earn a return.",
+    "work": [
+      "A competitor priced 25% below a hypothetical $100 title would charge $75.",
+      "Matching that gap requires removing $25 from your price; your buying cost is not given, so no profitable matching price can be inferred.",
+      "Compare differentiated service and customer value instead of assuming equal purchasing economics."
+    ]
+  },
+  {
+    "questionId": "str-03",
+    "slug": "saas-segment-retention-focus",
+    "title": "SaaS Segment Retention and Focus",
+    "topic": "Strategy",
+    "guideSlug": "how-to-set-quarterly-business-priorities",
+    "takeaway": "Compare retention and service burden before spreading a small team across segments.",
+    "work": [
+      "Dentist renewal is 91%, versus about 55% in the other segments: a 36-percentage-point gap.",
+      "Per illustrative 100 renewal opportunities, that is 91 retained versus 55; do not confuse this with an acquisition forecast.",
+      "Dentists are currently 15% of customers; combine retention, referrals and support burden when allocating the next effort."
+    ]
+  },
+  {
+    "questionId": "str-04",
+    "slug": "local-density-vs-new-city-expansion",
+    "title": "Local Density vs New-City Expansion",
+    "topic": "Strategy",
+    "guideSlug": "should-you-expand",
+    "takeaway": "Price the new operating system a distant market requires.",
+    "work": [
+      "Both options add three stores; the current network has six profitable stores.",
+      "The existing metro already supports 9% same-store sales growth; this is evidence of current traction, not a guarantee for new sites.",
+      "A city 200 miles away adds supply and management requirements not quantified in the prompt; include them before treating the options as equal."
+    ]
+  },
+  {
+    "questionId": "str-07",
+    "slug": "warehouse-build-vs-outsource",
+    "title": "Warehouse Build vs Outsource",
+    "topic": "Strategy",
+    "guideSlug": "how-to-decide-between-hiring-and-outsourcing",
+    "takeaway": "Stress-test fixed commitments against the demand floor, not just the average.",
+    "work": [
+      "At 40,000 orders, the stated per-order difference is $6.40 − $4.10 = $2.30, or $92,000/month once full efficiency is reached.",
+      "A simple $1.9M ÷ $92,000 ≈ 20.7-month payback ignores the ramp and assumes the stated costs remain valid.",
+      "Volume has ranged from 22,000 to 55,000 and efficiency takes a year; test the low-volume fixed-cost case rather than relying on that simple average."
+    ]
+  },
+  {
+    "questionId": "str-10",
+    "slug": "sunk-cost-product-investment",
+    "title": "Sunk Cost vs the Next Product Investment",
+    "topic": "Strategy",
+    "guideSlug": "how-to-decide-which-product-to-shut-down",
+    "takeaway": "Allocate the next dollar using future alternatives, not unrecoverable past spending.",
+    "work": [
+      "The $1.8M already spent cannot be recovered by either next decision.",
+      "The live alternatives use the same next $900,000; the core is expected to return about $2.5M.",
+      "$2.5M ÷ $900,000 ≈ 2.78, based on an estimate rather than a guaranteed return; compare forward opportunities, not past cost."
+    ]
+  },
+  {
+    "questionId": "str-12",
+    "slug": "new-market-bounded-experiment",
+    "title": "A Bounded Experiment Before Market Entry",
+    "topic": "Strategy",
+    "guideSlug": "how-to-test-a-new-market-before-expanding",
+    "takeaway": "Spend to resolve a decision-changing uncertainty before making a large commitment.",
+    "work": [
+      "Full entry commits $4M and a dedicated team.",
+      "The $12M projection is a three-year forecast, not observed demand; no target buyers have been contacted.",
+      "Define a smaller test budget and evidence gate before choosing whether the full $4M commitment is justified."
+    ]
+  },
+  {
+    "questionId": "peo-01",
+    "slug": "hiring-payback-billable-time",
+    "title": "Hiring Payback: Billable Time vs Assistant Cost",
+    "topic": "People",
+    "guideSlug": "when-to-hire-your-first-employee",
+    "takeaway": "Released owner time has economic value only when it can be used.",
+    "work": [
+      "Potential billable value of six hours = 6 × $250 = $1,500/week.",
+      "Assistant cost for six hours = 6 × $22 = $132/week.",
+      "Difference before additional employer costs and ramp = $1,368/week, conditional on converting those freed hours into paid client work."
+    ]
+  },
+  {
+    "questionId": "peo-02",
+    "slug": "new-hire-onboarding-owner",
+    "title": "New-Hire Onboarding Ownership",
+    "topic": "People",
+    "guideSlug": "how-to-onboard-a-new-manager",
+    "takeaway": "Give the ramp one accountable owner and an observable learning plan.",
+    "work": [
+      "Three days have passed without a named trainer or plan.",
+      "There is no wage, output or ramp-rate data, so the prompt does not support a dollar payback calculation.",
+      "Assign an owner, define first-week tasks and check demonstrated capability before adding more unstructured shadowing."
+    ]
+  },
+  {
+    "questionId": "peo-04",
+    "slug": "key-person-dependency",
+    "title": "Key-Person Dependency in Production",
+    "topic": "People",
+    "guideSlug": "how-to-create-sops",
+    "takeaway": "Convert individual knowledge into a repeatable process and trained backup.",
+    "work": [
+      "One knowledge holder and zero trained backups means absence can stop the entire process.",
+      "Two years without leave does not quantify outage probability, but the prompt confirms production stops when that person is out.",
+      "Document the recipes and validate a second baker's ability to run them; a retention payment alone does not create backup capacity."
+    ]
+  },
+  {
+    "questionId": "peo-06",
+    "slug": "delegating-decisions-vs-checklists",
+    "title": "Delegating Decisions vs Checklists",
+    "topic": "People",
+    "guideSlug": "how-to-stop-every-decision-coming-to-the-ceo",
+    "takeaway": "Move decision authority with responsibility rather than retaining every exception.",
+    "work": [
+      "A 14-step checklist still produces about 12 escalations a day.",
+      "The checklist describes actions but does not allocate authority for exceptions.",
+      "Define outcome, boundaries and escalation triggers, then measure whether routine decisions stay with the supervisor."
+    ]
+  },
+  {
+    "questionId": "peo-07",
+    "slug": "hiring-lead-time-capacity",
+    "title": "Hiring Lead Time and Productive Capacity",
+    "topic": "People",
+    "guideSlug": "when-to-hire-your-first-operations-manager",
+    "takeaway": "Plan hiring from the date useful capacity is needed, accounting for ramp.",
+    "work": [
+      "Recruiting takes eight weeks, roughly two months.",
+      "Productivity ramp takes another three months: total lead time is about five months.",
+      "Current utilization is 100% and demand is contracted for two quarters, so compare that five-month delay with capacity needed now."
+    ]
+  },
+  {
+    "questionId": "peo-11",
+    "slug": "sales-incentives-customer-trust",
+    "title": "Sales Incentives and Customer Trust",
+    "topic": "People",
+    "guideSlug": "how-to-choose-business-kpis",
+    "takeaway": "Pair an incentive with guardrails for the value it might consume.",
+    "work": [
+      "Revenue per repair order rose 22%, but repeat visits fell 15%.",
+      "The rating declined by 4.5 − 3.8 = 0.7 points and unnecessary-work complaints doubled.",
+      "The prompt does not quantify lifetime revenue loss; the conflicting indicators justify an incentive review, not a claim that short-term revenue proves success."
+    ]
+  },
+  {
+    "questionId": "res-01",
+    "slug": "scarce-asset-allocation",
+    "title": "Allocating a Scarce Asset",
+    "topic": "Capital Allocation",
+    "guideSlug": "where-to-invest-next-dollar",
+    "takeaway": "Compare the incremental value of the next constrained unit of capacity."
+  },
+  {
+    "questionId": "res-03",
+    "slug": "customer-acquisition-cost-allocation",
+    "title": "Customer Acquisition Cost Across Channels",
+    "topic": "Capital Allocation",
+    "guideSlug": "where-to-invest-next-dollar",
+    "takeaway": "Use the marginal acquisition opportunity rather than the size of a budget."
+  },
+  {
+    "questionId": "res-06",
+    "slug": "marketing-diminishing-returns",
+    "title": "Marketing Budget and Diminishing Returns",
+    "topic": "Capital Allocation",
+    "guideSlug": "where-to-invest-next-dollar",
+    "takeaway": "Compare the next dollar's return after the best opportunities are already funded."
+  },
+  {
+    "questionId": "res-07",
+    "slug": "contribution-per-machine-hour",
+    "title": "Contribution per Constrained Machine Hour",
+    "topic": "Capital Allocation",
+    "guideSlug": "how-to-plan-capacity-before-taking-on-more-work",
+    "takeaway": "Rank jobs by the return on the resource they actually compete for."
+  },
+  {
+    "questionId": "res-08",
+    "slug": "senior-engineer-time-allocation",
+    "title": "Allocating Senior Engineer Time",
+    "topic": "Capital Allocation",
+    "guideSlug": "how-to-decide-between-hiring-and-outsourcing",
+    "takeaway": "Include the scarce specialist attention each project consumes."
+  },
+  {
+    "questionId": "res-09",
+    "slug": "truck-purchase-vs-variable-carriers",
+    "title": "Truck Purchase vs Variable Carrier Costs",
+    "topic": "Capital Allocation",
+    "guideSlug": "how-to-decide-between-hiring-and-outsourcing",
+    "takeaway": "Value reversibility when the demand supporting a fixed investment is uncertain.",
+    "work": [
+      "Buying two trucks commits $260,000 to obtain a stated 20% per-load saving.",
+      "About 60% of recent growth depends on one contract rebidding in seven months.",
+      "Load counts and cost per load are absent, so payback cannot be calculated; compare flexible coverage with the risk of stranded fixed capacity."
+    ]
+  },
+  {
+    "questionId": "pri-03",
+    "slug": "checkout-outage-prioritization",
+    "title": "Checkout Outage and Incident Prioritization",
+    "topic": "Crisis",
+    "guideSlug": "how-to-prioritize",
+    "takeaway": "Triage by blocked business outcomes and blast radius, not request volume.",
+    "work": [
+      "The cosmetic issue affects 3% of users; the checkout issue blocks payment for 100% of new signups.",
+      "The affected populations differ, so do not infer a precise revenue ratio from those percentages.",
+      "Restore the blocked acquisition/payment path first; separately schedule the reporting and cosmetic work."
+    ]
+  },
+  {
+    "questionId": "pri-06",
+    "slug": "declining-reviews-demand-risk",
+    "title": "Declining Reviews and Future Demand Risk",
+    "topic": "Crisis",
+    "guideSlug": "how-to-prioritize",
+    "takeaway": "Separate a compounding operating problem from a static inconvenience.",
+    "work": [
+      "The rating fell by 4.6 − 4.1 = 0.5 points over two months.",
+      "The vendor increase is 8%; the booking flow has six clicks, but no conversion losses are supplied.",
+      "A deteriorating reputation can affect future bookings repeatedly; investigate its cause without inventing an exact cash impact."
+    ]
+  },
+  {
+    "questionId": "pri-09",
+    "slug": "expansion-single-trainer-risk",
+    "title": "Expansion with a Single Trainer",
+    "topic": "Crisis",
+    "guideSlug": "how-to-scale-operations",
+    "takeaway": "Resolve a critical dependency before copying it across new locations.",
+    "work": [
+      "Four new locations are planned on top of three existing ones.",
+      "Only one manager can train staff; adding sites does not add trainer capacity.",
+      "Standardize the process and validate another trainer before replicating the same dependency across four openings."
+    ]
+  },
+  {
+    "questionId": "pri-11",
+    "slug": "irreversible-lease-commitment",
+    "title": "An Irreversible Lease Commitment",
+    "topic": "Crisis",
+    "guideSlug": "how-to-set-quarterly-business-priorities",
+    "takeaway": "Spend deliberation time in proportion to the cost of reversing a decision.",
+    "work": [
+      "The lease fixes a commitment over five years; the other decisions can be changed more readily.",
+      "Lease payments and exit terms are not supplied, so the total financial commitment cannot be computed.",
+      "Compare reversibility and downside across plausible futures; devote deliberation to the harder-to-reverse choice."
+    ]
+  },
+  {
+    "questionId": "ops-12",
+    "slug": "supplier-concentration-outage-risk",
+    "title": "Supplier Concentration and Outage Risk",
+    "topic": "Crisis",
+    "guideSlug": "how-to-plan-capacity-before-taking-on-more-work",
+    "takeaway": "Recalculate the downside when the backup capacity disappears.",
+    "work": [
+      "The proposed material saving is about $340,000/year, or 7%.",
+      "The prior two-week outage cost about $200,000 when this supplier provided 45% of input and alternatives still existed.",
+      "Consolidation changes the outage exposure; neither the new loss nor outage probability is supplied, so do not treat $200,000 as the new risk estimate."
+    ]
+  },
+  {
+    "questionId": "str-02",
+    "slug": "customer-concentration-renewal-risk",
+    "title": "Customer Concentration and Renewal Risk",
+    "topic": "Crisis",
+    "guideSlug": "how-to-test-a-new-market-before-expanding",
+    "takeaway": "Build alternatives while a concentrated relationship is healthy.",
+    "work": [
+      "One customer provides 70% of revenue; all others together provide 30%.",
+      "Losing that customer would leave 30% of today's revenue before replacement or other changes.",
+      "A happy customer is not a renewal guarantee; develop alternatives before an annual renewal becomes a crisis."
+    ]
+  }
+]

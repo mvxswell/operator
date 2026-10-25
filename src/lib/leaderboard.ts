@@ -1,6 +1,6 @@
 "use client";
 
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { leaderboardConfigured, leaderboardStubbed } from "./leaderboardConfig";
 import {
   CLIENT_ID_PATTERN,
@@ -33,21 +33,21 @@ export interface PostResult {
   isBest: boolean;
 }
 
-let browserClient: SupabaseClient | null = null;
+let browserClient: Promise<SupabaseClient> | null = null;
 
-function supabase(): SupabaseClient | null {
+async function supabase(): Promise<SupabaseClient | null> {
   if (!leaderboardConfigured()) return null;
   if (browserClient) return browserClient;
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   if (!url || !key) return null;
-  browserClient = createClient(url, key, {
+  browserClient = import("@supabase/supabase-js").then(({ createClient }) => createClient(url, key, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,
       detectSessionInUrl: false,
     },
-  });
+  })).catch((error) => { browserClient = null; throw error; });
   return browserClient;
 }
 
@@ -102,7 +102,7 @@ function mapRow(row: {
 export async function fetchLeaderboard(mode: string, limit = 50): Promise<BoardRow[]> {
   if (!isLeaderboardMode(mode)) return [];
   if (leaderboardStubbed()) return stubBoard(mode, limit);
-  const client = supabase();
+  const client = await supabase();
   if (!client) return [];
   const { data, error } = await client.rpc("leaderboard", { p_mode: mode, p_limit: limit });
   if (error) throw new Error(leaderboardErrorMessage(error.message));
@@ -133,7 +133,7 @@ export async function postScore(input: {
 
   if (leaderboardStubbed()) return stubPost({ ...input, nickname });
 
-  const client = supabase();
+  const client = await supabase();
   if (!client) throw new Error("Could not reach the leaderboard. Try again.");
   const { data, error } = await client.rpc("submit_score", {
     p_nickname: nickname,

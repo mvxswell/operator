@@ -15,6 +15,7 @@ const LINKS = [
   { href: "/operator", label: "Operator Test", compact: "Operator" },
   { href: "/quick", label: "Quick Decisions", compact: "Quick" },
   { href: "/skills", label: "Skills", compact: "Skills" },
+  { href: "/cases", label: "Cases", compact: "Cases" },
   { href: "/guides", label: "Guides", compact: "Guides" },
   { href: "/daily", label: "Daily", compact: "Daily" },
   ...(leaderboardVisible()
@@ -40,9 +41,9 @@ export function Nav() {
   return (
     <header className="sticky top-0 z-50 border-b border-line-soft bg-bg/85 backdrop-blur-md">
       <nav className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 gap-y-1 px-4 py-2 sm:px-6 lg:flex-nowrap lg:gap-6">
-        <Link
+        <Link prefetch={false}
           href="/"
-          aria-label="Think Operator home"
+          aria-label="ThinkOperator home"
           className="flex h-10 shrink-0 items-center"
           onClick={(event) => leaveIfNeeded(event, "/")}
         >
@@ -51,7 +52,7 @@ export function Nav() {
 
         <div className="order-last flex w-full flex-wrap gap-1 lg:order-none lg:min-w-0 lg:flex-1">
           {LINKS.map((link) => (
-            <Link
+            <Link prefetch={false}
               key={link.href}
               href={link.href}
               aria-label={link.href === "/daily" ? dailyLinkLabel(daily) : undefined}
