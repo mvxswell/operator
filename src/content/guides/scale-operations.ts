@@ -21,7 +21,7 @@ const guide: Guide = {
     { type: "h2", text: "Standardize the path, not the personality" },
     {
       type: "p",
-      text: "Standard work is the current best way, written where the job happens. It covers the sequence a new person should follow and the picture of done. It is allowed to change when a better way survives a week of real jobs. It is not allowed to change because someone felt like improvising on a Tuesday. The [SOP loop](/guides/how-to-create-sops) is how you capture that way without boiling the ocean.",
+      text: "Standard work is the current best way, written where the job happens. It covers the sequence a new person should follow and the picture of done. It is allowed to change when a better way survives a week of real jobs. It is not allowed to change because someone felt like improvising on a Tuesday. The [SOP loop](/guides/how-to-create-sops/) is how you capture that way without boiling the ocean.",
     },
     {
       type: "p",

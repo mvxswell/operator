@@ -42,7 +42,7 @@ export function quizLabel(quiz: string): string {
 /** Link to one quiz's board. Unknown slugs open the Operator Test board. */
 export function quizBoardPath(quiz: string): string {
   const slug = isLeaderboardMode(quiz) ? quiz : "operator";
-  return `/leaderboard?quiz=${slug}`;
+  return `/leaderboard/?quiz=${slug}`;
 }
 
 /** Inclusive upper bound posted scores may use for a mode. */

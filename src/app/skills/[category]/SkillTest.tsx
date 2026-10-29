@@ -44,7 +44,7 @@ export function SkillTest({ category }: { category: CategoryId }) {
       onComplete={handleComplete}
       boardMode={category}
       category={category}
-      backHref="/skills"
+      backHref="/skills/"
       backLabel="All skills"
     />
   );

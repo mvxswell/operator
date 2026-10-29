@@ -12,7 +12,7 @@ const guide: Guide = {
     { type: "h2", text: "Signals that the price is stale" },
     {
       type: "p",
-      text: "Three signals are enough. Your costs for labor, materials, or overhead have moved and the price has not. The calendar is full of work you are not proud to discount. New proposals close so often that buyers are not pushing back. Any one of them can justify a look. All three together mean you are overdue. A feeling that you \"should charge more\" without one of those signals is a hunch. Check the floor in the [pricing guide](/guides/how-to-price-a-service-business) before you pick a number.",
+      text: "Three signals are enough. Your costs for labor, materials, or overhead have moved and the price has not. The calendar is full of work you are not proud to discount. New proposals close so often that buyers are not pushing back. Any one of them can justify a look. All three together mean you are overdue. A feeling that you \"should charge more\" without one of those signals is a hunch. Check the floor in the [pricing guide](/guides/how-to-price-a-service-business/) before you pick a number.",
     },
     {
       type: "p",
@@ -62,7 +62,7 @@ const guide: Guide = {
     { type: "h2", text: "Cash and the raise" },
     {
       type: "p",
-      text: "A higher price does not help a cash crunch this week unless the new invoices are the ones that get paid soon. If the bank account is the emergency, collections and deposits come first. Use the raise so the next quarter is not the same emergency. See [cash flow](/guides/how-to-improve-cash-flow) if the pain is timing rather than margin.",
+      text: "A higher price does not help a cash crunch this week unless the new invoices are the ones that get paid soon. If the bank account is the emergency, collections and deposits come first. Use the raise so the next quarter is not the same emergency. See [cash flow](/guides/how-to-improve-cash-flow/) if the pain is timing rather than margin.",
     },
     { type: "h2", text: "Try the call" },
     { type: "scenario" },
@@ -100,7 +100,7 @@ const guide: Guide = {
     },
   ],
   related: ["how-to-price-a-service-business", "how-to-improve-cash-flow", "should-you-expand"],
-  extraLinks: [{ href: "/skills/financial", label: "Take the Financial Judgment test" }],
+  extraLinks: [{ href: "/skills/financial/", label: "Take the Financial Judgment test" }],
 };
 
 export default guide;

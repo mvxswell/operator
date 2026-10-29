@@ -112,9 +112,9 @@ export default function BadgesPage() {
             </div>
           ) : null}
           <div className="mt-10 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/operator" size="lg">Operator Test</ButtonLink>
-            <ButtonLink href="/quick" variant="secondary" size="lg">Quick Decisions</ButtonLink>
-            <ButtonLink href="/daily" variant="ghost" size="lg">Daily Decision</ButtonLink>
+            <ButtonLink href="/operator/" size="lg">Operator Test</ButtonLink>
+            <ButtonLink href="/quick/" variant="secondary" size="lg">Quick Decisions</ButtonLink>
+            <ButtonLink href="/daily/" variant="ghost" size="lg">Daily Decision</ButtonLink>
           </div>
         </>
       )}

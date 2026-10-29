@@ -364,10 +364,10 @@ function ResultsScreen({
           Go again
           <span className="text-[11px] opacity-75">Enter</span>
         </Button>
-        <ButtonLink href="/operator" variant="secondary" size="lg">
+        <ButtonLink href="/operator/" variant="secondary" size="lg">
           Take the Operator Test
         </ButtonLink>
-        <ButtonLink href="/badges" variant="ghost" size="lg">
+        <ButtonLink href="/badges/" variant="ghost" size="lg">
           Badges
         </ButtonLink>
       </div>

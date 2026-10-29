@@ -66,7 +66,7 @@ const guide: Guide = {
     { type: "h2", text: "What this is not" },
     {
       type: "p",
-      text: "A single slow week inside a normal range is not a slump. Compare periods long enough to include a typical cycle of your sales. A slump that lines up with a constraint you can see — a full calendar, a broken delivery step — may not be a sales problem at all. If you are turning buyers away, read [why growth stalls](/guides/why-is-my-business-not-growing) before you rebuild the funnel.",
+      text: "A single slow week inside a normal range is not a slump. Compare periods long enough to include a typical cycle of your sales. A slump that lines up with a constraint you can see — a full calendar, a broken delivery step — may not be a sales problem at all. If you are turning buyers away, read [why growth stalls](/guides/why-is-my-business-not-growing/) before you rebuild the funnel.",
     },
     { type: "h2", text: "Try the call" },
     { type: "scenario" },

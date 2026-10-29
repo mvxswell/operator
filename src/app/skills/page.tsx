@@ -30,7 +30,7 @@ export default function SkillsPage() {
           return (
             <Link prefetch={false}
               key={cat.id}
-              href={`/skills/${cat.id}`}
+              href={`/skills/${cat.id}/`}
               className="brand-card group flex flex-col rounded-xl border border-line bg-surface p-5 sm:p-6"
             >
               <div className="flex items-start gap-3">

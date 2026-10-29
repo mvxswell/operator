@@ -6,6 +6,7 @@ import { ButtonLink } from "@/components/ui";
 import { getGuide, type Guide } from "@/content/guides/collection";
 import { readMinutes } from "@/content/guides/words";
 import { CATEGORY_MAP } from "@/lib/categories";
+import { siteHref } from "@/lib/site";
 
 export function GuideArticle({ guide }: { guide: Guide }) {
   const skill = CATEGORY_MAP[guide.skill];
@@ -101,7 +102,7 @@ export function GuideArticle({ guide }: { guide: Guide }) {
 
       <div className="mx-auto mt-10 flex max-w-[680px] flex-col gap-3 px-5 sm:flex-row sm:flex-wrap">
         <GuideTestCta skill={guide.skill} skillName={skill.name} slug={guide.slug} />
-        <ButtonLink href="/quick" variant="secondary" size="lg">
+        <ButtonLink href="/quick/" variant="secondary" size="lg">
           Quick Decisions — 60 sec
         </ButtonLink>
         {guide.extraLinks?.map((link) => (
@@ -117,7 +118,7 @@ export function GuideArticle({ guide }: { guide: Guide }) {
           <ul>
             {related.map((item) => (
               <li key={item.slug}>
-                <Link prefetch={false} href={`/guides/${item.slug}`}>{item.title}</Link>
+                <Link prefetch={false} href={`/guides/${item.slug}/`}>{item.title}</Link>
               </li>
             ))}
           </ul>
@@ -137,7 +138,7 @@ function Rich({ text }: { text: string }) {
     const link = /^\[([^\]]+)\]\((\/[^)\s]+)\)$/.exec(part);
     if (link) {
       return (
-        <Link prefetch={false} key={index} href={link[2]}>
+        <Link prefetch={false} key={index} href={siteHref(link[2])}>
           {link[1]}
         </Link>
       );

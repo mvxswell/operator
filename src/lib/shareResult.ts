@@ -4,7 +4,7 @@ import { maxScoreForMode } from "./leaderboardRules";
 const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 export function sharePayload(line: string, path: string, score: number): { line: string; url: string; text: string } {
-  const quiz = path.split("/").at(-1)!;
+  const quiz = path.split("/").filter(Boolean).at(-1)!;
   const query = new URLSearchParams({ ref: "share", q: quiz, score: String(score), utm_source: "copy" });
   const url = `${absoluteUrl(path)}?${query}`;
   return { line, url, text: `${line}\n${url}` };
@@ -13,7 +13,7 @@ export function sharePayload(line: string, path: string, score: number): { line:
 export function operatorShareText(score: number, tierLabel: string): { line: string; url: string; text: string } {
   return sharePayload(
     `I scored ${score} (${tierLabel} tier) on the Operator Test. Can you beat it?`,
-    "/operator",
+    "/operator/",
     score,
   );
 }
@@ -26,7 +26,7 @@ export function skillShareText(
 ): { line: string; url: string; text: string } {
   return sharePayload(
     `I scored ${score} (${tierLabel} tier) on the ${skillName} test. Can you beat it?`,
-    `/skills/${category}`,
+    `/skills/${category}/`,
     score,
   );
 }
@@ -34,14 +34,14 @@ export function skillShareText(
 export function quickShareText(dpm: number, tierLabel: string): { line: string; url: string; text: string } {
   return sharePayload(
     `I scored ${dpm} DPM (${tierLabel} tier) on Quick Decisions. Can you beat it?`,
-    "/quick",
+    "/quick/",
     dpm,
   );
 }
 
 /** Badge link. No score query — the page shows how to earn it. */
 export function badgeShareText(name: string, id: string): { line: string; url: string; text: string } {
-  const url = `${absoluteUrl("/badges")}#${encodeURIComponent(id)}`;
+  const url = `${absoluteUrl("/badges/")}#${encodeURIComponent(id)}`;
   const line = `I earned the ${name} badge on Think Operator.`;
   return { line, url, text: `${line}\n${url}` };
 }
@@ -58,7 +58,7 @@ export function dailyShareText(
   const day = Number(dayRaw);
   const mark = correct ? "✅" : "❌";
   const days = streak === 1 ? "1-day streak" : `${streak}-day streak`;
-  return sharePayload(`Daily Decision ${month} ${day}: ${mark} L${level}, ${days}`, "/daily", correct ? 1 : 0);
+  return sharePayload(`Daily Decision ${month} ${day}: ${mark} L${level}, ${days}`, "/daily/", correct ? 1 : 0);
 }
 
 export type ShareChannel = "copy" | "x" | "linkedin" | "native" | "download";

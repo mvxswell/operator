@@ -19,7 +19,7 @@ export function GuideTestCta({
 }) {
   return (
     <ButtonLink
-      href={`/skills/${skill}?start=1&from=guide-${slug}`}
+      href={`/skills/${skill}/?start=1&from=guide-${slug}`}
       size={size}
       className={`guide-cta-button shrink-0 ${className}`}
       onClick={() => track(`guide:${slug}:cta`)}

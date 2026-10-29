@@ -6,6 +6,7 @@ import { CaseExercise } from "@/components/CaseExercise";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CATEGORY_MAP } from "@/lib/categories";
 import { editorialMetadata } from "@/lib/editorialSeo";
+import { searchMetadata } from "@/lib/serpCopy";
 import { absoluteUrl } from "@/lib/site";
 
 export const dynamicParams = false;
@@ -14,7 +15,8 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = CASES.find((entry) => entry.slug === slug);
   if (!item) notFound();
-  return editorialMetadata(`${item.title} — Business Case — Think Operator`, item.description, `/cases/${slug}`);
+  const seo = searchMetadata(`/cases/${slug}`, `${item.title} — Business Case — Think Operator`, item.description);
+  return editorialMetadata(seo.title, seo.description, `/cases/${slug}`);
 }
 
 export default async function CasePage({ params }: { params: Promise<{ slug: string }> }) {
@@ -24,7 +26,8 @@ export default async function CasePage({ params }: { params: Promise<{ slug: str
   if (!item || !question) notFound();
   const related = CASES.filter((entry) => entry.topic === item.topic && entry.slug !== slug).slice(0, 3);
   // Deliberately omit acceptedAnswer, solution steps and the takeaway from JSON-LD.
-  const schema = { "@context": "https://schema.org", "@type": ["Quiz", "LearningResource"], "@id": absoluteUrl(`/cases/${slug}`), name: item.title, description: item.description, url: absoluteUrl(`/cases/${slug}`), inLanguage: "en", isAccessibleForFree: true, learningResourceType: "Business case", educationalUse: "Self-assessment", assesses: item.subskill, about: item.topic, hasPart: { "@type": "Question", name: question.prompt, text: question.scenario } };
+  const seo = searchMetadata(`/cases/${slug}`, `${item.title} — Business Case — Think Operator`, item.description);
+  const schema = { "@context": "https://schema.org", "@type": ["Quiz", "LearningResource"], "@id": absoluteUrl(`/cases/${slug}`), name: item.title, description: seo.description, url: absoluteUrl(`/cases/${slug}`), inLanguage: "en", isAccessibleForFree: true, learningResourceType: "Business case", educationalUse: "Self-assessment", assesses: item.subskill, about: item.topic, hasPart: { "@type": "Question", name: question.prompt, text: question.scenario } };
   return <div data-reading-page className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schema).replace(/</g, "\\u003c") }} />
     <nav aria-label="Breadcrumb" className="text-sm text-muted"><Link prefetch={false} href="/cases/" className="text-accent hover:underline">Business cases</Link> <span aria-hidden="true">/</span> {item.topic}</nav>

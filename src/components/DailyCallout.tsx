@@ -64,7 +64,7 @@ export function DailyCallout() {
               )}
             </div>
           </div>
-          <ButtonLink href="/daily" size="lg" className="shrink-0 sm:min-w-52">
+          <ButtonLink href="/daily/" size="lg" className="shrink-0 sm:min-w-52">
             {done ? "Review today's call" : "Make today's call"}
           </ButtonLink>
         </div>

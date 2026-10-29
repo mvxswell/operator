@@ -70,7 +70,7 @@ const guide: Guide = {
     },
     {
       type: "p",
-      text: "When sales are already down, diagnose which term moved before you add a channel. The [sales slump guide](/guides/why-are-sales-down) is that split. Buying traffic into a broken conversion step is how a test looks busy and the bank account does not.",
+      text: "When sales are already down, diagnose which term moved before you add a channel. The [sales slump guide](/guides/why-are-sales-down/) is that split. Buying traffic into a broken conversion step is how a test looks busy and the bank account does not.",
     },
     { type: "h2", text: "Try the call" },
     { type: "scenario" },
