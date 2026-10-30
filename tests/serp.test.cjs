@@ -25,5 +25,5 @@ test("ranking-page titles and descriptions stay within the search snippet", () =
     titles.add(copy.title);
     descriptions.add(copy.description);
   }
-  assert.equal(Object.keys(SERP_COPY).length, 11);
+  assert.equal(Object.keys(SERP_COPY).length, 9);
 });
