@@ -19,11 +19,6 @@ export const SERP_COPY: Record<string, { title: string; description: string }> =
     description:
       "Worked numbers for dropping an unprofitable customer: separate contribution from overhead, then keep, reprice, or exit. Free finance skill test.",
   },
-  "/guides/how-to-handle-a-customer-who-pays-late": {
-    title: "How to Explain a Delay in Payment — Think Operator",
-    description:
-      "How to explain a delay in payment: separate invoice errors, disputes, and cash problems, then set a dated collection plan. Free finance test.",
-  },
   "/guides/how-to-stop-every-decision-coming-to-the-ceo": {
     title: "Stop Every Decision Coming to the CEO — Think Operator",
     description:
@@ -53,11 +48,6 @@ export const SERP_COPY: Record<string, { title: string; description: string }> =
     title: "Operator Test: What It Measures — Think Operator",
     description:
       "What the free Operator Test measures before you start: finance, people, operations, and strategy across twenty scenarios. Then start the test.",
-  },
-  "/tests": {
-    title: "Free Business Services Skills Test — Think Operator",
-    description:
-      "Free business services skills tests: the Operator Test, eight skill quizzes, Quick Decisions, and a daily scenario. Choose one and start now.",
   },
 };
 
