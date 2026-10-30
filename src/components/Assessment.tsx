@@ -421,7 +421,7 @@ function Results({
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
           {trainId ? (
             <ButtonLink
-              href={`/skills/${trainId}`}
+              href={`/skills/${trainId}/`}
               size="lg"
               className="w-full sm:w-auto"
               onClick={() => track("result:train")}
@@ -458,14 +458,14 @@ function Results({
 
       <div className="mt-10 flex flex-col gap-3 sm:flex-row">
         <ButtonLink
-          href="/progress"
+          href="/progress/"
           variant="secondary"
           size="lg"
           onClick={() => track("result:progress")}
         >
           View my progress
         </ButtonLink>
-        <ButtonLink href="/badges" variant="ghost" size="lg">
+        <ButtonLink href="/badges/" variant="ghost" size="lg">
           Badges
         </ButtonLink>
         {backHref ? (
@@ -596,7 +596,7 @@ function ReviewSection({ missedIds }: { missedIds: string[] }) {
                   {CATEGORY_MAP[q.category].name}
                 </span>
                 <Link
-                  href={`/skills/${q.category}`}
+                  href={`/skills/${q.category}/`}
                   className="text-[11px] text-faint underline-offset-2 hover:text-muted hover:underline"
                 >
                   Train this

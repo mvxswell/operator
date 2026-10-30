@@ -65,7 +65,7 @@ export function BadgeEarned() {
                 </li>
               ))}
             </ul>
-            <Link href="/badges" className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-accent hover:text-ink">
+            <Link href="/badges/" className="mt-3 inline-flex min-h-11 items-center text-sm font-medium text-accent hover:text-ink">
               See all badges
             </Link>
           </>

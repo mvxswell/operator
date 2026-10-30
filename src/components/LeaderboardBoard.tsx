@@ -55,7 +55,7 @@ export function LeaderboardBoard() {
         <p className="mt-4 max-w-xl text-[15px] leading-relaxed text-muted">
           The public board is off until the site is connected to a database. Finish a test and your result still saves in this browser.
         </p>
-        <Link href="/progress" className="mt-6 inline-block text-sm text-accent">
+        <Link href="/progress/" className="mt-6 inline-block text-sm text-accent">
           My progress
         </Link>
       </div>
@@ -71,7 +71,7 @@ export function LeaderboardBoard() {
 
   function openQuiz(quiz: string) {
     if (quiz === mode) return;
-    router.replace(`/leaderboard?quiz=${quiz}`, { scroll: false });
+    router.replace(`/leaderboard/?quiz=${quiz}`, { scroll: false });
   }
 
   return (

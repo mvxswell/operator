@@ -59,7 +59,7 @@ const guide: Guide = {
     { type: "h2", text: "Systemize in a loop, not a project" },
     {
       type: "p",
-      text: "After the first page works, take the next task from the interruption list. One a week will change a small company in a season. A \"we will document everything in March\" project produces a pile of unread pages and a tired owner. Tie each page to a delegation rung: once someone else can run it, you stop being the backup for that task. The [delegation guide](/guides/how-to-delegate) is how the page becomes someone else's job rather than your script.",
+      text: "After the first page works, take the next task from the interruption list. One a week will change a small company in a season. A \"we will document everything in March\" project produces a pile of unread pages and a tired owner. Tie each page to a delegation rung: once someone else can run it, you stop being the backup for that task. The [delegation guide](/guides/how-to-delegate/) is how the page becomes someone else's job rather than your script.",
     },
     {
       type: "p",

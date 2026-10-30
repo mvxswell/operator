@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CATEGORIES } from "./categories";
+import { searchMetadata } from "./serpCopy";
 
 export const SITE_ORIGIN = "https://thinkoperator.com";
 
@@ -71,7 +72,8 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
 export function pageMetadata(path: string): Metadata {
   const page = PUBLIC_PAGES.find((entry) => entry.path === path);
   if (!page) throw new Error(`No metadata for ${path}`);
-  return socialMetadata(page.title, page.description, path);
+  const seo = searchMetadata(path, page.title, page.description);
+  return socialMetadata(seo.title, seo.description, path);
 }
 
 export function skillMetadata(name: string, description: string): Metadata {
@@ -106,10 +108,30 @@ function socialMetadata(title: string, description: string, path: string): Metad
   };
 }
 
+/**
+ * Internal URL in the form GitHub Pages serves as 200.
+ * A directory index at `path/index.html` is `/path/`. Query and hash stay put.
+ * File assets (anything with an extension) are left alone.
+ */
+export function siteHref(href: string): string {
+  if (!href.startsWith("/") || href.startsWith("//")) return href;
+  const splitAt = href.search(/[?#]/);
+  const path = splitAt === -1 ? href : href.slice(0, splitAt);
+  const suffix = splitAt === -1 ? "" : href.slice(splitAt);
+  if (path === "/" || path.endsWith("/") || /\.[a-zA-Z0-9]+$/.test(path)) return href;
+  return `${path}/${suffix}`;
+}
+
+export function sameSitePath(a: string, b: string): boolean {
+  const bare = (value: string) => siteHref(value.split(/[?#]/)[0] || "/");
+  return bare(a) === bare(b);
+}
+
 /** Canonical production URL, with the trailing slash GitHub Pages serves. */
 export function absoluteUrl(path: string): string {
   if (path === "/") return `${SITE_ORIGIN}/`;
-  return `${SITE_ORIGIN}${path.endsWith("/") ? path : `${path}/`}`;
+  const href = siteHref(path);
+  return `${SITE_ORIGIN}${href}`;
 }
 
 export function sitemapEntries(): { path: string }[] {

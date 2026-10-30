@@ -44,7 +44,7 @@ const guide: Guide = {
     },
     {
       type: "p",
-      text: "If you cannot explain the task in a few minutes, you do not understand it well enough to hand it off. That is a signal to document it once while you do it, not a signal to keep it forever. The [SOP guide](/guides/how-to-create-sops) is the loop for that.",
+      text: "If you cannot explain the task in a few minutes, you do not understand it well enough to hand it off. That is a signal to document it once while you do it, not a signal to keep it forever. The [SOP guide](/guides/how-to-create-sops/) is the loop for that.",
     },
     { type: "h2", text: "Hand off with a checklist" },
     {

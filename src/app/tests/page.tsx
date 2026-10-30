@@ -2,9 +2,15 @@ import Link from "next/link";
 import { TEST_LANDINGS } from "@/content/tests";
 import { SiteFooter } from "@/components/SiteFooter";
 import { editorialMetadata } from "@/lib/editorialSeo";
+import { searchMetadata } from "@/lib/serpCopy";
 import { absoluteUrl } from "@/lib/site";
 
-export const metadata = editorialMetadata("Business Judgment Quizzes and Skill Tests — Think Operator", "Explore the Operator Test, eight focused business skill tests, Quick Decisions, and Daily Decision. Choose what to practice and see how each assessment works.", "/tests");
+const testsSeo = searchMetadata(
+  "/tests",
+  "Business Judgment Quizzes and Skill Tests — Think Operator",
+  "Explore the Operator Test, eight focused business skill tests, Quick Decisions, and Daily Decision. Choose what to practice and see how each assessment works.",
+);
+export const metadata = editorialMetadata(testsSeo.title, testsSeo.description, "/tests");
 
 export default function TestsPage() {
   const data = { "@context": "https://schema.org", "@type": "CollectionPage", name: "Think Operator tests", url: absoluteUrl("/tests"), mainEntity: { "@type": "ItemList", itemListElement: TEST_LANDINGS.map((test, index) => ({ "@type": "ListItem", position: index + 1, name: test.title, url: absoluteUrl(`/tests/${test.id}`) })) } };

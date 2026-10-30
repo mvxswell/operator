@@ -30,7 +30,7 @@ const guide: Guide = {
     { type: "h2", text: "Fund the constraint first" },
     {
       type: "p",
-      text: "The next dollar belongs on the step that limits finished, paid work. If sold jobs are waiting on install, a marketing push adds promises. If the phone is quiet and the crew has slack, a new truck adds a payment. Find the queue that grows, then ask which option on your list makes that queue move. The [bottleneck guide](/guides/how-to-find-the-bottleneck) is the measurement. Allocation without it is how budgets follow whoever presented last.",
+      text: "The next dollar belongs on the step that limits finished, paid work. If sold jobs are waiting on install, a marketing push adds promises. If the phone is quiet and the crew has slack, a new truck adds a payment. Find the queue that grows, then ask which option on your list makes that queue move. The [bottleneck guide](/guides/how-to-find-the-bottleneck/) is the measurement. Allocation without it is how budgets follow whoever presented last.",
     },
     {
       type: "p",
@@ -67,7 +67,7 @@ const guide: Guide = {
     },
     {
       type: "p",
-      text: "If the winner of the comparison is a hire, read [when to hire](/guides/when-to-hire-your-first-employee) so the seat matches the gap. If the winner is a price change, that spends no cash and often returns more than a tool. Do not skip a free move because the list in front of you is full of things to buy.",
+      text: "If the winner of the comparison is a hire, read [when to hire](/guides/when-to-hire-your-first-employee/) so the seat matches the gap. If the winner is a price change, that spends no cash and often returns more than a tool. Do not skip a free move because the list in front of you is full of things to buy.",
     },
     { type: "h2", text: "Try the call" },
     { type: "scenario" },

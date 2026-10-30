@@ -82,7 +82,7 @@ const guide: Guide = {
     },
     {
       type: "p",
-      text: "Review the hourly cost twice a year, or when rent, wages, or your target pay change. Prices that were careful in a cheap year become generous by accident. The [raise prices guide](/guides/should-i-raise-prices) covers how to move a price you already published.",
+      text: "Review the hourly cost twice a year, or when rent, wages, or your target pay change. Prices that were careful in a cheap year become generous by accident. The [raise prices guide](/guides/should-i-raise-prices/) covers how to move a price you already published.",
     },
     { type: "h2", text: "Try the call" },
     { type: "scenario" },

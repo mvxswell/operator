@@ -6,23 +6,24 @@ import type { MouseEvent } from "react";
 import { dailyHabitStatus } from "@/lib/dailyStreak";
 import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { blockQuizLeave } from "@/lib/quizGuard";
+import { sameSitePath, siteHref } from "@/lib/site";
 import { todayKey } from "@/lib/storage";
 import { useProfile } from "@/lib/useProfile";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
 
 const LINKS = [
-  { href: "/operator", label: "Operator Test", compact: "Operator" },
-  { href: "/quick", label: "Quick Decisions", compact: "Quick" },
-  { href: "/skills", label: "Skills", compact: "Skills" },
-  { href: "/cases", label: "Cases", compact: "Cases" },
-  { href: "/guides", label: "Guides", compact: "Guides" },
-  { href: "/daily", label: "Daily", compact: "Daily" },
+  { href: "/operator/", label: "Operator Test", compact: "Operator" },
+  { href: "/quick/", label: "Quick Decisions", compact: "Quick" },
+  { href: "/skills/", label: "Skills", compact: "Skills" },
+  { href: "/cases/", label: "Cases", compact: "Cases" },
+  { href: "/guides/", label: "Guides", compact: "Guides" },
+  { href: "/daily/", label: "Daily", compact: "Daily" },
   ...(leaderboardVisible()
-    ? [{ href: "/leaderboard", label: "Leaderboard", compact: "Leaderboard" }]
+    ? [{ href: "/leaderboard/", label: "Leaderboard", compact: "Leaderboard" }]
     : []),
-  { href: "/badges", label: "Badges", compact: "Badges" },
-  { href: "/progress", label: "My progress", compact: "Progress" },
+  { href: "/badges/", label: "Badges", compact: "Badges" },
+  { href: "/progress/", label: "My progress", compact: "Progress" },
 ];
 
 export function Nav() {
@@ -30,11 +31,15 @@ export function Nav() {
   const { profile, hydrated } = useProfile();
   const daily = hydrated ? dailyHabitStatus(profile.daily, todayKey()) : null;
 
-  const isActive = (href: string) =>
-    href === "/" ? pathname === "/" : pathname.startsWith(href);
+  const isActive = (href: string) => {
+    const current = siteHref(pathname.split(/[?#]/)[0] || "/");
+    const target = siteHref(href.split(/[?#]/)[0] || "/");
+    if (target === "/") return current === "/";
+    return current === target || current.startsWith(target);
+  };
 
   const leaveIfNeeded = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
-    if (pathname === href) return;
+    if (sameSitePath(pathname, href)) return;
     blockQuizLeave(event);
   };
 
@@ -55,7 +60,7 @@ export function Nav() {
             <Link prefetch={false}
               key={link.href}
               href={link.href}
-              aria-label={link.href === "/daily" ? dailyLinkLabel(daily) : undefined}
+              aria-label={sameSitePath(link.href, "/daily/") ? dailyLinkLabel(daily) : undefined}
               onClick={(event) => leaveIfNeeded(event, link.href)}
               className={`shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 ${
                 isActive(link.href)
@@ -66,7 +71,7 @@ export function Nav() {
               <span className="inline-flex items-center gap-1">
                 <span className="lg:hidden">{link.compact}</span>
                 <span className="hidden lg:inline">{link.label}</span>
-                {link.href === "/daily" ? <DailyMark status={daily} /> : null}
+                {sameSitePath(link.href, "/daily/") ? <DailyMark status={daily} /> : null}
               </span>
             </Link>
           ))}

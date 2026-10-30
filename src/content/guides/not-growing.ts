@@ -25,17 +25,17 @@ const guide: Guide = {
     },
     {
       type: "p",
-      text: "A demand problem is not a reason to try five channels this month. The [customer guide](/guides/how-to-get-more-customers) is about picking one test and measuring it. Adding spend while conversion or delivery is the real limit just buys a more expensive stall.",
+      text: "A demand problem is not a reason to try five channels this month. The [customer guide](/guides/how-to-get-more-customers/) is about picking one test and measuring it. Adding spend while conversion or delivery is the real limit just buys a more expensive stall.",
     },
     { type: "h2", text: "Conversion: do the right people buy?" },
     {
       type: "p",
-      text: "The metric is the share of qualified conversations that become a paid yes. If leads are steady and that share dropped, read the [sales guide](/guides/why-are-sales-down) before you buy more traffic. Split the path: showed up, got a proposal, signed. The step that fell is the work. A new logo does not repair a proposal that goes out a week late.",
+      text: "The metric is the share of qualified conversations that become a paid yes. If leads are steady and that share dropped, read the [sales guide](/guides/why-are-sales-down/) before you buy more traffic. Split the path: showed up, got a proposal, signed. The step that fell is the work. A new logo does not repair a proposal that goes out a week late.",
     },
     { type: "h2", text: "Capacity: can you take the work if they say yes?" },
     {
       type: "p",
-      text: "The metric is work you decline, delay past a promise, or quote with a start date so far out that people walk. If you are saying no to good jobs, growth is capped by hours, seats, machines, or cash to fund the job. More marketing makes that worse. The next move is the constraint: a hire, a second shift, a deposit policy, or a narrower offer that uses the capacity you have. See [where the bottleneck sits](/guides/how-to-find-the-bottleneck) before you add cost in the wrong place.",
+      text: "The metric is work you decline, delay past a promise, or quote with a start date so far out that people walk. If you are saying no to good jobs, growth is capped by hours, seats, machines, or cash to fund the job. More marketing makes that worse. The next move is the constraint: a hire, a second shift, a deposit policy, or a narrower offer that uses the capacity you have. See [where the bottleneck sits](/guides/how-to-find-the-bottleneck/) before you add cost in the wrong place.",
     },
     { type: "h2", text: "Delivery: does the work earn the next sale?" },
     {
@@ -108,7 +108,7 @@ const guide: Guide = {
     },
   ],
   related: ["how-to-find-the-bottleneck", "why-are-sales-down", "how-to-get-more-customers"],
-  extraLinks: [{ href: "/operator", label: "Take the Operator Test" }],
+  extraLinks: [{ href: "/operator/", label: "Take the Operator Test" }],
 };
 
 export default guide;

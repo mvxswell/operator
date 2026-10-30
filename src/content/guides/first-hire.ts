@@ -30,7 +30,7 @@ const guide: Guide = {
     { type: "h2", text: "Hire the bottleneck" },
     {
       type: "p",
-      text: "Comfort hires feel good and do not move the business. A bookkeeper when you are turning away jobs is comfort if invoicing is not what is stuck. An extra technician when the phone is quiet is comfort. Look at the step that is full. If sales is turning away qualified conversations and delivery still has slack, the hire belongs in sales. If delivery is late and the pipeline is thin, the hire belongs on the tools. The [bottleneck guide](/guides/how-to-find-the-bottleneck) is the longer version of that look.",
+      text: "Comfort hires feel good and do not move the business. A bookkeeper when you are turning away jobs is comfort if invoicing is not what is stuck. An extra technician when the phone is quiet is comfort. Look at the step that is full. If sales is turning away qualified conversations and delivery still has slack, the hire belongs in sales. If delivery is late and the pipeline is thin, the hire belongs on the tools. The [bottleneck guide](/guides/how-to-find-the-bottleneck/) is the longer version of that look.",
     },
     {
       type: "p",

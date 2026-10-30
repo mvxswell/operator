@@ -59,10 +59,10 @@ export default function HomePage() {
             Test your judgment. Train your weaknesses. Make better decisions faster.
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/operator" size="lg">
+            <ButtonLink href="/operator/" size="lg">
               Take the Operator Test
             </ButtonLink>
-            <ButtonLink href="/quick" variant="secondary" size="lg">
+            <ButtonLink href="/quick/" variant="secondary" size="lg">
               Quick Decisions — 60 sec
             </ButtonLink>
           </div>
@@ -124,28 +124,28 @@ export default function HomePage() {
       <section className="border-t border-line-soft py-14 sm:py-16">
         <div className="grid gap-3 sm:grid-cols-2">
           <ModeCard
-            href="/operator"
+            href="/operator/"
             title="Operator Test"
             meta="~20 questions · adaptive"
             body="The flagship assessment. Difficulty adapts to how you perform, then you get an Operator Score and a breakdown across all eight skills."
             accent="#f2b441"
           />
           <ModeCard
-            href="/quick"
+            href="/quick/"
             title="Quick Decisions"
             meta="60 seconds · two choices"
             body="Two options, one right call, no time to overthink. Score is DPM — correct decisions per minute. Built to replay immediately."
             accent="#7dd3fc"
           />
           <ModeCard
-            href="/skills"
+            href="/skills/"
             title="8 Skill Tests"
             meta="10 questions each"
             body="Focused runs on a single skill, from bottleneck detection to strategy. Each one keeps its own score and personal best."
             accent="#a3e635"
           />
           <ModeCard
-            href="/daily"
+            href="/daily/"
             title="Daily Decision"
             meta="One scenario a day"
             body="The same hard call for every operator today. Read the tradeoff, then keep a streak that only counts the day you show up."
@@ -171,7 +171,7 @@ export default function HomePage() {
           {CATEGORIES.map((cat) => (
             <Link prefetch={false}
               key={cat.id}
-              href={`/skills/${cat.id}`}
+              href={`/skills/${cat.id}/`}
               className="brand-card group cursor-pointer rounded-xl border border-line bg-surface p-5"
             >
               <span className="text-accent">

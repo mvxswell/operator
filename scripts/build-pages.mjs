@@ -60,3 +60,8 @@ const flatten = spawnSync(
 if (flatten.status !== 0) process.exit(flatten.status ?? 1);
 console.log(`font-preload: optimized ${await preloadExportFont("out")} HTML files`);
 console.log(`secure-export: protected ${await secureExport("out", presenceOrigin, true, supabaseOrigin)} HTML files`);
+
+const canonicals = spawnSync(process.execPath, ["scripts/check-sitemap-canonicals.mjs", "out"], {
+  stdio: "inherit",
+});
+if (canonicals.status !== 0) process.exit(canonicals.status ?? 1);

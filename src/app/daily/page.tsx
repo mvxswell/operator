@@ -139,11 +139,11 @@ export default function DailyPage() {
             </p>
             <p className="mt-1 text-[13px] text-muted">Subskill: {question.subskill}.</p>
             <div className="mt-4 flex flex-col gap-3 sm:flex-row">
-              <ButtonLink href={`/skills/${question.category}`} onClick={() => track("result:train")}>
+              <ButtonLink href={`/skills/${question.category}/`} onClick={() => track("result:train")}>
                 Train {skillName}
               </ButtonLink>
               <ButtonLink
-                href={`/guides/${guide.slug}`}
+                href={`/guides/${guide.slug}/`}
                 variant="secondary"
                 onClick={() => track("result:guide")}
               >
@@ -169,13 +169,13 @@ export default function DailyPage() {
             shared={dailyShareText(dateKey, correct, question.difficulty, streak)} daily />
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <ButtonLink href="/quick" size="lg">
+            <ButtonLink href="/quick/" size="lg">
               Play Quick Decisions
             </ButtonLink>
-            <ButtonLink href="/operator" variant="secondary" size="lg">
+            <ButtonLink href="/operator/" variant="secondary" size="lg">
               Take the Operator Test
             </ButtonLink>
-            <ButtonLink href="/badges" variant="ghost" size="lg">
+            <ButtonLink href="/badges/" variant="ghost" size="lg">
               Badges
             </ButtonLink>
           </div>

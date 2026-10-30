@@ -24,11 +24,13 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: process.cwd(),
   },
+  // GitHub Pages serves `path/index.html` at `/path/` and 301s `/path` to `/path/`.
+  // Always use that form so dev, export, canonicals, and hrefs cannot diverge.
+  trailingSlash: true,
   ...(isGitHubPages
     ? {
         output: "export",
         // The project has a custom Pages domain, so it is served from the root.
-        trailingSlash: true,
       }
     : {}),
 };

@@ -34,8 +34,8 @@ test("quiz query selects the board and older mode links still resolve", () => {
   assert.equal(rules.selectedQuiz("daily", "daily"), "operator");
   assert.equal(rules.selectedQuiz(null, null), "operator");
   assert.equal(rules.selectedQuiz(" people", null), "operator");
-  assert.equal(rules.quizBoardPath("people"), "/leaderboard?quiz=people");
-  assert.equal(rules.quizBoardPath("daily"), "/leaderboard?quiz=operator");
+  assert.equal(rules.quizBoardPath("people"), "/leaderboard/?quiz=people");
+  assert.equal(rules.quizBoardPath("daily"), "/leaderboard/?quiz=operator");
   assert.equal(rules.quizLabel("operator"), "Operator Test");
   assert.equal(rules.quizLabel("quick"), "Quick Decisions");
   assert.equal(rules.quizLabel("people"), "People & Delegation");
@@ -109,6 +109,17 @@ test("privacy keeps the brand share image the metadata helper had dropped", () =
 
   assert.equal(site.pageMetadata("/progress").openGraph.images, undefined);
   assert.equal(site.pageMetadata("/leaderboard").openGraph.images, undefined);
+  assert.equal(site.siteHref("/operator"), "/operator/");
+  assert.equal(site.siteHref("/skills/financial?start=1"), "/skills/financial/?start=1");
+  assert.equal(site.siteHref("/og/quizzes/operator.png"), "/og/quizzes/operator.png");
+  assert.equal(site.absoluteUrl("/operator"), "https://thinkoperator.com/operator/");
+  assert.equal(site.sameSitePath("/daily", "/daily/"), true);
+  const operator = site.pageMetadata("/operator");
+  assert.equal(operator.title, "Free Operator Test: Business Judgment — Think Operator");
+  assert.equal(operator.openGraph.title, operator.title);
+  assert.equal(operator.openGraph.url, "https://thinkoperator.com/operator/");
+  assert.equal(operator.description.length >= 140 && operator.description.length <= 155, true);
+  assert.equal(operator.title.length <= 60, true);
   assert.equal(site.pageMetadata("/operator").openGraph.images[0].url, "/og/quizzes/operator.png");
   assert.equal(site.pageMetadata("/daily").openGraph.images[0].url, "/og/quizzes/daily.png");
   assert.equal(site.skillMetadata("People & Delegation", "Get leverage from others").openGraph.images[0].url, "/og/quizzes/people.png");

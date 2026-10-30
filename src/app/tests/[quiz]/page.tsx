@@ -7,6 +7,7 @@ import { GUIDES } from "@/content/guides/collection";
 import { QUESTION_BANK, QUICK_QUESTIONS } from "@/data";
 import { DAILY_QUESTIONS } from "@/data/daily";
 import { articleData, editorialMetadata } from "@/lib/editorialSeo";
+import { searchMetadata } from "@/lib/serpCopy";
 import { absoluteUrl } from "@/lib/site";
 
 function StartLink({ href, children }: { href: string; children: React.ReactNode }) {
@@ -21,7 +22,8 @@ export async function generateMetadata({ params }: { params: Promise<{ quiz: str
   const { quiz } = await params;
   const test = getTestLanding(quiz);
   if (!test) notFound();
-  return editorialMetadata(`${test.title} — Think Operator`, test.description, `/tests/${test.id}`);
+  const seo = searchMetadata(`/tests/${test.id}`, `${test.title} — Think Operator`, test.description);
+  return editorialMetadata(seo.title, seo.description, `/tests/${test.id}`);
 }
 
 export default async function TestLandingPage({ params }: { params: Promise<{ quiz: string }> }) {
@@ -32,8 +34,9 @@ export default async function TestLandingPage({ params }: { params: Promise<{ qu
   const matching = GUIDES.filter((guide) => test.skills.includes(guide.skill)).reverse();
   const adjacent = matching.flatMap((guide) => guide.related).flatMap((slug) => GUIDES.filter((guide) => guide.slug === slug));
   const related = [...new Map([...matching, ...adjacent].map((guide) => [guide.slug, guide])).values()].slice(0, 3);
+  const seo = searchMetadata(`/tests/${test.id}`, `${test.title} — Think Operator`, test.description);
   const graph = { "@context": "https://schema.org", "@graph": [
-    articleData(test.title, test.description, `/tests/${test.id}`),
+    articleData(test.title, seo.description, `/tests/${test.id}`),
     { "@type": "BreadcrumbList", itemListElement: [
       { "@type": "ListItem", position: 1, name: "Tests", item: absoluteUrl("/tests") },
       { "@type": "ListItem", position: 2, name: test.title, item: absoluteUrl(`/tests/${test.id}`) },
