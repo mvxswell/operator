@@ -15,6 +15,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/cases" },
     ...CASES.map((item) => ({ path: `/cases/${item.slug}` })),
     ...TEST_LANDINGS.map((test) => ({ path: `/tests/${test.id}` })),
+    { path: "/togi" },
   ];
   return entries.map((entry) => ({
     url: absoluteUrl(entry.path),
