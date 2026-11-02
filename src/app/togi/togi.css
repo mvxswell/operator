@@ -48,6 +48,20 @@
 .togi-tracker .brand-card:hover{background-color:var(--raised);border-color:#f2b44166}
 .togi-tracker .topline{position:absolute;inset:0 0 auto 0;height:1px;opacity:.7;background:linear-gradient(90deg,transparent,var(--accent),transparent)}
 .togi-tracker .tg-main section{margin-top:16px}
+/* Top block (Maxwell, Nov 2): title, road-to-$10M meter, chart, plot twist, stats, degen meter + 8-ball. Tight spacing. */
+.togi-tracker .tg-top{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:16px 0 2px}
+.togi-tracker .tg-title{font-size:28px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;margin:0}
+.togi-tracker .tg-top .navcta{margin-left:auto}
+.togi-tracker .tg-topblock section,.togi-tracker .tg-topblock .tg-lead{margin-top:10px}
+.togi-tracker .tg-lead{display:grid;gap:10px}
+.togi-tracker .tg-lead section{margin-top:0}
+.togi-tracker .tg-lead .sechead{margin-bottom:8px}
+.togi-tracker .tg-lead .fine{margin-top:8px}
+.togi-tracker .tg-lead .meter .score{font-size:44px}
+.togi-tracker .tg-topblock .grid2{gap:10px}
+.togi-tracker .tape{margin-top:16px;border:1px solid var(--line-soft);border-radius:.5rem}
+.togi-tracker .hero.solo .hero-h{margin-top:10px;font-size:28px}
+@media (min-width:640px){.togi-tracker .hero.solo .hero-h{font-size:36px}}
 .togi-tracker .rise{animation:tg-rise .4s var(--ease) both}
 .togi-tracker .d1{animation-delay:.08s}
 @keyframes tg-rise{0%{opacity:0;transform:translateY(10px)}
@@ -66,7 +80,7 @@ to{opacity:1;transform:scale(1)}
 .togi-tracker .btn.ghost:hover{border-color:var(--faint);background:var(--raised)}
 .togi-tracker .btn.sm{height:40px;padding:0 18px;font-size:14px}
 .togi-tracker .hero{margin-top:20px;display:grid;gap:24px}
-.togi-tracker .hero h1{font-size:34px;line-height:1.1;margin-top:14px}
+.togi-tracker .hero .hero-h{font-size:34px;line-height:1.1;margin-top:14px}
 .togi-tracker .lede{margin-top:14px;font-size:17px;color:var(--muted);max-width:36rem;line-height:1.6}
 .togi-tracker .meta{margin-top:16px;font-size:13px;color:var(--muted)}
 .togi-tracker .meter{padding:22px}
@@ -197,15 +211,19 @@ to{opacity:1;transform:scale(1)}
 @keyframes tg-fall{0%{opacity:1;transform:translate(0,0) rotate(0)}
 100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--r))}
 }
-@media (min-width:640px){.togi-tracker .btns{flex-direction:row}
-.togi-tracker .hero h1{font-size:48px}
+@media (min-width:640px){.togi-tracker .tg-title{font-size:36px}
+.togi-tracker .tg-lead .meter .score{font-size:56px}
+.togi-tracker .btns{flex-direction:row}
+.togi-tracker .hero .hero-h{font-size:48px}
 .togi-tracker .stats{grid-template-columns:repeat(4,1fr)}
 .togi-tracker .wrap{padding:0 24px}
 .togi-tracker .twist{flex-direction:row;align-items:center;justify-content:space-between}
 .togi-tracker .score{font-size:56px}
 }
-@media (min-width:960px){.togi-tracker .hero{grid-template-columns:1.05fr .95fr;align-items:center;gap:40px}
-.togi-tracker .hero h1{font-size:56px}
+@media (min-width:1024px){.togi-tracker .tg-lead{grid-template-columns:.85fr 1.15fr;align-items:stretch}}
+@media (min-width:960px){.togi-tracker .hero.solo{grid-template-columns:1fr}
+.togi-tracker .hero{grid-template-columns:1.05fr .95fr;align-items:center;gap:40px}
+.togi-tracker .hero .hero-h{font-size:56px}
 .togi-tracker .grid2{grid-template-columns:1fr 1fr}
 .togi-tracker .cta{grid-template-columns:1.4fr .6fr}
 .togi-tracker .cta-h{font-size:40px}

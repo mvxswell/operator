@@ -38,94 +38,94 @@ export function TogiTracker() {
 
   return (
     <div className="togi-tracker" ref={root} data-togi-source={state?.source ?? "loading"}>
-      <header className="nav">
-        <div className="wrap navrow">
-          <span className="brand"><Mark /></span>
-          <span className="navsep" aria-hidden="true"></span>
-          <p className="navtitle">Togi Tracker <span className="chip">Unofficial</span></p>
-          <Link className="navcta" href="/operator/">Take the test →</Link>
-        </div>
-      </header>
-
-      <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
-
       <div className="wrap tg-main">
-        <section className="brand-hero hero rise">
-          <div className="hero-l">
-            <p className="eyebrow">Stock market challenge · Fan tracker</p>
-            <h1>Can Togi turn <span className="acc">$950K</span> into <span className="acc">$10M</span>?</h1>
-            <p className="lede">Every trade he&apos;s posted on X, tracked to the dollar. The W&apos;s, the L&apos;s, and the occasional dream-based thesis.</p>
-            <div className="btns">
-              <a className="btn primary" href="#trades">See the trades</a>
-              <a className="btn ghost" id="latestbtn" href={TOGI_PROFILE_URL} {...ext}>Latest post ↗</a>
-            </div>
-            <p className="meta" id="herometa"></p>
-          </div>
+        <div className="tg-topblock">
+          <header className="tg-top">
+            <Mark />
+            <h1 className="tg-title">Togi Tracker</h1>
+            <span className="chip">Unofficial</span>
+            <Link className="navcta" href="/operator/">Take the test →</Link>
+          </header>
 
-          <div className="panel panel-depth meter">
-            <div className="meter-top">
-              <div>
-                <p className="lbl">Latest posted value</p>
-                <p className="score tabular" id="cur">$–</p>
-                <a className="src" id="cursrc" href={TOGI_PROFILE_URL} {...ext}></a>
+          <div className="tg-lead">
+            <section className="panel panel-depth meter" aria-label="Road to $10M">
+              <div className="meter-top">
+                <div>
+                  <p className="lbl">Currently at · latest posted value</p>
+                  <p className="score tabular" id="cur">$–</p>
+                  <a className="src" id="cursrc" href={TOGI_PROFILE_URL} {...ext}></a>
+                </div>
+                <span className="badge" id="pctbadge">–</span>
               </div>
-              <span className="badge" id="pctbadge">–</span>
-            </div>
-            <div className="road">
-              <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $10M">
-                <div className="fill" id="fill"><span className="rider" aria-hidden="true">🚀</span></div>
+              <div className="road">
+                <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $10M">
+                  <div className="fill" id="fill"><span className="rider" aria-hidden="true">🚀</span></div>
+                </div>
+                <div className="ms" id="milestones"></div>
               </div>
-              <div className="ms" id="milestones"></div>
-            </div>
-            <div className="meter-foot">
-              <div><p className="lbl">To go</p><p className="mono tabular" id="togo">–</p></div>
-              <div><p className="lbl">From his start</p><p className="mono tabular" id="fromstart">–</p></div>
-              <div><p className="lbl">Needs</p><p className="mono tabular acc" id="mult">–</p></div>
-            </div>
-            <p className="caveat" id="caveat"></p>
-          </div>
-        </section>
+              <div className="meter-foot">
+                <div><p className="lbl">To go</p><p className="mono tabular" id="togo">–</p></div>
+                <div><p className="lbl">From his start</p><p className="mono tabular" id="fromstart">–</p></div>
+                <div><p className="lbl">Needs</p><p className="mono tabular acc" id="mult">–</p></div>
+              </div>
+              <p className="caveat" id="caveat"></p>
+            </section>
 
-        <section className="twist brand-card rise d1">
-          <div className="topline"></div>
-          <div className="twist-l">
-            <p className="eyebrow">Plot twist · <span id="gcdate"></span></p>
-            <p className="twist-h"><s>$3,000,000</s> <span className="arrow">→</span> <span className="acc">$10,000,000</span></p>
-          </div>
-          <p className="twist-q">“no longer 3ms goal. I&apos;m going for 10ms now.” <a id="gcsrc" href={TOGI_PROFILE_URL} {...ext}>post ↗</a></p>
-        </section>
-
-        <section className="stats" id="stats" aria-label="Stats from known data"></section>
-
-        <section className="grid2">
-          <div className="panel panel-depth degen">
-            <div className="phead">
-              <div><p className="lbl">Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
-              <span className="badge joke">Joke formula</span>
-            </div>
-            <div className="bars" id="degenbars"></div>
-            <p className="fine" id="degenfine"></p>
+            <section className="panel panel-depth chartp">
+              <div className="sechead"><div><p className="eyebrow">Receipts</p><h2>Account value over time</h2></div>
+                <div className="legend"><span><i className="dot g"></i>Challenge (Fidelity shares)</span><span><i className="dot w"></i>Options (Robinhood)</span></div></div>
+              <div id="chart" className="chart"></div>
+              <p className="fine">Every dot is a screenshot or number he posted. Tap one to open the post. Money moved between accounts on Nov 2, so the two lines aren&apos;t one running total.</p>
+            </section>
           </div>
 
-          <div className="panel panel-depth odds">
-            <div className="phead">
-              <div><p className="lbl">Odds he hits $10M</p><p className="eight" id="eight">🎱</p></div>
-              <span className="badge joke">Joke · not a probability</span>
+          <section className="twist brand-card rise d1">
+            <div className="topline"></div>
+            <div className="twist-l">
+              <p className="eyebrow">Plot twist · <span id="gcdate"></span></p>
+              <p className="twist-h"><s>$3,000,000</s> <span className="arrow">→</span> <span className="acc">$10,000,000</span></p>
             </div>
-            <p className="answer" id="answer" aria-live="polite">Shake the Magic 8-Ball.</p>
-            <button className="btn primary sm" id="shake" type="button">Shake it</button>
-            <div className="realmath">
-              <p className="lbl">The real math</p>
-              <p><b className="mono tabular" id="mult2">–</b> from his latest posted value, or about <b className="mono tabular" id="dbl">–</b> doublings.</p>
-            </div>
-          </div>
-        </section>
+            <p className="twist-q">“no longer 3ms goal. I&apos;m going for 10ms now.” <a id="gcsrc" href={TOGI_PROFILE_URL} {...ext}>post ↗</a></p>
+          </section>
 
-        <section className="panel panel-depth">
-          <div className="sechead"><div><p className="eyebrow">Receipts</p><h2>Account value over time</h2></div>
-            <div className="legend"><span><i className="dot g"></i>Challenge (Fidelity shares)</span><span><i className="dot w"></i>Options (Robinhood)</span></div></div>
-          <div id="chart" className="chart"></div>
-          <p className="fine">Every dot is a screenshot or number he posted. Tap one to open the post. Money moved between accounts on Nov 2, so the two lines aren&apos;t one running total.</p>
+          <section className="stats" id="stats" aria-label="Stats from known data"></section>
+
+          <section className="grid2">
+            <div className="panel panel-depth degen">
+              <div className="phead">
+                <div><p className="lbl">Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
+                <span className="badge joke">Joke formula</span>
+              </div>
+              <div className="bars" id="degenbars"></div>
+              <p className="fine" id="degenfine"></p>
+            </div>
+
+            <div className="panel panel-depth odds">
+              <div className="phead">
+                <div><p className="lbl">Odds he hits $10M</p><p className="eight" id="eight">🎱</p></div>
+                <span className="badge joke">Joke · not a probability</span>
+              </div>
+              <p className="answer" id="answer" aria-live="polite">Shake the Magic 8-Ball.</p>
+              <button className="btn primary sm" id="shake" type="button">Shake it</button>
+              <div className="realmath">
+                <p className="lbl">The real math</p>
+                <p><b className="mono tabular" id="mult2">–</b> from his latest posted value, or about <b className="mono tabular" id="dbl">–</b> doublings.</p>
+              </div>
+            </div>
+          </section>
+        </div>
+
+        <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
+
+        <section className="brand-hero hero solo">
+          <p className="eyebrow">Stock market challenge · Fan tracker</p>
+          <h2 className="hero-h">Can Togi turn <span className="acc">$950K</span> into <span className="acc">$10M</span>?</h2>
+          <p className="lede">Every trade he&apos;s posted on X, tracked to the dollar. The W&apos;s, the L&apos;s, and the occasional dream-based thesis.</p>
+          <div className="btns">
+            <a className="btn primary" href="#trades">See the trades</a>
+            <a className="btn ghost" id="latestbtn" href={TOGI_PROFILE_URL} {...ext}>Latest post ↗</a>
+          </div>
+          <p className="meta" id="herometa"></p>
         </section>
 
         <section id="trades" className="trades">
