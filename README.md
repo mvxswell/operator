@@ -146,3 +146,27 @@ per-segment prefetch payloads as nested directories
 (`quick/__next.quick.__PAGE__.txt`). A Next server resolves that at request
 time; a static host cannot, so every navigation prefetch 404s and falls back to
 a full page load. The script copies each payload to the flattened name.
+
+## Grok Bot Savings Tracker (`/grok-bot-savings-tracker/`)
+
+A static page that prices every task the bots finish against freelancer rates. It is
+server-rendered from `src/data/grokBotSavings.json`; no client fetch and no extra CSP origin.
+
+Weekly update:
+
+```bash
+npm run savings:sync -- /workspace/social/grokbot_roi.csv                # rebuild the JSON (as of today, ET)
+npm run savings:sync -- /workspace/social/grokbot_roi.csv --meta /workspace/social/build_roi.py
+                                                                         # also refresh month, rates, sources, misses
+npm test && npm run build:pages
+```
+
+- The CSV columns are `date,bot,business,task,evidence,role,hours,rate,value,credit,issues`.
+  Totals use the same math as `build_roi.py` (value = hours × rate; role/business breakdowns
+  count rows with value > 0; spend is prorated by day). The sync warns and exits 1 if a CSV value
+  or rate disagrees with hours × rate or with the config.
+- Month, spend, rate bases, sources and misses live in `src/data/grokBotSavings.config.json`.
+- Raw evidence is never copied into the JSON: box paths become "File on the box" and only PRs on
+  repos listed in `publicRepos` are linked.
+- Launched Nov 2, 2026: indexable and in the sitemap, not in the nav. `LAUNCHED` in
+  `src/app/grok-bot-savings-tracker/page.tsx` switches noindex back on if it ever needs to go private.
