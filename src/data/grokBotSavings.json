@@ -98,7 +98,12 @@
         "value": 80,
         "hours": 3
       }
-    ]
+    ],
+    "revenue": 0,
+    "revenue_count": 0,
+    "revenue_by_biz": [],
+    "return_full": 709.5,
+    "return_pro": 999.5
   },
   "tasks": [
     {
@@ -392,6 +397,7 @@
       }
     }
   ],
+  "revenue": [],
   "misses": [
     {
       "date": "2026-11-02",

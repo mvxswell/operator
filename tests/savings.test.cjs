@@ -104,6 +104,72 @@ test("0 and 1 rows render a Month 1 in-progress state", async () => {
   assert.match(page, /hasValue \?/);
 });
 
+const REV_HEADER = "date,business,source,amount,evidence,notes\n";
+const revCsv = (...lines) => REV_HEADER + lines.join("\n") + "\n";
+const TASK = csv("2026-11-02,Bot,Biz,Build,/x,Web developer,4,40,160,Full,");
+
+test("revenue: no file means $0 revenue and return equals net", async () => {
+  const { parseCsv, buildSavings } = await sync();
+  const S = buildSavings(parseCsv(TASK), config, "2026-11-02").data.summary;
+  assert.equal(S.revenue, 0); assert.equal(S.revenue_count, 0); assert.deepEqual(S.revenue_by_biz, []);
+  assert.equal(S.return_full, S.net_full); assert.equal(S.return_full, -140);
+  assert.equal(S.return_pro, 150);
+  // Committed data (today: no revenue) matches build_roi.py: return_full 709.50, revenue 0.
+  assert.equal(data.summary.revenue, 0); assert.deepEqual(data.revenue, []);
+  assert.equal(data.summary.return_full, 709.5); assert.equal(data.summary.net_full, 709.5);
+  assert.equal(data.summary.return_pro, 999.5);
+});
+
+test("revenue: header-only file is valid and counts nothing", async () => {
+  const { parseCsv, buildSavings } = await sync();
+  const d = buildSavings(parseCsv(TASK), config, "2026-11-02", parseCsv(REV_HEADER)).data;
+  assert.equal(lib.isSavingsData(d), true);
+  assert.equal(d.summary.revenue, 0); assert.deepEqual(d.revenue, []);
+});
+
+test("revenue: a valid received row is added to return, not to savings", async () => {
+  const { parseCsv, buildSavings } = await sync();
+  const d = buildSavings(parseCsv(TASK), config, "2026-11-04", parseCsv(revCsv(
+    "2026-11-03,Survival book,Book sale (KDP),12.345,https://github.com/mvxswell/operator/pull/14,first sale",
+    "2026-11-03,BimmerQuote,Stripe payment,50,/workspace/receipts/stripe.txt,",
+    "2026-11-01,BimmerQuote,Before the month,999,/x,",
+    "2026-11-09,BimmerQuote,After as-of,999,/x,",
+  ))).data;
+  assert.equal(lib.isSavingsData(d), true);
+  const S = d.summary;
+  assert.equal(S.total, 160, "savings unchanged");
+  assert.equal(S.revenue, 62.35); assert.equal(S.revenue_count, 2);
+  assert.deepEqual(S.revenue_by_biz.map((b) => b.label), ["BimmerQuote", "Survival book"]);
+  assert.equal(S.net_full, -140, "net_full stays savings - spend");
+  assert.equal(S.return_full, Math.round((160 + 62.35 - 300) * 100) / 100);
+  assert.equal(S.return_pro, Math.round((160 + 62.35 - 30) * 100) / 100);
+  assert.equal(d.revenue[0].evidence.label, "PR #14");
+  assert.equal(d.revenue[1].evidence.label, "File on the box");
+  assert.doesNotMatch(JSON.stringify(d.revenue), /\/workspace\//);
+});
+
+test("revenue: rows with amount <= 0, a bad amount, or no evidence are rejected", async () => {
+  const { parseCsv, buildSavings } = await sync();
+  const run = (line) => () => buildSavings(parseCsv(TASK), config, "2026-11-02", parseCsv(revCsv(line)));
+  assert.throws(run("2026-11-02,Biz,Refund,0,/x,"), /positive received amount/);
+  assert.throws(run("2026-11-02,Biz,Refund,-5,/x,"), /positive received amount/);
+  assert.throws(run("2026-11-02,Biz,Sale,lots,/x,"), /positive received amount/);
+  assert.throws(run("2026-11-02,Biz,Sale,,/x,"), /positive received amount/);
+  assert.throws(run("2026-11-02,Biz,Pledge,100,,pending"), /no evidence/);
+  assert.throws(() => buildSavings(parseCsv(TASK), config, "2026-11-02", [{ date: "2026-11-02", amount: "1" }]), /missing column/);
+  // Outside the month window a row is skipped, like build_roi.py.
+  assert.doesNotThrow(run("2026-10-30,Biz,Old,0,,"));
+});
+
+test("page keeps savings and revenue separate and labels total return", () => {
+  const page = fs.readFileSync("src/components/savings/GrokBotSavings.tsx", "utf8");
+  for (const label of [">Spend<", ">Savings <", ">Revenue earned<", ">Total return<"]) assert.ok(page.includes(label), label);
+  assert.match(page, /savings \+ revenue − \{usd\(S\.spend\)\}/);
+  assert.match(page, /\{data\.revenue\.length \? \(/, "ledger only renders with entries");
+  assert.match(page, /Revenue counts only money actually received, with evidence/);
+  assert.match(page, /Pending, invoiced, pledged or projected money never counts/);
+});
+
 test("formatters", () => {
   assert.equal(lib.usd(1009.5), "$1,009.50");
   assert.equal(lib.usd(300), "$300");

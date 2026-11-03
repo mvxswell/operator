@@ -1,6 +1,7 @@
 // Grok Bot Savings Tracker: CSV -> src/data/grokBotSavings.json
 //
-//   npm run savings:sync -- /workspace/social/grokbot_roi.csv [--as-of YYYY-MM-DD] [--meta /workspace/social/build_roi.py]
+//   npm run savings:sync -- /workspace/social/grokbot_roi.csv [--revenue /workspace/social/grokbot_revenue.csv]
+//                           [--as-of YYYY-MM-DD] [--meta /workspace/social/build_roi.py]
 //
 // Reads the task log CSV (date,bot,business,task,evidence,role,hours,rate,value,credit,issues),
 // recomputes the totals exactly the way build_roi.py does, and writes the committed JSON the
@@ -10,6 +11,10 @@
 //
 // Raw evidence (box paths, private repo URLs) is never copied into the JSON: each row keeps only
 // a short public label, plus a link when it is a PR on a public repo listed in publicRepos.
+//
+// Revenue (optional --revenue CSV: date,business,source,amount,evidence,notes) counts only money
+// actually received with evidence, same rules as build_roi.py: rows outside start..as_of are
+// skipped; a row with amount <= 0 or empty evidence fails the sync. Without the file revenue is 0.
 
 import { execFileSync } from "node:child_process";
 import { readFileSync, writeFileSync } from "node:fs";
@@ -19,6 +24,7 @@ import { fileURLToPath } from "node:url";
 const HERE = dirname(fileURLToPath(import.meta.url));
 export const CONFIG_PATH = join(HERE, "..", "src/data/grokBotSavings.config.json");
 export const OUT_PATH = join(HERE, "..", "src/data/grokBotSavings.json");
+export const REVENUE_COLUMNS = ["date", "business", "source", "amount", "evidence", "notes"];
 export const COLUMNS = ["date", "bot", "business", "task", "evidence", "role", "hours", "rate", "value", "credit", "issues"];
 
 /** RFC 4180 CSV (quoted fields, doubled quotes, CRLF or LF). */
@@ -71,7 +77,7 @@ export function publicEvidence(evidence, publicRepos = []) {
  * Same math as build_roi.py main(): rows dated start..as_of, value = round(hours * rate, 2),
  * totals summed in CSV order, role/business breakdowns over rows with value > 0 sorted by value desc.
  */
-export function buildSavings(csvRows, config, asOfArg) {
+export function buildSavings(csvRows, config, asOfArg, revenueRows = []) {
   const M = config.month;
   const today = asOfArg ?? todayET();
   const asOf = today < M.start ? M.start : today > M.end ? M.end : today;
@@ -108,6 +114,10 @@ export function buildSavings(csvRows, config, asOfArg) {
     }
     return [...m.values()].sort((a, b) => b.value - a.value);
   };
+  const revenue = buildRevenue(revenueRows, config, M.start, asOf);
+  const revTotal = round2(revenue.reduce((a, r) => a + r.amount, 0));
+  const revByBiz = new Map();
+  for (const r of revenue) revByBiz.set(r.business, (revByBiz.get(r.business) ?? 0) + r.amount);
   const usedSources = new Set(config.rates.map((r) => r.source));
   const summary = {
     month: M.n, start: M.start, end: M.end, as_of: asOf, day: dayN, days, spend: M.spend, plans: M.plans,
@@ -115,18 +125,42 @@ export function buildSavings(csvRows, config, asOfArg) {
     net_full: total - M.spend, net_pro: total - round2(prorated),
     ratio_full: M.spend ? total / M.spend : 0, ratio_pro: prorated ? total / round2(prorated) : 0,
     by_role: agg("role"), by_biz: agg("business"),
+    revenue: revTotal, revenue_count: revenue.length,
+    revenue_by_biz: [...revByBiz].map(([label, value]) => ({ label, value })).sort((a, b) => b.value - a.value),
+    return_full: round2(total + revTotal - M.spend), return_pro: round2(total + revTotal - prorated),
   };
   return {
     data: {
       _generated: "by scripts/sync-savings.mjs from grokbot_roi.csv. Do not edit by hand.",
       summary,
       tasks: rows,
+      revenue,
       misses: (config.misses ?? []).filter((m) => m.date <= asOf),
       rates: [...config.rates].sort((a, b) => b.rate - a.rate).map(({ role, rate, basis, source }) => ({ role, rate, basis, source })),
       sources: config.sources.filter((s) => usedSources.has(s.key)),
     },
     problems,
   };
+}
+
+/**
+ * Received-money ledger, build_roi.py rules: keep rows dated start..as_of; inside that window a row
+ * with empty evidence or amount <= 0 throws (the sync fails rather than counting it). Evidence goes
+ * through publicEvidence() so receipt URLs and box paths never reach the public JSON.
+ */
+export function buildRevenue(revenueRows, config, start, asOf) {
+  const out = [];
+  revenueRows.forEach((r, i) => {
+    const line = i + 2;
+    for (const c of REVENUE_COLUMNS) if (!(c in r)) throw new Error(`revenue CSV is missing column "${c}"`);
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(r.date)) throw new Error(`revenue line ${line}: bad date "${r.date}"`);
+    if (!(start <= r.date && r.date <= asOf)) return;
+    if (!String(r.evidence ?? "").trim()) throw new Error(`revenue line ${line} (${r.date} ${r.business}): no evidence; only received money with evidence counts`);
+    const amount = Number(r.amount);
+    if (r.amount === "" || !Number.isFinite(amount) || amount <= 0) throw new Error(`revenue line ${line} (${r.date} ${r.business}): amount must be a positive received amount`);
+    out.push({ date: r.date, business: r.business, source: r.source, amount: round2(amount), notes: r.notes, evidence: publicEvidence(r.evidence, config.publicRepos) });
+  });
+  return out;
 }
 
 /** Refresh the config from build_roi.py (MONTH, RATES, SOURCES, MISSES) without running its main(). */
@@ -149,16 +183,21 @@ print(json.dumps(dict(month=dict(n=b.MONTH["n"],start=b.MONTH["start"].isoformat
 function main(argv) {
   const args = argv.slice(2);
   const opt = (name) => { const i = args.indexOf(name); if (i < 0) return undefined; const v = args[i + 1]; args.splice(i, 2); return v; };
-  const asOf = opt("--as-of"), meta = opt("--meta");
+  const asOf = opt("--as-of"), meta = opt("--meta"), revenuePath = opt("--revenue");
   const csvPath = args[0];
-  if (!csvPath) { console.error("usage: npm run savings:sync -- <grokbot_roi.csv> [--as-of YYYY-MM-DD] [--meta build_roi.py]"); process.exit(2); }
+  if (!csvPath) { console.error("usage: npm run savings:sync -- <grokbot_roi.csv> [--revenue grokbot_revenue.csv] [--as-of YYYY-MM-DD] [--meta build_roi.py]"); process.exit(2); }
   let config = JSON.parse(readFileSync(CONFIG_PATH, "utf8"));
   if (meta) { config = refreshConfigFrom(meta, config); writeFileSync(CONFIG_PATH, JSON.stringify(config, null, 2) + "\n"); }
-  const { data, problems } = buildSavings(parseCsv(readFileSync(csvPath, "utf8")), config, asOf);
+  const revenueRows = revenuePath ? parseCsv(readFileSync(revenuePath, "utf8")) : [];
+  if (revenuePath) {
+    const header = readFileSync(revenuePath, "utf8").replace(/^\uFEFF/, "").split(/\r?\n/)[0].split(",").map((h) => h.trim());
+    for (const c of REVENUE_COLUMNS) if (!header.includes(c)) throw new Error(`revenue CSV is missing column "${c}"`);
+  }
+  const { data, problems } = buildSavings(parseCsv(readFileSync(csvPath, "utf8")), config, asOf, revenueRows);
   for (const p of problems) console.warn(`savings:sync: ${p}`);
   writeFileSync(OUT_PATH, JSON.stringify(data, null, 2) + "\n");
   const S = data.summary;
-  console.log(`savings:sync: ${data.tasks.length} rows, day ${S.day} of ${S.days} (as of ${S.as_of}); value $${S.total.toFixed(2)}, ${S.hours} h, ${S.credited} credited; spend $${S.spend} ($${S.prorated} prorated)`);
+  console.log(`savings:sync: ${data.tasks.length} rows, day ${S.day} of ${S.days} (as of ${S.as_of}); value $${S.total.toFixed(2)}, ${S.hours} h, ${S.credited} credited; spend $${S.spend} ($${S.prorated} prorated); revenue $${S.revenue.toFixed(2)} (${S.revenue_count}); return $${S.return_full.toFixed(2)}`);
   if (problems.length) process.exitCode = 1;
 }
 
