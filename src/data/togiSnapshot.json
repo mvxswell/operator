@@ -1,0 +1,75 @@
+{
+  "meta": {
+    "title": "Togi's $10,000,000 Stock Market Challenge (unofficial fan tracker)",
+    "handle": "@ShaneStoffer",
+    "goal": 10000000,
+    "previous_goal": 3000000,
+    "goal_changed_on": "2026-11-02",
+    "goal_change_source": "https://x.com/ShaneStoffer/status/2117345071418716335",
+    "original_announcement": {"date": "2026-09-10", "text": "I'm doing a stock trading challenge 700k to 3ms", "source_url": "https://x.com/ShaneStoffer/status/2098139631942259114"},
+    "starting_value": 950000,
+    "starting_value_note": "His 'STOCK CHALLENGE UPDATE' posts list STARTING VALUE $950,000 (Sep 18 post: 'I started one month ago with $950,000'). The Sep 10 announcement said '700k to 3ms'.",
+    "starting_value_source": "https://x.com/ShaneStoffer/status/2110398186083033561",
+    "latest_value": 1954885.99,
+    "latest_value_date": "2026-11-02",
+    "latest_value_label": "Fidelity 'stonks' account total (screenshot), after he moved most of the $MRNA options money into shares",
+    "latest_value_source": "https://x.com/ShaneStoffer/status/2117345071418716335",
+    "latest_value_caveat": "Whatever is left in his Robinhood options account after the Nov 2 transfer is not disclosed, so the true combined total may be a bit higher.",
+    "last_updated": "2026-11-02"
+  },
+  "account_history": [
+    {"date": "2026-09-10", "account": "challenge", "value": 950000, "label": "Starting value (as stated in his updates)", "source_url": "https://x.com/ShaneStoffer/status/2110398186083033561"},
+    {"date": "2026-09-18", "account": "challenge", "value": 1390000, "label": "'Current value $1,390,000'", "source_url": "https://x.com/ShaneStoffer/status/2100986926031650863"},
+    {"date": "2026-10-03", "account": "challenge", "value": 1474020.64, "label": "Fidelity account total", "source_url": "https://x.com/ShaneStoffer/status/2106251247611523575"},
+    {"date": "2026-10-14", "account": "challenge", "value": 1299008.17, "label": "Fidelity account total", "source_url": "https://x.com/ShaneStoffer/status/2110398186083033561"},
+    {"date": "2026-11-02", "account": "challenge", "value": 1954885.99, "label": "Fidelity account total (after MRNA money moved in)", "source_url": "https://x.com/ShaneStoffer/status/2117345071418716335"},
+
+    {"date": "2026-10-05", "account": "options", "value": 48518, "label": "First MRNA calls (options value)", "source_url": "https://x.com/ShaneStoffer/status/2107162184111321310"},
+    {"date": "2026-10-06", "account": "options", "value": 84898, "label": "Options value", "source_url": "https://x.com/ShaneStoffer/status/2107465724574728565"},
+    {"date": "2026-10-07", "account": "options", "value": 107350, "label": "Options value", "source_url": "https://x.com/ShaneStoffer/status/2107903868642148359"},
+    {"date": "2026-10-08", "account": "options", "value": 226802, "label": "Options value", "source_url": "https://x.com/ShaneStoffer/status/2108190070897275079"},
+    {"date": "2026-10-09", "account": "options", "value": 430682.04, "label": "Robinhood account (+89% day)", "source_url": "https://x.com/ShaneStoffer/status/2108651572012138671"},
+    {"date": "2026-10-12", "account": "options", "value": 345539.05, "label": "Robinhood account (-19.8% day)", "source_url": "https://x.com/ShaneStoffer/status/2109722233623253394"},
+    {"date": "2026-10-13", "account": "options", "value": 339088.66, "label": "Robinhood account", "source_url": "https://x.com/ShaneStoffer/status/2110022376469811367"},
+    {"date": "2026-10-14", "account": "options", "value": 451904.48, "label": "Robinhood account (+23.7% day)", "source_url": "https://x.com/ShaneStoffer/status/2110463497037615203"},
+    {"date": "2026-10-15", "account": "options", "value": 547246.67, "label": "Robinhood account (hit $607,809 intraday)", "source_url": "https://x.com/ShaneStoffer/status/2110838844685955126"},
+    {"date": "2026-10-16", "account": "options", "value": 415390.05, "label": "Robinhood account (-24% day)", "source_url": "https://x.com/ShaneStoffer/status/2111190573512311227"},
+    {"date": "2026-10-19", "account": "options", "value": 586710.07, "label": "Robinhood account ('I was so rich one hour ago')", "source_url": "https://x.com/ShaneStoffer/status/2112194541038264545"},
+    {"date": "2026-10-20", "account": "options", "value": 620647.03, "label": "Robinhood account", "source_url": "https://x.com/ShaneStoffer/status/2112636730180272490"},
+    {"date": "2026-10-21", "account": "options", "value": 670265.49, "label": "Robinhood account", "source_url": "https://x.com/ShaneStoffer/status/2112918910596952271"},
+    {"date": "2026-10-22", "account": "options", "value": 915450.97, "label": "Robinhood account after the puts ('Thanks for playing')", "source_url": "https://x.com/ShaneStoffer/status/2113333655863242975"},
+    {"date": "2026-10-30", "account": "options", "value": 886370.64, "label": "Robinhood account after selling MSTR puts", "source_url": "https://x.com/ShaneStoffer/status/2116184686284386455"}
+  ],
+  "trades": [
+    {"date": "2026-11-02", "ticker": "STONKS", "type": "transfer / shares", "direction": "long", "details": "Moved 'the majority of $MRNA trade money' into shares. Goal bumped from $3M to $10M. Fidelity screenshot: account total $1,954,885.99, -$18,249.06 on the day, -$227,287.20 (-10.68%) unrealized. Biggest holding GPRO ($925,572), then MSTR ($388,483), MRNA ($218,285), SNDK ($170,520), DUOT ($119,400).", "pnl": null, "outcome": "update", "account_value": 1954885.99, "source_url": "https://x.com/ShaneStoffer/status/2117345071418716335", "note": "'I feel safer and no longer against the clock. Not financial advice I'm still just gambling'"},
+    {"date": "2026-10-30", "ticker": "MSTR", "type": "puts", "direction": "short", "details": "'Next full port is $MSTR put bombers.' 450x $100P 12/4, 450x $90P 12/18, 150x $100P 1/15/27, 450x $90P 1/15/27. Value $412,050, -$10,770 (-2.55%) when posted. Sold ~40 min later and said he'd go long instead.", "pnl": null, "outcome": "loss", "account_value": 886370.64, "source_url": "https://x.com/ShaneStoffer/status/2116173998144749825", "note": "Exact realized P&L not disclosed. Robinhood was $888,089.65 before and $886,370.64 after selling (-$15,999.48 on the day). Sell post: https://x.com/ShaneStoffer/status/2116184686284386455"},
+    {"date": "2026-10-26", "ticker": "SPY", "type": "0DTE calls", "direction": "long", "details": "1,000x SPY $771 Call exp 10/26 at $0.16 (est. cost $16,040.29). Dropped to $0.04: -$12,000 (-75%) on the screenshot.", "pnl": -12000, "outcome": "loss", "account_value": null, "source_url": "https://x.com/ShaneStoffer/status/2114749439000604994", "note": "'FDs are brutal.' The -$12,000 is what the screenshot showed (the contracts expired that day). Entry: https://x.com/ShaneStoffer/status/2114734281285423364"},
+    {"date": "2026-10-22", "ticker": "MRNA", "type": "puts", "direction": "short", "details": "'FULL PORT PUTS' (inverse dream thesis): 100x $180P 10/30, 50x $195P 11/6, 100x $170P 11/6, 55x $200P 12/18, 200x $180P 12/18. $470,615 of puts at 10:54 ET. Leaked trial data tanked MRNA, it got halted, and he sold everything: 'Thanks for playing.'", "pnl": 422354.52, "pnl_derived": true, "outcome": "win", "account_value": 915450.97, "source_url": "https://x.com/ShaneStoffer/status/2113282928872767621", "note": "P&L is derived: the Robinhood account went from $493,096.45 (no options open, right before the puts) to $915,450.97 (all sold). He hasn't posted an exact number. Robinhood showed +$670,087.52 (+273.10%) for the past month. Exit: https://x.com/ShaneStoffer/status/2113333655863242975"},
+    {"date": "2026-10-22", "ticker": "MRNA", "type": "calls (exit)", "direction": "long", "details": "Exited the MRNA calls in a panic after 'my port down 200k'. Robinhood went $670,265 (Oct 21) → $566,148 → $493,096 after selling.", "pnl": null, "outcome": "loss", "account_value": 493096.45, "source_url": "https://x.com/ShaneStoffer/status/2113282551502852276", "note": "'Options are so gay.' Realized P&L on the whole calls run isn't disclosed."},
+    {"date": "2026-10-05", "ticker": "MRNA", "type": "calls", "direction": "long", "details": "The dream trade begins. First calls: 2x $290C 12/18, 14x $280C 1/15/27, 10x $240C 1/15/27, worth $48,518. He kept adding (Oct 6: $84,898; Oct 7: $107,350; Oct 8: $226,802 across 10 strikes), funded partly with $275K of casino winnings. 'At this point I'm in for $250,000.'", "pnl": null, "outcome": "open→closed Oct 22", "account_value": 48518, "source_url": "https://x.com/ShaneStoffer/status/2107162184111321310", "note": "Took some profit Oct 9 and Oct 11 ('Letting 322k go') and sold the November calls Oct 15. Thesis: https://x.com/ShaneStoffer/status/2113376104547274837"},
+    {"date": "2026-09-18", "ticker": "RACE", "type": "shares", "direction": "long", "details": "Sold Ferrari (RACE) for MRNA shares.", "pnl": 10000, "outcome": "win", "account_value": 1390000, "source_url": "https://x.com/ShaneStoffer/status/2100986926031650863", "note": "From his 'CLOSED TRADES' list"},
+    {"date": "2026-09-18", "ticker": "FBTC", "type": "shares (BTC ETF)", "direction": "long", "details": "Sold his BTC ETF to buy more MSTR.", "pnl": 4000, "outcome": "win", "account_value": 1390000, "source_url": "https://x.com/ShaneStoffer/status/2100986926031650863", "note": "From his 'CLOSED TRADES' list"},
+    {"date": "2026-09-18", "ticker": "GPRO", "type": "shares", "direction": "long", "details": "A losing GoPro round-trip from his closed-trades list (he bought 150,000 shares at $1.55 on Sep 6).", "pnl": -16000, "outcome": "loss", "account_value": 1390000, "source_url": "https://x.com/ShaneStoffer/status/2100986926031650863", "note": "Sep 6 buy post: https://x.com/ShaneStoffer/status/2096470342109626447"},
+    {"date": "2026-09-11", "ticker": "TNON", "type": "shares", "direction": "long", "details": "Saw TNON trending on Yahoo with 100M volume and ran it. In for $153K, out for $265K the next day.", "pnl": 112000, "outcome": "win", "account_value": null, "source_url": "https://x.com/ShaneStoffer/status/2098514556532240640", "note": "'Day two of challenge.'"},
+    {"date": "2026-09-01", "ticker": "GPRO", "type": "shares", "direction": "long", "details": "The Markiplier GoPro pump. Bought 560,000 @ $0.72, sold 560,000 @ $1.32 average.", "pnl": 336000, "outcome": "win", "account_value": null, "source_url": "https://x.com/ShaneStoffer/status/2094852752962707959", "note": "'Thanks markiplier. That was fun.' Listed as a challenge closed trade on Sep 18."}
+  ],
+  "open_positions_snapshot": {
+    "date": "2026-11-02",
+    "source_url": "https://x.com/ShaneStoffer/status/2117345071418716335",
+    "positions": [
+      {"ticker": "GPRO", "shares": 991613.553, "value": 925572.09, "unrealized": -121854.19, "pct": -11.64},
+      {"ticker": "MSTR", "shares": 2960.095, "value": 388482.86, "unrealized": -41436.70, "pct": -9.64},
+      {"ticker": "MRNA", "shares": 984.528, "value": 218284.62, "unrealized": 66284.74, "pct": 43.60},
+      {"ticker": "SNDK", "shares": 156.547, "value": 170520.07, "unrealized": -75404.23, "pct": -30.67},
+      {"ticker": "DUOT", "shares": 20000, "value": 119400.00, "unrealized": -47829.54, "pct": -28.61},
+      {"ticker": "FGMNX", "shares": 4912.934, "value": 49522.37, "unrealized": null, "pct": null},
+      {"ticker": "MYO", "shares": 35000, "value": 43050.00, "unrealized": -1123.28, "pct": -2.55},
+      {"ticker": "TYGO", "shares": 40000, "value": 35176.00, "unrealized": -5924.00, "pct": -14.42}
+    ]
+  },
+  "side_quests": [
+    {"date": "2026-10-17", "text": "Shuffle support said +$719,794 P&L on slots in 72 hours", "source_url": "https://x.com/ShaneStoffer/status/2111332533702951314"},
+    {"date": "2026-10-22", "text": "Bought a 'cool green Richard' (Richard Mille) with MRNA profits", "source_url": "https://x.com/ShaneStoffer/status/2113367517414490263"},
+    {"date": "2026-10-28", "text": "'Biggest bet of my life. 60 units' on the Brewers", "source_url": "https://x.com/ShaneStoffer/status/2115573024623845612"}
+  ]
+}
