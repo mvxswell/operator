@@ -185,3 +185,43 @@ test("the old 'Open shares' panel is gone (the Portfolio section replaces it)", 
   assert.doesNotMatch(render, /open_positions_snapshot|"snapdate"|"possrc"|"positions"/);
   assert.match(page, /Side quests/);
 });
+
+test("tip button only accepts https x.com / twitter.com links", () => {
+  for (const ok of ["https://x.com/ShaneStoffer", "https://twitter.com/ShaneStoffer", "https://x.com/ShaneStoffer/status/2117345071418716335"]) {
+    assert.equal(togi.safeTipUrl(ok), ok);
+  }
+  for (const bad of [
+    "javascript:alert(1)", "JAVASCRIPT:alert(1)", " javascript:alert(1)", "data:text/html,<script>alert(1)</script>",
+    "http://x.com/ShaneStoffer", "https://evil.com/ShaneStoffer", "https://x.com.evil.com/a", "https://evilx.com/a",
+    "https://notx.com", "https://x.com@evil.com/", "https://user:pw@x.com/a", "https://x.com:8443/a",
+    "//x.com/ShaneStoffer", "x.com/ShaneStoffer", "", null, undefined, 42, {}, ["https://x.com/a"],
+    "https://x.com/" + "a".repeat(400),
+  ]) {
+    assert.equal(togi.safeTipUrl(bad), null, String(bad));
+  }
+});
+
+test("tip button hides without a valid tip_url and keeps the note as plain text", () => {
+  const meta = snapshot.meta;
+  assert.equal(meta.tip_url, "https://x.com/ShaneStoffer");
+  assert.match(meta.tip_note, /Tip Togi on X/);
+  assert.deepEqual(togi.togiTip(meta), { url: "https://x.com/ShaneStoffer", note: meta.tip_note });
+  const { tip_url: _u, ...noUrl } = meta;
+  assert.equal(togi.togiTip(noUrl), null);
+  assert.equal(togi.togiTip({ ...meta, tip_url: "javascript:alert(1)" }), null);
+  assert.equal(togi.togiTip({ ...meta, tip_url: "" }), null);
+  assert.equal(togi.togiTip(null), null);
+  assert.deepEqual(togi.togiTip({ tip_url: "https://x.com/ShaneStoffer" }), { url: "https://x.com/ShaneStoffer", note: null });
+  assert.equal(togi.tipNoteText(42), null);
+  assert.equal(togi.tipNoteText("   "), null);
+  assert.equal(togi.tipNoteText("<b>hi</b>\n there"), "<b>hi</b> there");
+  assert.equal(togi.tipNoteText("a".repeat(500)).length, togi.TIP_NOTE_MAX);
+  // A feed without the new fields still passes the shape check (the fields are additive).
+  assert.equal(togi.isTogiData({ ...snapshot, meta: noUrl }), true);
+  // The component renders the note through React text and the link with noopener noreferrer.
+  const src = fs.readFileSync(require.resolve("../src/components/togi/TogiTracker.tsx"), "utf8");
+  assert.match(src, /state\?\.tip && \(/);
+  assert.match(src, /<p className="tip-note">\{state\.tip\.note\}<\/p>/);
+  assert.match(src, /const ext = \{ target: "_blank", rel: "noopener noreferrer" \}/);
+  assert.ok(!/dangerouslySetInnerHTML/.test(src));
+});

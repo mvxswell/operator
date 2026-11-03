@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import snapshotJson from "@/data/togiSnapshot.json";
-import { isTogiData, loadTogiData, TOGI_PROFILE_URL, type TogiData, type TogiSource } from "@/lib/togi";
+import { isTogiData, loadTogiData, TOGI_PROFILE_URL, togiTip, type TogiData, type TogiSource } from "@/lib/togi";
 import { fmtDate, renderTogi } from "./renderTogi";
 
 if (!isTogiData(snapshotJson)) throw new Error("Togi Tracker snapshot does not match the expected shape");
@@ -23,7 +23,7 @@ function Mark({ small = false }: { small?: boolean }) {
 /** The tracker markup. Data-driven parts are filled by renderTogi once the feed (or snapshot) loads. */
 export function TogiTracker() {
   const root = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<{ source: TogiSource; asOf: string } | null>(null);
+  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip> } | null>(null);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
@@ -31,7 +31,7 @@ export function TogiTracker() {
     loadTogiData(SNAPSHOT).then(({ data, source }) => {
       if (cancelled || !root.current) return;
       cleanup = renderTogi(root.current, data);
-      setState({ source, asOf: data.meta.last_updated });
+      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta) });
     });
     return () => { cancelled = true; cleanup?.(); };
   }, []);
@@ -46,6 +46,16 @@ export function TogiTracker() {
             <span className="chip">Unofficial</span>
             <Link className="navcta" href="/operator/">Take the test →</Link>
           </header>
+
+          {/* Shown only when the feed has an https x.com / twitter.com tip_url. The note is plain text. */}
+          {state?.tip && (
+            <div className="tg-tip">
+              <a className="tip-btn" href={state.tip.url} {...ext}>
+                <span aria-hidden="true">💸</span> Tip Togi
+              </a>
+              {state.tip.note && <p className="tip-note">{state.tip.note}</p>}
+            </div>
+          )}
 
           <div className="tg-lead">
             <section className="panel panel-depth meter" aria-label="Road to $10M">
