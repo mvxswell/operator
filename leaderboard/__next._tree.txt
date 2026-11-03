@@ -3,4 +3,4 @@
 :HL["/_next/static/css/f03ac0204f07ca44.css","style"]
 2:[["children",{"s":"__PAGE__","h":160}]]
 1:[["children",{"s":"leaderboard","h":96,"c":"$Q2"}]]
-0:{"b":"Soxq-V_Ch6iwGUSrHmnJc","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"0u3qcbQAH1qEbWhm_Gbj9","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
