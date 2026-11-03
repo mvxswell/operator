@@ -575,4 +575,9 @@
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
 </url>
+<url>
+<loc>https://thinkoperator.com/grok-bot-savings-tracker/</loc>
+<changefreq>monthly</changefreq>
+<priority>0.8</priority>
+</url>
 </urlset>
