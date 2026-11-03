@@ -1,6 +1,8 @@
 /* Homepage hub. Scoped under .home-hub; keyframes are prefixed hh-. */
 
-/* ---- Variant order. A (default, and without JS): hero, trackers, quiz. B: hero, quiz, trackers. ---- */
+/* ---- Variants. Default (C, and without JS): full intro, trackers, quizzes.
+   A: condensed intro, quizzes, trackers. B: condensed intro, trackers, quizzes.
+   Grok Bot stays before Togi inside the tracker grid in every variant. ---- */
 .home-hub{display:flex;flex-direction:column;--hh-gold:#f2b441;--hh-green:#52d18b;--hh-card:#0e1013;--hh-line:#23272e}
 .home-hub .hh-hero{order:0}
 .home-hub .hh-trackers{order:1}
@@ -8,11 +10,16 @@
 .home-hub .hh-play{order:3}
 .home-hub .hh-follow{order:4}
 .home-hub .hh-footer{order:5}
-.home-hub .hh-cta.hh-cta-b{display:none}
-html[data-home-v="b"] .home-hub .hh-quiz{order:1}
-html[data-home-v="b"] .home-hub .hh-trackers{order:2}
-html[data-home-v="b"] .home-hub .hh-cta.hh-cta-a{display:none}
-html[data-home-v="b"] .home-hub .hh-cta.hh-cta-b{display:flex}
+.home-hub .hh-cta.hh-cta-a{display:none}
+html[data-home-v="a"] .home-hub .hh-quiz{order:1}
+html[data-home-v="a"] .home-hub .hh-trackers{order:2}
+html[data-home-v="a"] .home-hub .hh-cta.hh-cta-c{display:none}
+html[data-home-v="a"] .home-hub .hh-cta.hh-cta-a{display:grid}
+html[data-home-v="a"] .home-hub .hh-h1-watch{display:none}
+html[data-home-v="b"] .home-hub .hh-cta.hh-cta-c{display:none}
+html[data-home-v="b"] .home-hub .hh-h1-test{display:none}
+html[data-home-v="a"] .home-hub .hh-full,
+html[data-home-v="b"] .home-hub .hh-full{display:none}
 
 /* ---- Hero ---- */
 .home-hub .hh-hero{position:relative;display:grid;gap:24px;padding:36px 0 28px}
@@ -47,20 +54,50 @@ html[data-home-v="b"] .home-hub .hh-cta.hh-cta-b{display:flex}
 @keyframes hh-float{0%,100%{transform:perspective(900px) rotateX(10deg) rotateY(-14deg) translateY(0)}50%{transform:perspective(900px) rotateX(10deg) rotateY(-14deg) translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.home-hub .hh-art-tile{animation:none}}
 
-/* ---- Ticker ---- */
-.home-hub .hh-ticker{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
-.home-hub .hh-tick{display:inline-flex;align-items:center;gap:8px;min-width:0;max-width:100%;padding:7px 12px;border:1px solid var(--hh-line);border-radius:10px;background:rgba(14,16,19,.8);font-size:12px}
+/* ---- Condensed intro (A and B) ---- */
+html[data-home-v="a"] .home-hub .hh-hero,
+html[data-home-v="b"] .home-hub .hh-hero{grid-template-columns:1fr;gap:16px;padding:18px 0 4px}
+html[data-home-v="a"] .home-hub .hh-h1,
+html[data-home-v="b"] .home-hub .hh-h1{margin-top:0;font-size:clamp(27px,7.4vw,44px)}
+html[data-home-v="a"] .home-hub .hh-cta-a{grid-template-columns:1fr 1fr;gap:8px;margin-top:14px;max-width:30rem}
+html[data-home-v="a"] .home-hub .hh-cta-a .hh-btn{padding:6px 10px;font-size:14px;line-height:1.2;text-align:center}
+html[data-home-v="a"] .home-hub .hh-sec,
+html[data-home-v="b"] .home-hub .hh-sec{margin-top:12px;padding-top:24px}
+html[data-home-v="b"] .home-hub .hh-trackers,
+html[data-home-v="a"] .home-hub .hh-quiz{border-top:0;margin-top:0;padding-top:12px}
+
+/* ---- Ticker: every chip is a link (button-like, 44px+ tap target) ---- */
+.home-hub .hh-ticker{grid-column:1/-1;display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0;padding:0;list-style:none}
+.home-hub .hh-tick-li{display:flex;min-width:0}
+.home-hub .hh-tick-grok,.home-hub .hh-tick-online{grid-column:1/-1}
+.home-hub .hh-tick{display:flex;align-items:center;gap:4px 8px;min-width:0;width:100%;min-height:48px;padding:7px 12px;border:1px solid var(--hh-line);border-radius:12px;background:rgba(14,16,19,.8);font-size:12.5px}
+.home-hub .hh-tick-link{flex-wrap:wrap;align-content:center;position:relative;padding-right:30px;border-color:#2e333b;background:linear-gradient(180deg,#15181d,#0f1114);box-shadow:0 1px 0 rgba(255,255,255,.04) inset;cursor:pointer;
+  transition:border-color .15s,background .15s,transform .15s}
+.home-hub .hh-tick-link:hover{border-color:rgba(242,180,65,.6);background:linear-gradient(180deg,#1b1f25,#121418)}
+.home-hub .hh-tick-link:active{transform:scale(.98)}
+.home-hub .hh-tick-link:focus-visible{outline:2px solid var(--hh-gold);outline-offset:2px}
+.home-hub .hh-chev{position:absolute;right:11px;top:50%;transform:translateY(-52%);font-size:20px;line-height:1;color:var(--hh-gold);transition:transform .15s}
+.home-hub .hh-tick-link:hover .hh-chev{transform:translate(3px,-52%)}
 .home-hub .hh-tick-k{font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--hh-gold);font-size:11px;white-space:nowrap}
-.home-hub .hh-tick-v{color:#e6e9ed;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.home-hub .hh-tick-v{color:#e6e9ed;font-variant-numeric:tabular-nums;min-width:0}
+.home-hub .hh-tick-togi .hh-tick,.home-hub .hh-tick-daily .hh-tick{flex-direction:column;flex-wrap:nowrap;align-items:flex-start;justify-content:center}
+.home-hub .hh-tick-online{justify-content:center}
 .home-hub .hh-tick-online .hh-tick-v{color:var(--hh-green)}
 .home-hub .hh-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hh-green);box-shadow:0 0 0 0 rgba(82,209,139,.6);animation:hh-pulse 2s infinite}
 .home-hub .hh-dot-red{background:#f4726d;box-shadow:0 0 0 0 rgba(244,114,109,.6)}
 @keyframes hh-pulse{0%{box-shadow:0 0 0 0 rgba(82,209,139,.5)}70%{box-shadow:0 0 0 7px rgba(82,209,139,0)}100%{box-shadow:0 0 0 0 rgba(82,209,139,0)}}
-@media (prefers-reduced-motion:reduce){.home-hub .hh-dot{animation:none}}
+@media (prefers-reduced-motion:reduce){.home-hub .hh-dot{animation:none}.home-hub .hh-tick-link,.home-hub .hh-chev{transition:none}}
+@media (min-width:640px){
+  .home-hub .hh-ticker{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .home-hub .hh-tick-grok{grid-column:auto}
+  .home-hub .hh-tick-togi .hh-tick,.home-hub .hh-tick-daily .hh-tick{flex-direction:row;align-items:center;justify-content:flex-start}
+  .home-hub .hh-tick-togi .hh-tick,.home-hub .hh-tick-daily .hh-tick{flex-wrap:wrap}
+}
 @media (min-width:960px){
-  .home-hub .hh-ticker{flex-wrap:nowrap;gap:0;border:1px solid var(--hh-line);border-radius:12px;background:rgba(14,16,19,.8);padding:4px}
-  .home-hub .hh-tick{flex:1;justify-content:center;border:0;background:none;border-radius:0;padding:10px 14px}
-  .home-hub .hh-tick+.hh-tick{border-left:1px solid var(--hh-line)}
+  .home-hub .hh-ticker{grid-template-columns:repeat(auto-fit,minmax(0,1fr))}
+  .home-hub .hh-tick-online{grid-column:auto}
+  .home-hub .hh-tick{min-height:52px;padding:10px 34px 10px 16px}
+  .home-hub .hh-tick-online{justify-content:center}
 }
 
 /* ---- Sections ---- */

@@ -40,57 +40,69 @@ export default function HomePage() {
 
   return (
     <div data-reading-page className="home-hub mx-auto max-w-6xl px-4 sm:px-6">
-      {/* Picks variant A or B before the sections below are parsed, so the wrong order never paints. */}
+      {/* Picks variant A, B or C before the sections below are parsed, so the wrong order never paints. */}
       <script dangerouslySetInnerHTML={{ __html: HOME_VARIANT_SCRIPT }} />
       <HomeVariantBoot />
 
-      {/* --------------------------------- Hero --------------------------------- */}
+      {/* ---------------------------------- Hero ----------------------------------
+          C shows the full intro. A (quizzes first) and B (trackers first) hide the
+          .hh-full parts and keep one short headline line; see home.css. */}
       <section className="hh-hero" aria-labelledby="home-title">
         <div className="hh-hero-copy">
-          <p className="hh-eyebrow">The operator&apos;s dashboard</p>
+          <p className="hh-eyebrow hh-full">The operator&apos;s dashboard</p>
           <h1 id="home-title" className="hh-h1">
-            Watch real operators.<br />
-            <span className="hh-gold">Test your own judgment.</span>
+            <span className="hh-h1-watch">Watch real operators.</span><br className="hh-full" />{" "}
+            <span className="hh-h1-test hh-gold">Test your own judgment.</span>
           </h1>
-          <p className="hh-lede">
+          <p className="hh-lede hh-full">
             Live trackers of real money and real results, next to business judgment tests: the Operator Test,
             Quick Decisions, eight skill tests and a Daily Decision. No account needed.
           </p>
-          <div className="hh-cta hh-cta-a">
+          <div className="hh-cta hh-cta-c">
             <a href="#trackers" className="hh-btn hh-btn-primary">See the live trackers</a>
             <QuizLink quiz="operator" href="/operator/" className="hh-btn hh-btn-ghost">Take the Operator Test</QuizLink>
           </div>
-          <div className="hh-cta hh-cta-b">
+          <div className="hh-cta hh-cta-a">
             <QuizLink quiz="operator" href="/operator/" className="hh-btn hh-btn-primary">Take the Operator Test</QuizLink>
             <QuizLink quiz="daily" href="/daily/" className="hh-btn hh-btn-ghost">Today&apos;s Daily Decision</QuizLink>
           </div>
-          <p className="hh-fine">{BANK_STATS.standard} scenarios · 8 skills · 6 difficulty levels</p>
+          <p className="hh-fine hh-full">{BANK_STATS.standard} scenarios · 8 skills · 6 difficulty levels</p>
         </div>
-        <div className="hh-art" aria-hidden="true">
+        <div className="hh-art hh-full" aria-hidden="true">
           <div className="hh-art-tile">
             <Image src="/brand/mark.svg" alt="" width={96} height={96} unoptimized className="hh-art-mark" />
           </div>
           <span className="hh-art-line l1" /><span className="hh-art-line l2" /><span className="hh-art-line l3" />
         </div>
 
+        {/* Live numbers. Each chip is a link; Grok Bot first, then Togi, then the Daily Decision. */}
         <ul className="hh-ticker" aria-label="Live numbers">
-          <li className="hh-tick">
-            <span className="hh-tick-k">Grok Bot</span>
-            <span className="hh-tick-v">{ratio(S.ratio_full)} · {signedUsd(S.return_full)} return</span>
+          <li className="hh-tick-li hh-tick-grok">
+            <TrackerLink card="grok" href="/grok-bot-savings-tracker/" className="hh-tick hh-tick-link" ariaLabel={`Grok Bot Savings Tracker: ${ratio(S.ratio_full)}, ${signedUsd(S.return_full)} return`}>
+              <span className="hh-tick-k">Grok Bot</span>
+              <span className="hh-tick-v">{ratio(S.ratio_full)} · {signedUsd(S.return_full)} return</span>
+              <span className="hh-chev" aria-hidden="true">›</span>
+            </TrackerLink>
           </li>
-          <li className="hh-tick">
-            <span className="hh-tick-k">Togi</span>
-            <span className="hh-tick-v">{compactUsd(togi.latest_value)} / {compactUsd(togi.goal)}</span>
+          <li className="hh-tick-li hh-tick-togi">
+            <TrackerLink card="togi" href="/togi/" className="hh-tick hh-tick-link" ariaLabel={`Togi Tracker: ${compactUsd(togi.latest_value)} of ${compactUsd(togi.goal)}`}>
+              <span className="hh-tick-k">Togi</span>
+              <span className="hh-tick-v">{compactUsd(togi.latest_value)} / {compactUsd(togi.goal)}</span>
+              <span className="hh-chev" aria-hidden="true">›</span>
+            </TrackerLink>
           </li>
-          <li className="hh-tick">
-            <span className="hh-tick-k">Daily Decision</span>
-            <TickerDaily />
+          <li className="hh-tick-li hh-tick-daily">
+            <TrackerLink card="daily" href="/daily/" className="hh-tick hh-tick-link">
+              <span className="hh-tick-k">Daily Decision</span>
+              <TickerDaily />
+              <span className="hh-chev" aria-hidden="true">›</span>
+            </TrackerLink>
           </li>
           <TickerOnline />
         </ul>
       </section>
 
-      {/* ------------- Live trackers. Grok Bot comes before Togi in both variants. ------------- */}
+      {/* ------------- Live trackers. Grok Bot comes before Togi in every variant. ------------- */}
       <section id="trackers" className="hh-sec hh-trackers" aria-labelledby="trackers-title">
         <div className="hh-row-head">
           <h2 id="trackers-title" className="hh-h2">Live Trackers</h2>

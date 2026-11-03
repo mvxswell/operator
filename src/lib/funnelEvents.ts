@@ -42,7 +42,7 @@ const BADGE =
 
 // Homepage A/B test (src/lib/homeEvents.ts). The suffix is only the variant, a or b.
 // Sent only when the build sets NEXT_PUBLIC_HOME_AB_EVENTS=1, after the worker is redeployed.
-const HOME = "home_view:(?:a|b)|tracker_click:(?:grok|togi):(?:a|b)|quiz_start:(?:operator|daily|quick):(?:a|b)";
+const HOME = "home_view:(?:a|b|c)|tracker_click:(?:grok|togi|daily):(?:a|b|c)|quiz_start:(?:operator|daily|quick):(?:a|b|c)";
 
 const FUNNEL_EVENT = new RegExp(
   `^(?:share_click:(?:copy|x|linkedin|native|download)|share_visit:(?:copy|x|linkedin|native)|operator:(?:intro|start|complete|q:(?:1|5|10|15|20)|abandon:(?:[1-9]|1\\d|20))|skill:(?:${SKILL}):(?:intro|start|complete)|result:(?:train|retake|share|post|progress|guide)|quick:(?:start|complete|again)|daily:(?:answer|share)|badge_earned:(?:${BADGE})|guide:(?:${GUIDE}):(?:scenario|cta)|${HOME})$`,
