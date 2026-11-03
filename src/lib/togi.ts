@@ -43,6 +43,10 @@ export type TogiData = {
     latest_value_source: string;
     latest_value_caveat: string;
     last_updated: string;
+    /** Optional. Link to Togi's X profile, where Money tips go. Validated by safeTipUrl. */
+    tip_url?: unknown;
+    /** Optional. One line shown beside the tip button, rendered as plain text. */
+    tip_note?: unknown;
   };
   account_history: TogiHistoryPoint[];
   trades: TogiTrade[];
@@ -128,6 +132,37 @@ export function safeXUrl(url: unknown): string {
 /** Like safeXUrl, but returns null for anything that is not an X post, so no link is drawn. */
 export function xPostUrl(url: unknown): string | null {
   return typeof url === "string" && X_POST.test(url) ? url : null;
+}
+
+const TIP_HOSTS = new Set(["x.com", "twitter.com"]);
+export const TIP_NOTE_MAX = 200;
+
+/**
+ * The tip button only links to an https X profile or post. Anything else, including
+ * javascript:, http:, other hosts, credentials, or a custom port, returns null and the
+ * button is not drawn.
+ */
+export function safeTipUrl(url: unknown): string | null {
+  if (typeof url !== "string" || url.length > 300) return null;
+  let parsed: URL;
+  try { parsed = new URL(url); } catch { return null; }
+  if (parsed.protocol !== "https:" || !TIP_HOSTS.has(parsed.hostname)) return null;
+  if (parsed.username || parsed.password || parsed.port) return null;
+  return parsed.href;
+}
+
+/** Plain-text note for the tip button: trimmed, whitespace collapsed, capped. Empty or non-string gives null. */
+export function tipNoteText(note: unknown): string | null {
+  if (typeof note !== "string") return null;
+  const text = note.replace(/\s+/g, " ").trim();
+  if (!text) return null;
+  return text.length > TIP_NOTE_MAX ? text.slice(0, TIP_NOTE_MAX - 1).trimEnd() + "…" : text;
+}
+
+/** Tip button data from the feed meta, or null when the button should be hidden. */
+export function togiTip(meta: { tip_url?: unknown; tip_note?: unknown } | null | undefined): { url: string; note: string | null } | null {
+  const url = safeTipUrl(meta?.tip_url);
+  return url ? { url, note: tipNoteText(meta?.tip_note) } : null;
 }
 
 const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);

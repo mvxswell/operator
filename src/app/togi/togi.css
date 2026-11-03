@@ -52,6 +52,12 @@
 .togi-tracker .tg-top{display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:16px 0 2px}
 .togi-tracker .tg-title{font-size:28px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;line-height:1;margin:0}
 .togi-tracker .tg-top .navcta{margin-left:auto}
+.togi-tracker .tg-tip{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;margin:12px 0 4px}
+.togi-tracker .tip-btn{display:inline-flex;align-items:center;gap:8px;flex-shrink:0;min-height:44px;padding:0 20px;border-radius:999px;background:linear-gradient(180deg,#f6c25a,var(--accent));color:#16120a;font:600 15px var(--sans);white-space:nowrap;box-shadow:0 1px 0 #ffffff40 inset,0 6px 20px #f2b44133;transition:filter .15s,transform .15s}
+.togi-tracker .tip-btn:hover{filter:brightness(1.08);text-decoration:none}
+.togi-tracker .tip-btn:active{transform:translateY(1px)}
+.togi-tracker .tip-btn:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+.togi-tracker .tip-note{flex:1 1 260px;min-width:0;margin:0;font-size:13px;line-height:1.45;color:var(--muted)}
 .togi-tracker .tg-topblock section,.togi-tracker .tg-topblock .tg-lead{margin-top:10px}
 .togi-tracker .tg-lead{display:grid;gap:10px}
 .togi-tracker .tg-lead section{margin-top:0}
