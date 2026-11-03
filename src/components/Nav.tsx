@@ -12,7 +12,7 @@ import { useProfile } from "@/lib/useProfile";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
 
-type NavLink = { href: string; label: string; compact: string };
+type NavLink = { href: string; label: string; also?: string[] };
 
 /**
  * /togi/ ships its own CSP (connect-src adds the Togi feed, see
@@ -21,18 +21,13 @@ type NavLink = { href: string; label: string; compact: string };
  */
 const TOGI_HREF = "/togi/";
 
+/** Five hub sections. Trackers is the homepage tracker grid; Togi keeps its own pill. */
 const LINKS: NavLink[] = [
-  { href: "/operator/", label: "Operator Test", compact: "Operator" },
-  { href: "/quick/", label: "Quick Decisions", compact: "Quick" },
-  { href: "/skills/", label: "Skills", compact: "Skills" },
-  { href: "/cases/", label: "Cases", compact: "Cases" },
-  { href: "/guides/", label: "Guides", compact: "Guides" },
-  { href: "/daily/", label: "Daily", compact: "Daily" },
-  ...(leaderboardVisible()
-    ? [{ href: "/leaderboard/", label: "Leaderboard", compact: "Leaderboard" }]
-    : []),
-  { href: "/badges/", label: "Badges", compact: "Badges" },
-  { href: "/progress/", label: "My progress", compact: "Progress" },
+  { href: "/#trackers", label: "Trackers" },
+  { href: "/tests/", label: "Tests", also: ["/operator/", "/quick/", "/skills/"] },
+  { href: "/daily/", label: "Daily" },
+  ...(leaderboardVisible() ? [{ href: "/leaderboard/", label: "Leaderboard" }] : []),
+  { href: "/guides/", label: "Playbooks", also: ["/cases/"] },
 ];
 
 export function Nav() {
@@ -40,11 +35,15 @@ export function Nav() {
   const { profile, hydrated } = useProfile();
   const daily = hydrated ? dailyHabitStatus(profile.daily, todayKey()) : null;
 
-  const isActive = (href: string) => {
+  const isActive = (href: string, also: string[] = []) => {
     const current = siteHref(pathname.split(/[?#]/)[0] || "/");
-    const target = siteHref(href.split(/[?#]/)[0] || "/");
-    if (target === "/") return current === "/";
-    return current === target || current.startsWith(target);
+    return [href, ...also].some((path) => {
+      // A homepage anchor (Trackers) is a section, not a page: never "current".
+      if (path.includes("#")) return false;
+      const target = siteHref(path.split(/[?#]/)[0] || "/");
+      if (target === "/") return current === "/";
+      return current === target || current.startsWith(target);
+    });
   };
 
   const leaveIfNeeded = (event: MouseEvent<HTMLAnchorElement>, href: string) => {
@@ -64,22 +63,22 @@ export function Nav() {
           <BrandLogo />
         </Link>
 
-        <div className="order-last flex w-full flex-wrap gap-1 lg:order-none lg:min-w-0 lg:flex-1">
+        <div className="order-last -mx-1.5 flex w-[calc(100%+0.75rem)] flex-nowrap gap-0.5 overflow-x-auto [scrollbar-width:none] sm:mx-0 sm:w-full sm:gap-1 lg:order-none lg:min-w-0 lg:flex-1 lg:justify-center">
           {LINKS.map((link) => (
             <Link prefetch={false}
               key={link.href}
               href={link.href}
               aria-label={sameSitePath(link.href, "/daily/") ? dailyLinkLabel(daily) : undefined}
+              aria-current={isActive(link.href, link.also) ? "page" : undefined}
               onClick={(event) => leaveIfNeeded(event, link.href)}
-              className={`shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 lg:px-2.5 ${
-                isActive(link.href)
+              className={`shrink-0 rounded-md px-1.5 py-1.5 text-[13px] transition-colors sm:px-3 lg:px-3 ${
+                isActive(link.href, link.also)
                   ? "bg-surface-2 text-ink"
                   : "text-muted hover:text-ink"
               }`}
             >
               <span className="inline-flex items-center gap-1">
-                <span className="lg:hidden">{link.compact}</span>
-                <span className="hidden lg:inline">{link.label}</span>
+                {link.label}
                 {sameSitePath(link.href, "/daily/") ? <DailyMark status={daily} /> : null}
               </span>
             </Link>
