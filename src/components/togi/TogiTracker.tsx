@@ -144,18 +144,10 @@ export function TogiTracker() {
           <div id="timeline" className="timeline"></div>
         </section>
 
-        <section className="grid2">
-          <div className="panel panel-depth">
-            <p className="eyebrow">Bag check</p>
-            <h2>Open shares · <span id="snapdate"></span></h2>
-            <div id="positions" className="positions"></div>
-            <a className="src" id="possrc" href={TOGI_PROFILE_URL} {...ext}>source ↗</a>
-          </div>
-          <div className="panel panel-depth side">
-            <p className="eyebrow">Side quests</p>
-            <h2>Not counted in the challenge</h2>
-            <ul id="side"></ul>
-          </div>
+        <section className="panel panel-depth side">
+          <p className="eyebrow">Side quests</p>
+          <h2>Not counted in the challenge</h2>
+          <ul id="side"></ul>
         </section>
 
         <section className="brand-hero cta">
