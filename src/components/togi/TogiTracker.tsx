@@ -115,6 +115,11 @@ export function TogiTracker() {
           </section>
         </div>
 
+        {/* Optional: filled from the feed's `portfolio` object, stays hidden without one. */}
+        <section id="portfolio" className="panel panel-depth portfolio" aria-label="Portfolio" hidden>
+          <div id="pf"></div>
+        </section>
+
         <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
 
         <section className="brand-hero hero solo">

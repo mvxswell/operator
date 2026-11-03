@@ -1,7 +1,8 @@
 // DOM rendering for the Togi Tracker page, ported from the standalone tracker's app.js.
 // Runs only in the browser, after the data has loaded. Every string from the feed is
 // HTML-escaped and every link goes through safeXUrl, since the feed is third-party data.
-import { safeXUrl, type TogiData, type TogiTrade } from "@/lib/togi";
+import { isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "@/lib/togi";
+import { renderPortfolioHtml } from "./portfolio";
 
 const usd = (n: number, dp = 0) =>
   (n < 0 ? "-" : "") + "$" + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
@@ -242,6 +243,20 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("side").innerHTML = D.side_quests.map((s) =>
     `<li><span class="dt">${fmtDate(s.date)}</span>${esc(s.text)} <a href="${safeXUrl(s.source_url)}" ${ext}>post ↗</a></li>`,
   ).join("");
+
+  // ---- Portfolio (optional part of the feed; hidden when missing or malformed) ----
+  const pf = $("portfolio");
+  let pfHtml = "";
+  if (isTogiPortfolio(D.portfolio)) {
+    try { pfHtml = renderPortfolioHtml(D.portfolio); } catch { pfHtml = ""; }
+  }
+  $("pf").innerHTML = pfHtml;
+  pf.hidden = !pfHtml;
+  if (pfHtml) {
+    const marks = Array.from(pf.querySelectorAll<HTMLElement | SVGElement>("[data-t]"));
+    const hl = (t: string | null) => marks.forEach((e) => e.classList.toggle("hl", t != null && e.dataset.t === t));
+    marks.forEach((e) => { e.addEventListener("mouseenter", () => hl(e.dataset.t ?? null)); e.addEventListener("mouseleave", () => hl(null)); });
+  }
 
   return () => { alive = false; timers.forEach((t) => clearTimeout(t)); };
 }
