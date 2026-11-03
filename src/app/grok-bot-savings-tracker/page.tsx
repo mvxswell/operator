@@ -3,10 +3,9 @@ import { GrokBotSavings } from "@/components/savings/GrokBotSavings";
 import { absoluteUrl } from "@/lib/site";
 import "./savings.css";
 
-// PRE-LAUNCH: noindex, and the route is left out of the sitemap and the nav.
-// At launch (after Maxwell approves): set LAUNCHED = true, add { path: "/grok-bot-savings-tracker" }
-// to src/app/sitemap.ts, and flip the launch assertions in tests/savings.test.cjs.
-const LAUNCHED = false;
+// LAUNCHED (Maxwell approved, Nov 2, 2026): indexable and listed in src/app/sitemap.ts. Not in the nav.
+// To pull it back to a private preview: set LAUNCHED = false and remove the sitemap entry.
+const LAUNCHED = true;
 
 const title = "Grok Bot Savings Tracker: $300/mo, how much it saves";
 const description =

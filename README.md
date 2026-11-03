@@ -147,7 +147,7 @@ per-segment prefetch payloads as nested directories
 time; a static host cannot, so every navigation prefetch 404s and falls back to
 a full page load. The script copies each payload to the flattened name.
 
-## Grok Bot Savings Tracker (`/grok-bot-savings-tracker/`, pre-launch)
+## Grok Bot Savings Tracker (`/grok-bot-savings-tracker/`)
 
 A static page that prices every task the bots finish against freelancer rates. It is
 server-rendered from `src/data/grokBotSavings.json`; no client fetch and no extra CSP origin.
@@ -168,6 +168,5 @@ npm test && npm run build:pages
 - Month, spend, rate bases, sources and misses live in `src/data/grokBotSavings.config.json`.
 - Raw evidence is never copied into the JSON: box paths become "File on the box" and only PRs on
   repos listed in `publicRepos` are linked.
-- Launch: the route is noindex and left out of the sitemap and nav. Set `LAUNCHED = true` in
-  `src/app/grok-bot-savings-tracker/page.tsx`, add the path to `src/app/sitemap.ts`, and update the
-  pre-launch test in `tests/savings.test.cjs`.
+- Launched Nov 2, 2026: indexable and in the sitemap, not in the nav. `LAUNCHED` in
+  `src/app/grok-bot-savings-tracker/page.tsx` switches noindex back on if it ever needs to go private.

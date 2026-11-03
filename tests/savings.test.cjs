@@ -132,12 +132,12 @@ test("page says Estimates, cites every rate source, and keeps CSS scoped", () =>
   for (const name of css.matchAll(/@keyframes\s+([\w-]+)/g)) assert.ok(name[1].startsWith("gb-"), name[1]);
 });
 
-test("pre-launch: noindex, not in the sitemap or nav, no extra CSP origin", async () => {
-  // At launch flip these: LAUNCHED = true, sitemap entry added, then update this test.
+test("launched: indexable, in the sitemap, not in the nav, no extra CSP origin", async () => {
   const route = fs.readFileSync("src/app/grok-bot-savings-tracker/page.tsx", "utf8");
-  assert.match(route, /const LAUNCHED = false;/);
+  assert.match(route, /const LAUNCHED = true;/);
   assert.match(route, /robots: LAUNCHED \? undefined : \{ index: false, follow: false \}/);
-  assert.doesNotMatch(fs.readFileSync("src/app/sitemap.ts", "utf8"), /grok-bot-savings-tracker/);
+  assert.match(route, /alternates: \{ canonical: url \}/);
+  assert.match(fs.readFileSync("src/app/sitemap.ts", "utf8"), /\{ path: "\/grok-bot-savings-tracker" \}/);
   assert.doesNotMatch(fs.readFileSync("src/components/Nav.tsx", "utf8"), /grok-bot-savings-tracker/);
   const { ROUTE_CONNECT_ORIGINS } = await import("../scripts/secure-export.mjs");
   assert.equal(ROUTE_CONNECT_ORIGINS["grok-bot-savings-tracker"], undefined);
