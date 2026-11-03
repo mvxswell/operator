@@ -1,0 +1,191 @@
+{
+  "_note": "Settings for the Grok Bot Savings Tracker. Mirrors MONTH / RATES / SOURCES / MISSES in build_roi.py. Refresh with: npm run savings:sync -- <grokbot_roi.csv> --meta <build_roi.py>",
+  "month": {
+    "n": 1,
+    "start": "2026-11-02",
+    "end": "2026-12-01",
+    "spend": 300,
+    "plans": [
+      200,
+      100
+    ]
+  },
+  "rates": [
+    {
+      "role": "Book layout",
+      "rate": 50,
+      "basis": "EFA book design / layout range",
+      "source": "efa"
+    },
+    {
+      "role": "Book editor",
+      "rate": 50,
+      "basis": "EFA nonfiction copyediting range",
+      "source": "efa"
+    },
+    {
+      "role": "Project manager (spec + review)",
+      "rate": 49,
+      "basis": "BLS median, project management specialists ($49.19)",
+      "source": "bls_pm"
+    },
+    {
+      "role": "Web developer",
+      "rate": 40,
+      "basis": "Upwork web developer mid-range",
+      "source": "up_web"
+    },
+    {
+      "role": "Market research analyst",
+      "rate": 38,
+      "basis": "BLS median, market research analysts ($37.87)",
+      "source": "bls_mra"
+    },
+    {
+      "role": "SEO specialist",
+      "rate": 35,
+      "basis": "Upwork SEO expert mid-range",
+      "source": "up_seo"
+    },
+    {
+      "role": "Content writer",
+      "rate": 35,
+      "basis": "Upwork content writer mid-range",
+      "source": "up_writer"
+    },
+    {
+      "role": "Data analyst",
+      "rate": 30,
+      "basis": "Upwork data analyst mid-range",
+      "source": "up_data"
+    },
+    {
+      "role": "Social media manager",
+      "rate": 25,
+      "basis": "Upwork social media manager mid-range",
+      "source": "up_smm"
+    },
+    {
+      "role": "Graphic designer",
+      "rate": 25,
+      "basis": "Upwork graphic designer average (about $25)",
+      "source": "up_gfx"
+    },
+    {
+      "role": "Research VA",
+      "rate": 20,
+      "basis": "Upwork virtual assistant, research / marketing tier",
+      "source": "up_va"
+    }
+  ],
+  "sources": [
+    {
+      "key": "up_web",
+      "title": "Web developer rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/web-developers/cost/"
+    },
+    {
+      "key": "up_seo",
+      "title": "SEO expert rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/seo-experts/cost/"
+    },
+    {
+      "key": "up_writer",
+      "title": "Content writer rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/content-writers/cost/"
+    },
+    {
+      "key": "up_smm",
+      "title": "Social media manager rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/social-media-managers/cost/"
+    },
+    {
+      "key": "up_va",
+      "title": "Virtual assistant rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/virtual-assistants/cost/"
+    },
+    {
+      "key": "up_data",
+      "title": "Data analyst rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/data-analysts/cost/"
+    },
+    {
+      "key": "up_gfx",
+      "title": "Graphic designer rates",
+      "site": "Upwork",
+      "href": "https://www.upwork.com/hire/graphic-designers/cost/"
+    },
+    {
+      "key": "efa",
+      "title": "Editorial rates chart",
+      "site": "Editorial Freelancers Association",
+      "href": "https://www.the-efa.org/rates/"
+    },
+    {
+      "key": "bls_pm",
+      "title": "Project management specialists pay",
+      "site": "BLS",
+      "href": "https://www.bls.gov/ooh/business-and-financial/project-management-specialists.htm"
+    },
+    {
+      "key": "bls_mra",
+      "title": "Market research analysts pay",
+      "site": "BLS",
+      "href": "https://www.bls.gov/ooh/business-and-financial/market-research-analysts.htm"
+    }
+  ],
+  "misses": [
+    {
+      "date": "2026-11-02",
+      "title": "Quote targets that were already quotes",
+      "detail": "Some of tonight's v1 quote-tweet picks were already quote tweets (Garry, Tony, levelsio). The v2 set still includes a Jason post that quotes @chamath.",
+      "label": "Redo",
+      "tone": "danger"
+    },
+    {
+      "date": "2026-11-02",
+      "title": "Weak YC pick",
+      "detail": "The YC post was a weak quote target. Maxwell had to ask why it was suggested.",
+      "label": "Learning",
+      "tone": "warning"
+    },
+    {
+      "date": "2026-11-02",
+      "title": "Quotes too long",
+      "detail": "The v1 quotes ran long. Quotes need to be short and punchy, and replies can be longer.",
+      "label": "Redo",
+      "tone": "warning"
+    },
+    {
+      "date": "2026-11-02",
+      "title": "Quote-tweet composer link",
+      "detail": "The composer link opens a normal post with the tweet URL in it instead of a real quote tweet.",
+      "label": "Process fix",
+      "tone": "warning"
+    },
+    {
+      "date": "2026-11-02",
+      "title": "Morning drafts unused",
+      "detail": "Today's 8am drafts weren't posted. They're logged at $0 until they're used.",
+      "label": "$0 credited",
+      "tone": "danger"
+    },
+    {
+      "date": "2026-11-02",
+      "title": "Tracker rebuilt",
+      "detail": "The first version backfilled Oct 15 to Nov 1. It was rebuilt so tracking starts today.",
+      "label": "Redo",
+      "tone": "warning"
+    }
+  ],
+  "publicRepos": [
+    "mvxswell/operator",
+    "mvxswell/tonnagecheck"
+  ]
+}
