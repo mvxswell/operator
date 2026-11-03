@@ -230,16 +230,7 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const ps = root.querySelector<HTMLElement>(".stat.party");
   if (ps) { ps.addEventListener("mouseenter", () => party(ps)); ps.addEventListener("click", () => party(ps)); }
 
-  // ---- Positions ----
-  const S = D.open_positions_snapshot;
-  const tot = S.positions.reduce((a, p) => a + p.value, 0) || 1;
-  $("snapdate").textContent = fmtDate(S.date);
-  ($("possrc") as HTMLAnchorElement).href = safeXUrl(S.source_url);
-  $("positions").innerHTML = S.positions.map((p) => {
-    const u = typeof p.unrealized === "number" ? p.unrealized : null;
-    const pc = typeof p.pct === "number" ? p.pct : null;
-    return `<div class="pos-r"><b>${esc(p.ticker)}</b><div><div class="bt"><i style="width:${((p.value / tot) * 100).toFixed(1)}%"></i></div><span class="meta2">${usd(p.value)} · ${Number(p.shares).toLocaleString("en-US")} sh</span></div><span class="u ${u == null ? "" : u >= 0 ? "pos" : "neg"}">${u == null ? "n/a" : (u >= 0 ? "+" : "") + short(u) + (pc != null ? " (" + pc + "%)" : "")}</span></div>`;
-  }).join("");
+  // ---- Side quests ----
   $("side").innerHTML = D.side_quests.map((s) =>
     `<li><span class="dt">${fmtDate(s.date)}</span>${esc(s.text)} <a href="${safeXUrl(s.source_url)}" ${ext}>post ↗</a></li>`,
   ).join("");

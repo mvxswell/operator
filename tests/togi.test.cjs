@@ -177,3 +177,11 @@ test("portfolio links only to X posts and escapes feed text", () => {
   assert.doesNotMatch(html, /<img|<script|javascript:|evil\.example/);
   for (const [, href] of html.matchAll(/href="([^"]*)"/g)) assert.match(href, /^https:\/\/(x|twitter)\.com\/[A-Za-z0-9_]+\/status\/\d+$/);
 });
+
+test("the old 'Open shares' panel is gone (the Portfolio section replaces it)", () => {
+  const page = fs.readFileSync("src/components/togi/TogiTracker.tsx", "utf8");
+  const render = fs.readFileSync("src/components/togi/renderTogi.ts", "utf8");
+  assert.doesNotMatch(page, /Open shares|id="positions"|id="snapdate"|id="possrc"/);
+  assert.doesNotMatch(render, /open_positions_snapshot|"snapdate"|"possrc"|"positions"/);
+  assert.match(page, /Side quests/);
+});

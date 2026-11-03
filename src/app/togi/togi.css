@@ -182,13 +182,6 @@ to{opacity:1;transform:scale(1)}
 .togi-tracker .go span{display:inline-block;transition:transform .15s}
 .togi-tracker .trade:hover .go span{transform:translateX(3px)}
 .togi-tracker .trade.biggest{cursor:pointer}
-.togi-tracker .positions{margin-top:12px;display:grid;gap:12px}
-.togi-tracker .pos-r{display:grid;grid-template-columns:58px 1fr auto;gap:12px;align-items:center;font-size:13px}
-.togi-tracker .pos-r b{font-family:var(--mono);font-weight:600}
-.togi-tracker .pos-r .bt{height:4px;border-radius:9px;background:var(--surface-2);overflow:hidden;margin-bottom:4px}
-.togi-tracker .pos-r .bt i{display:block;height:100%;background:var(--accent);opacity:.8}
-.togi-tracker .pos-r .meta2{font-size:11.5px;color:var(--faint);font-family:var(--mono)}
-.togi-tracker .pos-r .u{font-family:var(--mono);font-size:12px;text-align:right}
 .togi-tracker .side ul{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:10px}
 .togi-tracker .side li{font-size:14px;color:#d5d9de;border:1px solid var(--line);background:var(--surface-2);border-radius:.5rem;padding:10px 12px}
 .togi-tracker .side li .dt{display:block;font-size:11px;color:var(--faint);font-family:var(--mono);margin-bottom:2px}

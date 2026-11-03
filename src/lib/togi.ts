@@ -46,11 +46,6 @@ export type TogiData = {
   };
   account_history: TogiHistoryPoint[];
   trades: TogiTrade[];
-  open_positions_snapshot: {
-    date: string;
-    source_url: string;
-    positions: { ticker: string; value: number; shares: number; unrealized: number | null; pct: number | null }[];
-  };
   side_quests: { date: string; text: string; source_url: string }[];
   /** Optional, newer part of the feed. Validated separately by isTogiPortfolio. */
   portfolio?: unknown;
@@ -157,9 +152,6 @@ export function isTogiData(value: unknown): value is TogiData {
   for (const h of value.account_history) {
     if (!isObj(h) || !isDate(h.date) || !isNum(h.value) || !isStr(h.account)) return false;
   }
-  const s = value.open_positions_snapshot;
-  if (!isObj(s) || !isDate(s.date) || !Array.isArray(s.positions)) return false;
-  for (const p of s.positions) if (!isObj(p) || !isStr(p.ticker) || !isNum(p.value) || !isNum(p.shares)) return false;
   if (!Array.isArray(value.side_quests)) return false;
   for (const q of value.side_quests) if (!isObj(q) || !isDate(q.date) || !isStr(q.text)) return false;
   return true;
