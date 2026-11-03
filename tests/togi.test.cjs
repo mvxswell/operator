@@ -79,9 +79,14 @@ test("Togi page keeps its disclaimer and neutral call to action", () => {
 
 test("header nav links to /togi/ with a plain anchor (full load picks up the /togi/ CSP)", () => {
   const nav = fs.readFileSync("src/components/Nav.tsx", "utf8");
-  assert.match(nav, /\{\s*href:\s*"\/togi\/",\s*label:\s*"Togi Tracker",\s*compact:\s*"[^"]+",\s*documentNav:\s*true\s*\}/);
-  // documentNav links must render as <a>, never next/link.
-  assert.match(nav, /if \(link\.documentNav\) \{\s*return \(\s*<a\b[^>]*?\n?[\s\S]*?href=\{link\.href\}/);
+  assert.match(nav, /const TOGI_HREF = "\/togi\/";/);
+  // A plain <a> (never next/link) with the quiz-leave guard and aria-current.
+  const anchor = nav.match(/<a\b[^>]*?href=\{TOGI_HREF\}[\s\S]*?<\/a>/);
+  assert.ok(anchor, "Nav renders <a href={TOGI_HREF}>");
+  assert.match(anchor[0], />\s*Togi Tracker\s*<\/a>/);
+  assert.match(anchor[0], /onClick=\{\(event\) => leaveIfNeeded\(event, TOGI_HREF\)\}/);
+  assert.match(anchor[0], /aria-current=\{isActive\(TOGI_HREF\)/);
+  assert.doesNotMatch(nav, /<Link\b[^>]*href=\{TOGI_HREF\}/);
   // No other source file may link to /togi/ through next/link or the router.
   const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
     e.isDirectory() ? walk(`${dir}/${e.name}`) : /\.(tsx?|mjs)$/.test(e.name) ? [`${dir}/${e.name}`] : []);

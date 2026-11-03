@@ -12,17 +12,14 @@ import { useProfile } from "@/lib/useProfile";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
 
-type NavLink = {
-  href: string;
-  label: string;
-  compact: string;
-  /**
-   * Render a plain <a> so the browser does a full document load. /togi/ ships its
-   * own CSP (connect-src adds the Togi feed, see scripts/secure-export.mjs); a
-   * client-side transition would keep the previous page's CSP and block the feed.
-   */
-  documentNav?: boolean;
-};
+type NavLink = { href: string; label: string; compact: string };
+
+/**
+ * /togi/ ships its own CSP (connect-src adds the Togi feed, see
+ * scripts/secure-export.mjs). A client-side transition would keep the previous
+ * page's CSP and block the feed, so this link is a plain <a> (full document load).
+ */
+const TOGI_HREF = "/togi/";
 
 const LINKS: NavLink[] = [
   { href: "/operator/", label: "Operator Test", compact: "Operator" },
@@ -36,7 +33,6 @@ const LINKS: NavLink[] = [
     : []),
   { href: "/badges/", label: "Badges", compact: "Badges" },
   { href: "/progress/", label: "My progress", compact: "Progress" },
-  { href: "/togi/", label: "Togi Tracker", compact: "Togi Tracker", documentNav: true },
 ];
 
 export function Nav() {
@@ -69,48 +65,42 @@ export function Nav() {
         </Link>
 
         <div className="order-last flex w-full flex-wrap gap-1 lg:order-none lg:min-w-0 lg:flex-1">
-          {LINKS.map((link) => {
-            const className = `shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 ${
-              isActive(link.href)
-                ? "bg-surface-2 text-ink"
-                : "text-muted hover:text-ink"
-            }`;
-            const content = (
+          {LINKS.map((link) => (
+            <Link prefetch={false}
+              key={link.href}
+              href={link.href}
+              aria-label={sameSitePath(link.href, "/daily/") ? dailyLinkLabel(daily) : undefined}
+              onClick={(event) => leaveIfNeeded(event, link.href)}
+              className={`shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 lg:px-2.5 ${
+                isActive(link.href)
+                  ? "bg-surface-2 text-ink"
+                  : "text-muted hover:text-ink"
+              }`}
+            >
               <span className="inline-flex items-center gap-1">
                 <span className="lg:hidden">{link.compact}</span>
                 <span className="hidden lg:inline">{link.label}</span>
                 {sameSitePath(link.href, "/daily/") ? <DailyMark status={daily} /> : null}
               </span>
-            );
-            if (link.documentNav) {
-              return (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  aria-current={isActive(link.href) ? "page" : undefined}
-                  onClick={(event) => leaveIfNeeded(event, link.href)}
-                  className={className}
-                >
-                  {content}
-                </a>
-              );
-            }
-            return (
-              <Link prefetch={false}
-                key={link.href}
-                href={link.href}
-                aria-label={sameSitePath(link.href, "/daily/") ? dailyLinkLabel(daily) : undefined}
-                onClick={(event) => leaveIfNeeded(event, link.href)}
-                className={className}
-              >
-                {content}
-              </Link>
-            );
-          })}
+            </Link>
+          ))}
         </div>
 
         {/* No reserved width: the badge only takes space while it is visible. */}
-        <div className="ml-auto flex h-10 shrink-0 items-center lg:ml-0">
+        {/* Logo row on mobile (the links wrap below), last item on desktop. */}
+        <div className="ml-auto flex h-10 shrink-0 items-center gap-2 lg:ml-0">
+          <a
+            href={TOGI_HREF}
+            aria-current={isActive(TOGI_HREF) ? "page" : undefined}
+            onClick={(event) => leaveIfNeeded(event, TOGI_HREF)}
+            className={`inline-flex h-7 items-center whitespace-nowrap rounded-full border px-3 text-[12px] font-semibold leading-none tracking-wide transition-colors focus-visible:outline-2 focus-visible:outline-accent ${
+              isActive(TOGI_HREF)
+                ? "border-accent bg-accent-soft text-accent"
+                : "border-accent/60 text-accent hover:border-accent hover:bg-accent-soft"
+            }`}
+          >
+            Togi Tracker
+          </a>
           <OnlineNow />
         </div>
       </nav>
