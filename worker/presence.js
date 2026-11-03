@@ -1,5 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
 import { funnelEventFromBody } from "../src/lib/funnelEvents.ts";
+import { declaredLength, readBoundedText } from "../src/lib/boundedBody.ts";
+
+const ONLINE_MAX_BYTES = 64;
+const EVENT_MAX_BYTES = 80;
 
 const ACTIVE_MS = 120_000;
 const ALLOWED_ORIGINS = new Set([
@@ -41,6 +45,7 @@ function corsHeaders(origin) {
     "Access-Control-Allow-Origin": origin,
     "Cache-Control": "no-store",
     "Content-Type": "application/json; charset=utf-8",
+    "X-Content-Type-Options": "nosniff",
     Vary: "Origin",
   };
 }
@@ -48,7 +53,9 @@ function corsHeaders(origin) {
 const worker = {
   async fetch(request, env) {
     const origin = request.headers.get("Origin");
-    if (!origin || !ALLOWED_ORIGINS.has(origin)) return new Response(null, { status: 403 });
+    if (!origin || !ALLOWED_ORIGINS.has(origin)) {
+      return new Response(null, { status: 403, headers: { "Cache-Control": "no-store", Vary: "Origin" } });
+    }
     const headers = corsHeaders(origin);
     if (request.method !== "POST") {
       return new Response(JSON.stringify({ error: "Not found" }), { status: 404, headers });
@@ -62,16 +69,20 @@ const worker = {
 };
 
 async function handleOnline(request, env, headers) {
-  if (request.headers.get("Content-Type") !== "text/plain" || Number(request.headers.get("Content-Length") || 0) > 64) {
+  const declared = declaredLength(request.headers.get("Content-Length"));
+  if (request.headers.get("Content-Type") !== "text/plain" || (declared !== null && declared > ONLINE_MAX_BYTES)) {
     return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
   }
-  const id = await request.text();
-  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
-    return new Response(JSON.stringify({ error: "Invalid visitor" }), { status: 400, headers });
-  }
+  // Rate limit before reading the body, so rejected floods cost as little as possible.
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const { success } = await env.PRESENCE_RATE.limit({ key: ip });
   if (!success) return new Response(JSON.stringify({ error: "Slow down" }), { status: 429, headers });
+  // Content-Length can be absent (chunked), so the body is also capped while reading.
+  const id = await readBoundedText(request.body, ONLINE_MAX_BYTES);
+  if (id === null) return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
+  if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id)) {
+    return new Response(JSON.stringify({ error: "Invalid visitor" }), { status: 400, headers });
+  }
   const count = await env.PRESENCE.getByName("thinkoperator").touch(id);
   return new Response(JSON.stringify({ count, windowSeconds: ACTIVE_MS / 1000 }), { status: 200, headers });
 }
@@ -82,21 +93,26 @@ async function handleOnline(request, env, headers) {
  * badge_earned:<id> counts a badge and sends no score or rank.
  * Stores one increment in counters(day, event, n) for the UTC day.
  * Does not read or store a visitor id, IP, score, or answer.
- * Rate limit: EVENTS_RATE, separate from the online-badge limiter.
+ * Rate limit: EVENTS_RATE, separate from the online-badge limiter, checked before the body is read.
+ * The body is capped at 80 bytes while streaming, even without a Content-Length header.
  * Deploy with `npx wrangler deploy` before production counts will stick.
  */
 async function handleEvent(request, env, headers) {
-  const declared = Number(request.headers.get("Content-Length") || 0);
-  if (declared > 80) {
+  const declared = declaredLength(request.headers.get("Content-Length"));
+  if (declared !== null && declared > EVENT_MAX_BYTES) {
     return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
   }
-  const event = funnelEventFromBody(request.headers.get("Content-Type"), await request.text());
-  if (!event) {
-    return new Response(JSON.stringify({ error: "Invalid event" }), { status: 400, headers });
-  }
+  // Rate limit before reading the body, so rejected floods cost as little as possible.
   const ip = request.headers.get("CF-Connecting-IP") || "unknown";
   const { success } = await env.EVENTS_RATE.limit({ key: ip });
   if (!success) return new Response(JSON.stringify({ error: "Slow down" }), { status: 429, headers });
+  // Content-Length can be absent (chunked), so the body is also capped while reading.
+  const body = await readBoundedText(request.body, EVENT_MAX_BYTES);
+  if (body === null) return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
+  const event = funnelEventFromBody(request.headers.get("Content-Type"), body);
+  if (!event) {
+    return new Response(JSON.stringify({ error: "Invalid event" }), { status: 400, headers });
+  }
   await env.PRESENCE.getByName("thinkoperator").countEvent(event);
   return new Response(null, { status: 204, headers });
 }

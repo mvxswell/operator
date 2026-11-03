@@ -172,3 +172,29 @@ test("cross-tab events invalidate cached progress and unsubscribe removes listen
   assert.equal(handler, null);
   delete global.window;
 });
+
+test("worker bodies are capped while streaming, even without Content-Length", async () => {
+  const { readBoundedText, declaredLength } = require("../src/lib/boundedBody.ts");
+  const stream = (parts) => new ReadableStream({
+    start(c) { for (const p of parts) c.enqueue(new TextEncoder().encode(p)); c.close(); },
+  });
+  assert.equal(await readBoundedText(stream(["home_", "view:a"]), 80), "home_view:a");
+  assert.equal(await readBoundedText(stream(["a".repeat(50), "a".repeat(31)]), 80), null);
+  assert.equal(await readBoundedText(stream(["a".repeat(80)]), 80), "a".repeat(80));
+  assert.equal(await readBoundedText(null, 80), "");
+  assert.equal(declaredLength(null), null);
+  assert.equal(declaredLength("12"), 12);
+  assert.equal(declaredLength("-1"), Number.POSITIVE_INFINITY);
+  assert.equal(declaredLength("1e9"), Number.POSITIVE_INFINITY);
+});
+
+test("presence worker never buffers an unbounded body and rate-limits before reading", () => {
+  const src = fs.readFileSync(require.resolve("../worker/presence.js"), "utf8");
+  assert.ok(!/request\.text\(\)|request\.json\(\)|request\.arrayBuffer\(\)/.test(src));
+  assert.equal((src.match(/readBoundedText\(request\.body/g) || []).length, 2);
+  for (const fn of ["handleOnline", "handleEvent"]) {
+    const body = src.slice(src.indexOf(`async function ${fn}`));
+    assert.ok(body.indexOf(".limit(") < body.indexOf("readBoundedText("), `${fn} limits before reading`);
+  }
+  assert.match(src, /"X-Content-Type-Options": "nosniff"/);
+});
