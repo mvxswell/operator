@@ -155,9 +155,10 @@ server-rendered from `src/data/grokBotSavings.json`; no client fetch and no extr
 Weekly update:
 
 ```bash
-npm run savings:sync -- /workspace/social/grokbot_roi.csv                # rebuild the JSON (as of today, ET)
-npm run savings:sync -- /workspace/social/grokbot_roi.csv --meta /workspace/social/build_roi.py
-                                                                         # also refresh month, rates, sources, misses
+npm run savings:sync -- /workspace/social/grokbot_roi.csv --revenue /workspace/social/grokbot_revenue.csv
+                                       # rebuild the JSON (as of today, ET); add --as-of YYYY-MM-DD to pin the day
+npm run savings:sync -- /workspace/social/grokbot_roi.csv --revenue /workspace/social/grokbot_revenue.csv \
+  --meta /workspace/social/build_roi.py   # also refresh month, rates, sources, misses
 npm test && npm run build:pages
 ```
 
@@ -165,6 +166,11 @@ npm test && npm run build:pages
   Totals use the same math as `build_roi.py` (value = hours × rate; role/business breakdowns
   count rows with value > 0; spend is prorated by day). The sync warns and exits 1 if a CSV value
   or rate disagrees with hours × rate or with the config.
+- Revenue (`--revenue`, columns `date,business,source,amount,evidence,notes`) is money actually
+  received, with evidence. Rows dated outside the month to date are skipped. A row with
+  amount <= 0 or empty evidence fails the sync, matching `build_roi.py`. Without the file,
+  revenue is $0. Total return = savings + revenue − spend (`return_full`, `return_pro`).
+  `net_full` and `net_pro` stay savings − spend.
 - Month, spend, rate bases, sources and misses live in `src/data/grokBotSavings.config.json`.
 - Raw evidence is never copied into the JSON: box paths become "File on the box" and only PRs on
   repos listed in `publicRepos` are linked.

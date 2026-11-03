@@ -14,11 +14,14 @@ export type SavingsSummary = {
   spend: number; plans: number[]; prorated: number; total: number; hours: number; credited: number;
   net_full: number; net_pro: number; ratio_full: number; ratio_pro: number;
   by_role: SavingsAgg[]; by_biz: SavingsAgg[];
+  revenue: number; revenue_count: number; revenue_by_biz: { label: string; value: number }[];
+  return_full: number; return_pro: number;
 };
+export type SavingsRevenue = { date: string; business: string; source: string; amount: number; notes: string; evidence: SavingsEvidence };
 export type SavingsMiss = { date: string; title: string; detail: string; label: string; tone: string };
 export type SavingsRate = { role: string; rate: number; basis: string; source: string };
 export type SavingsSource = { key: string; title: string; site: string; href: string };
-export type SavingsData = { summary: SavingsSummary; tasks: SavingsTask[]; misses: SavingsMiss[]; rates: SavingsRate[]; sources: SavingsSource[] };
+export type SavingsData = { summary: SavingsSummary; tasks: SavingsTask[]; revenue: SavingsRevenue[]; misses: SavingsMiss[]; rates: SavingsRate[]; sources: SavingsSource[] };
 
 const num = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
 const str = (v: unknown): v is string => typeof v === "string";
@@ -30,6 +33,10 @@ const isAgg = (v: unknown): v is SavingsAgg => obj(v) && str(v.label) && num(v.v
 const isTask = (v: unknown): v is SavingsTask => obj(v) && isoDate(v.date) && str(v.bot) && str(v.business) && str(v.task)
   && str(v.role) && num(v.hours) && num(v.rate) && num(v.value) && str(v.credit) && str(v.issues)
   && obj(v.evidence) && str(v.evidence.label) && (v.evidence.href === undefined || safeHref(v.evidence.href) !== "");
+const isEvidence = (v: unknown) => obj(v) && str(v.label) && (v.href === undefined || safeHref(v.href) !== "");
+const isRevenue = (v: unknown): v is SavingsRevenue => obj(v) && isoDate(v.date) && str(v.business) && str(v.source)
+  && num(v.amount) && v.amount > 0 && str(v.notes) && isEvidence(v.evidence);
+const isRevAgg = (v: unknown): v is { label: string; value: number } => obj(v) && str(v.label) && num(v.value);
 const isMiss = (v: unknown): v is SavingsMiss => obj(v) && isoDate(v.date) && str(v.title) && str(v.detail) && str(v.label) && str(v.tone);
 const isRate = (v: unknown): v is SavingsRate => obj(v) && str(v.role) && num(v.rate) && str(v.basis);
 const isSource = (v: unknown): v is SavingsSource => obj(v) && str(v.title) && str(v.site) && safeHref(v.href) !== "";
@@ -37,9 +44,11 @@ const isSource = (v: unknown): v is SavingsSource => obj(v) && str(v.title) && s
 export function isSavingsData(v: unknown): v is SavingsData {
   if (!obj(v) || !obj(v.summary)) return false;
   const s = v.summary;
-  const nums = ["month", "day", "days", "spend", "prorated", "total", "hours", "credited", "net_full", "net_pro", "ratio_full", "ratio_pro"];
+  const nums = ["month", "day", "days", "spend", "prorated", "total", "hours", "credited", "net_full", "net_pro", "ratio_full", "ratio_pro",
+    "revenue", "revenue_count", "return_full", "return_pro"];
   return nums.every((k) => num(s[k])) && isoDate(s.start) && isoDate(s.end) && isoDate(s.as_of)
-    && arr(s.plans, num) && arr(s.by_role, isAgg) && arr(s.by_biz, isAgg)
+    && arr(s.plans, num) && arr(s.by_role, isAgg) && arr(s.by_biz, isAgg) && arr(s.revenue_by_biz, isRevAgg)
+    && arr(v.revenue, isRevenue) && (v.revenue as unknown[]).length === s.revenue_count
     && arr(v.tasks, isTask) && arr(v.misses, isMiss) && arr(v.rates, isRate) && arr(v.sources, isSource);
 }
 
@@ -57,6 +66,11 @@ export function safeHref(v: unknown): string {
 export function usd(n: number, cents = n % 1 !== 0): string {
   const sign = n < 0 ? "−" : "";
   return `${sign}$${Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: cents ? 2 : 0, maximumFractionDigits: cents ? 2 : 0 })}`;
+}
+
+/** Signed dollars for net/return figures: "+$709.50", "−$110". */
+export function signedUsd(n: number): string {
+  return n > 0 ? `+${usd(n, true)}` : usd(n, n % 1 !== 0);
 }
 
 export function ratio(n: number): string {
