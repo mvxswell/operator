@@ -12,7 +12,19 @@ import { useProfile } from "@/lib/useProfile";
 import { BrandLogo } from "./BrandLogo";
 import { OnlineNow } from "./OnlineNow";
 
-const LINKS = [
+type NavLink = {
+  href: string;
+  label: string;
+  compact: string;
+  /**
+   * Render a plain <a> so the browser does a full document load. /togi/ ships its
+   * own CSP (connect-src adds the Togi feed, see scripts/secure-export.mjs); a
+   * client-side transition would keep the previous page's CSP and block the feed.
+   */
+  documentNav?: boolean;
+};
+
+const LINKS: NavLink[] = [
   { href: "/operator/", label: "Operator Test", compact: "Operator" },
   { href: "/quick/", label: "Quick Decisions", compact: "Quick" },
   { href: "/skills/", label: "Skills", compact: "Skills" },
@@ -24,6 +36,7 @@ const LINKS = [
     : []),
   { href: "/badges/", label: "Badges", compact: "Badges" },
   { href: "/progress/", label: "My progress", compact: "Progress" },
+  { href: "/togi/", label: "Togi Tracker", compact: "Togi Tracker", documentNav: true },
 ];
 
 export function Nav() {
@@ -56,25 +69,44 @@ export function Nav() {
         </Link>
 
         <div className="order-last flex w-full flex-wrap gap-1 lg:order-none lg:min-w-0 lg:flex-1">
-          {LINKS.map((link) => (
-            <Link prefetch={false}
-              key={link.href}
-              href={link.href}
-              aria-label={sameSitePath(link.href, "/daily/") ? dailyLinkLabel(daily) : undefined}
-              onClick={(event) => leaveIfNeeded(event, link.href)}
-              className={`shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 ${
-                isActive(link.href)
-                  ? "bg-surface-2 text-ink"
-                  : "text-muted hover:text-ink"
-              }`}
-            >
+          {LINKS.map((link) => {
+            const className = `shrink-0 rounded-md px-2.5 py-1.5 text-[13px] transition-colors sm:px-3 ${
+              isActive(link.href)
+                ? "bg-surface-2 text-ink"
+                : "text-muted hover:text-ink"
+            }`;
+            const content = (
               <span className="inline-flex items-center gap-1">
                 <span className="lg:hidden">{link.compact}</span>
                 <span className="hidden lg:inline">{link.label}</span>
                 {sameSitePath(link.href, "/daily/") ? <DailyMark status={daily} /> : null}
               </span>
-            </Link>
-          ))}
+            );
+            if (link.documentNav) {
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  aria-current={isActive(link.href) ? "page" : undefined}
+                  onClick={(event) => leaveIfNeeded(event, link.href)}
+                  className={className}
+                >
+                  {content}
+                </a>
+              );
+            }
+            return (
+              <Link prefetch={false}
+                key={link.href}
+                href={link.href}
+                aria-label={sameSitePath(link.href, "/daily/") ? dailyLinkLabel(daily) : undefined}
+                onClick={(event) => leaveIfNeeded(event, link.href)}
+                className={className}
+              >
+                {content}
+              </Link>
+            );
+          })}
         </div>
 
         {/* No reserved width: the badge only takes space while it is visible. */}

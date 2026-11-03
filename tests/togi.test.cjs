@@ -76,3 +76,18 @@ test("Togi page keeps its disclaimer and neutral call to action", () => {
   }
   for (const name of css.matchAll(/@keyframes\s+([\w-]+)/g)) assert.ok(name[1].startsWith("tg-"), name[1]);
 });
+
+test("header nav links to /togi/ with a plain anchor (full load picks up the /togi/ CSP)", () => {
+  const nav = fs.readFileSync("src/components/Nav.tsx", "utf8");
+  assert.match(nav, /\{\s*href:\s*"\/togi\/",\s*label:\s*"Togi Tracker",\s*compact:\s*"[^"]+",\s*documentNav:\s*true\s*\}/);
+  // documentNav links must render as <a>, never next/link.
+  assert.match(nav, /if \(link\.documentNav\) \{\s*return \(\s*<a\b[^>]*?\n?[\s\S]*?href=\{link\.href\}/);
+  // No other source file may link to /togi/ through next/link or the router.
+  const walk = (dir) => fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) =>
+    e.isDirectory() ? walk(`${dir}/${e.name}`) : /\.(tsx?|mjs)$/.test(e.name) ? [`${dir}/${e.name}`] : []);
+  for (const file of walk("src")) {
+    const src = fs.readFileSync(file, "utf8");
+    assert.doesNotMatch(src, /<Link\b[^>]*href=["'{`]*\/togi/, `${file} uses next/link for /togi/`);
+    assert.doesNotMatch(src, /router\.(push|replace)\(\s*["'`]\/togi/, `${file} routes to /togi/ client-side`);
+  }
+});
