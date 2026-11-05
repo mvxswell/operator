@@ -7,14 +7,14 @@ const title = "Togi Tracker: Togi's $10M Stock Challenge (Unofficial)";
 const description =
   "Togi Tracker is an unofficial fan tracker of Togi's public stock trades and his road from $950K to $10M. Every number links his post. Not financial advice.";
 const url = absoluteUrl("/togi");
-const image = [{ url: "/opengraph-image.png", width: 1200, height: 630, alt: "Togi Tracker on Think Operator" }];
+const image = [{ url: "/togi/opengraph-image.png", width: 1200, height: 630, alt: "Togi Tracker" }];
 
 export const metadata: Metadata = {
   title,
   description,
   alternates: { canonical: url },
-  openGraph: { title, description, url, siteName: "Think Operator", type: "website", images: image },
-  twitter: { card: "summary_large_image", title, description, images: [{ ...image[0], url: "/twitter-image.png" }] },
+  openGraph: { title, description, url, siteName: "Togi Tracker", type: "website", images: image },
+  twitter: { card: "summary_large_image", title, description, images: [{ ...image[0], url: "/togi/twitter-image.png" }] },
 };
 
 export default function TogiPage() {
