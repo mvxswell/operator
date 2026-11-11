@@ -21,6 +21,9 @@ export function SiteFooter() {
       <Link prefetch={false} href="/progress/" className="ml-3 underline">
         My progress
       </Link>
+      <Link prefetch={false} href="/about/" className="ml-3 underline">
+        About
+      </Link>
       <Link prefetch={false} href="/privacy/" className="ml-3 underline">
         Your data
       </Link>

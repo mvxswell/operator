@@ -191,8 +191,8 @@ test("worker bodies are capped while streaming, even without Content-Length", as
 test("presence worker never buffers an unbounded body and rate-limits before reading", () => {
   const src = fs.readFileSync(require.resolve("../worker/presence.js"), "utf8");
   assert.ok(!/request\.text\(\)|request\.json\(\)|request\.arrayBuffer\(\)/.test(src));
-  assert.equal((src.match(/readBoundedText\(request\.body/g) || []).length, 2);
-  for (const fn of ["handleOnline", "handleEvent"]) {
+  assert.equal((src.match(/readBoundedText\(request\.body/g) || []).length, 3);
+  for (const fn of ["handleOnline", "handleEvent", "handleSubscribe"]) {
     const body = src.slice(src.indexOf(`async function ${fn}`));
     assert.ok(body.indexOf(".limit(") < body.indexOf("readBoundedText("), `${fn} limits before reading`);
   }

@@ -76,6 +76,10 @@ test("funnel names match the published skills and guides and reject anything els
     "badge_earned:nope",
     "badge_earned:first-call:742",
     "badge_earned:top-ten:1",
+    "home_view:a",
+    "home_view:c",
+    "tracker_click:grok:b",
+    "quiz_start:operator:a",
     "00000000-0000-4000-8000-000000000000",
   ]) {
     assert.equal(events.isFunnelEvent(name), false, name);
