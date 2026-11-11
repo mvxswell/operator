@@ -9,6 +9,7 @@ The site is a static export. Assessment scores and practice history are calculat
 - [Guide hub](https://thinkoperator.com/guides/): 35 practical frameworks grouped into hiring, finance, ops cadence, strategy, and people.
 - [Test hub](https://thinkoperator.com/tests/): what each existing quiz and scenario set tests.
 - [Daily Decision](https://thinkoperator.com/daily/): one dated prompt and a browser-local streak.
+- [Built by Maxwell](https://thinkoperator.com/about/): founder and builder. Think Operator is the business brand.
 
 ## Tests and scenario sets
 
