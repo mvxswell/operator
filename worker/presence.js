@@ -1,6 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { funnelEventFromBody } from "../src/lib/funnelEvents.ts";
 import { declaredLength, readBoundedText } from "../src/lib/boundedBody.ts";
+import { SUBSCRIBE_MAX_BYTES, decideSubscribe, isSubscribeContentType } from "../src/lib/subscribe.ts";
 
 const ONLINE_MAX_BYTES = 64;
 const EVENT_MAX_BYTES = 80;
@@ -20,6 +21,8 @@ export class Presence extends DurableObject {
     sql.exec("CREATE TABLE IF NOT EXISTS visitors (id TEXT PRIMARY KEY, expires_at INTEGER NOT NULL)");
     // Anonymous daily totals. No visitor id, score, or answer is stored here.
     sql.exec("CREATE TABLE IF NOT EXISTS counters (day TEXT NOT NULL, event TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, event))");
+    // Weekly brief. Email and the UTC time it was first stored. Nothing else.
+    sql.exec("CREATE TABLE IF NOT EXISTS subscribers (email TEXT PRIMARY KEY, subscribed_at TEXT NOT NULL)");
   }
 
   async touch(id) {
@@ -36,6 +39,14 @@ export class Presence extends DurableObject {
       "INSERT INTO counters (day, event, n) VALUES (?, ?, 1) ON CONFLICT(day, event) DO UPDATE SET n = n + 1",
       day,
       event,
+    );
+  }
+
+  async saveSubscriber(email, subscribedAt) {
+    this.ctx.storage.sql.exec(
+      "INSERT INTO subscribers (email, subscribed_at) VALUES (?, ?) ON CONFLICT(email) DO NOTHING",
+      email,
+      subscribedAt,
     );
   }
 }
@@ -64,6 +75,7 @@ const worker = {
     const path = new URL(request.url).pathname;
     if (path === "/online") return handleOnline(request, env, headers);
     if (path === "/e") return handleEvent(request, env, headers);
+    if (path === "/subscribe") return handleSubscribe(request, env, headers);
     return new Response(JSON.stringify({ error: "Not found" }), { status: 404, headers });
   },
 };
@@ -114,6 +126,36 @@ async function handleEvent(request, env, headers) {
     return new Response(JSON.stringify({ error: "Invalid event" }), { status: 400, headers });
   }
   await env.PRESENCE.getByName("thinkoperator").countEvent(event);
+  return new Response(null, { status: 204, headers });
+}
+
+/**
+ * POST /subscribe
+ * Body: application/x-www-form-urlencoded, at most 512 bytes.
+ * Fields: email, and company (honeypot; a filled value stores nothing).
+ * Stores the lowercased email and a UTC timestamp in subscribers, unique on email.
+ * An address that is already stored is left as it was. The response is 204 either way,
+ * so the body never says whether the address was new. A bad address is 400.
+ * Does not store an IP address, a user agent, or the honeypot.
+ * The IP is only the SUBSCRIBE_RATE key, checked before the body is read.
+ * Deploy with `npx wrangler deploy` before the homepage form can store an address.
+ */
+async function handleSubscribe(request, env, headers) {
+  const declared = declaredLength(request.headers.get("Content-Length"));
+  if (!isSubscribeContentType(request.headers.get("Content-Type")) || (declared !== null && declared > SUBSCRIBE_MAX_BYTES)) {
+    return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
+  }
+  // Rate limit before reading the body, so rejected floods cost as little as possible.
+  const ip = request.headers.get("CF-Connecting-IP") || "unknown";
+  const { success } = await env.SUBSCRIBE_RATE.limit({ key: ip });
+  if (!success) return new Response(JSON.stringify({ error: "Slow down" }), { status: 429, headers });
+  const body = await readBoundedText(request.body, SUBSCRIBE_MAX_BYTES);
+  if (body === null) return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
+  const decision = decideSubscribe(request.headers.get("Content-Type"), body);
+  if (!decision.ok) return new Response(JSON.stringify({ error: "Invalid request" }), { status: 400, headers });
+  if (decision.email) {
+    await env.PRESENCE.getByName("thinkoperator").saveSubscriber(decision.email, new Date().toISOString());
+  }
   return new Response(null, { status: 204, headers });
 }
 

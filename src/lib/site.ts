@@ -5,14 +5,20 @@ import { searchMetadata } from "./serpCopy";
 export const SITE_ORIGIN = "https://thinkoperator.com";
 
 export const HOME = {
-  title: "Think Operator — Test your business judgment",
+  title: "Think Operator — Playbooks and practice for people who run businesses",
   description:
-    "Test your judgment across real-world business scenarios. Train your weaknesses. Make better decisions faster.",
+    "Short guides for the calls an owner has to make, scored practice decisions, and live trackers of real work, with sources shown. No account needed.",
 };
 
 /** Public routes, in sitemap order. Guide articles are added beside this list. */
 export const PUBLIC_PAGES: { path: string; title: string; description: string }[] = [
   { path: "/", ...HOME },
+  {
+    path: "/about",
+    title: "Built by Maxwell — Think Operator",
+    description:
+      "Maxwell is a founder and builder who grew a home-services company to $5M+ in revenue and is now building AI-native software products.",
+  },
   {
     path: "/operator",
     title: "Operator Test — Think Operator",
@@ -65,7 +71,7 @@ export const PUBLIC_PAGES: { path: string; title: string; description: string }[
     path: "/privacy",
     title: "Your data — Think Operator",
     description:
-      "Scores stay in this browser. What is stored, what the online counter and anonymous event counts send, and how to export or delete progress.",
+      "Scores stay in this browser. What is stored, including a weekly-brief email, what the online counter and event counts send, and how to export or delete progress.",
   },
 ];
 

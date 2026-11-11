@@ -3,6 +3,9 @@ import { readdir, readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 
 // Hash the exact inline hydration scripts; GitHub Pages cannot set CSP headers.
+// presenceOrigin is the presence worker origin. connect-src covers POST /online,
+// POST /e, and POST /subscribe. form-action stays 'none': the signup form uses
+// fetch(), not a document navigation, so a no-JS form cannot post elsewhere.
 export function secureHtml(html, presenceOrigin = "", analyticsEnabled = false, extraOrigin = "") {
   const clean = html.replace(/<meta data-export-security="true"[^>]*>/g, "");
   const hashes = new Set();

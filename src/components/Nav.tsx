@@ -4,7 +4,6 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import type { MouseEvent } from "react";
 import { dailyHabitStatus } from "@/lib/dailyStreak";
-import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { blockQuizLeave } from "@/lib/quizGuard";
 import { sameSitePath, siteHref } from "@/lib/site";
 import { todayKey } from "@/lib/storage";
@@ -21,13 +20,13 @@ type NavLink = { href: string; label: string; also?: string[] };
  */
 const TOGI_HREF = "/togi/";
 
-/** Five hub sections. Trackers is the homepage tracker grid; Togi keeps its own pill. */
+/** Hub links. Trackers is the homepage tracker grid; Togi keeps its own pill. Leaderboard stays in the footer. */
 const LINKS: NavLink[] = [
+  { href: "/guides/", label: "Playbooks" },
+  { href: "/tests/", label: "Practice", also: ["/operator/", "/quick/", "/skills/", "/cases/"] },
   { href: "/#trackers", label: "Trackers" },
-  { href: "/tests/", label: "Tests", also: ["/operator/", "/quick/", "/skills/"] },
   { href: "/daily/", label: "Daily" },
-  ...(leaderboardVisible() ? [{ href: "/leaderboard/", label: "Leaderboard" }] : []),
-  { href: "/guides/", label: "Playbooks", also: ["/cases/"] },
+  { href: "/about/", label: "About" },
 ];
 
 export function Nav() {
