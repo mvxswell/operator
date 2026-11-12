@@ -87,6 +87,13 @@ export function TogiTracker() {
               <div id="chart" className="chart"></div>
               <p className="fine">Every dot is a screenshot or number he posted. Tap one to open the post. Money moved between accounts on Nov 2, so the two lines aren&apos;t one running total.</p>
             </section>
+
+            {/* Filled from the feed's `robinhood_stats`. Stays hidden when that key is missing. */}
+            <section id="robinhood-stats" className="panel panel-depth rh-stats" aria-label="Robinhood (options) account" hidden>
+              <div className="sechead"><div><p className="eyebrow">Options account</p><h2>Robinhood (options) account</h2></div></div>
+              <div className="rh-kpis" id="rh-kpis"></div>
+              <p className="caveat" id="rh-note"></p>
+            </section>
           </div>
 
           <section className="twist brand-card rise d1">
@@ -101,12 +108,14 @@ export function TogiTracker() {
           <section className="stats" id="stats" aria-label="Stats from known data"></section>
 
           <section className="grid2">
-            <div className="panel panel-depth degen">
+            <div className="panel panel-depth degen" id="degen-panel">
               <div className="phead">
                 <div><p className="lbl">Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
                 <span className="badge joke">Joke formula</span>
               </div>
+              <div className="degen-gauge-wrap" id="degen-gauge"></div>
               <div className="bars" id="degenbars"></div>
+              <p className="degen-latest" id="degenlatest"></p>
               <p className="fine" id="degenfine"></p>
             </div>
 

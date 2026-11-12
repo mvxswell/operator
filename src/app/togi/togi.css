@@ -134,10 +134,14 @@ to{opacity:1;transform:scale(1)}
 .togi-tracker .phead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .togi-tracker .sub{font-size:13px;color:var(--muted)}
 .togi-tracker .bars{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;display:grid;gap:10px}
-.togi-tracker .barrow{display:grid;grid-template-columns:1fr 90px 54px;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.togi-tracker .barrow{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(72px,34%) auto;gap:10px;align-items:center;font-size:13px;color:var(--muted)}
+.togi-tracker .degen .barrow{animation:tg-bar-in .55s var(--ease) both}
+@keyframes tg-bar-in{from{opacity:0;transform:translateY(8px)}
+to{opacity:1;transform:none}
+}
 .togi-tracker .barrow .bt{height:4px;border-radius:9px;background:var(--surface-2);overflow:hidden}
 .togi-tracker .barrow .bt i{display:block;height:100%;width:0;background:var(--accent);opacity:.85;border-radius:9px;transition:width 1.2s var(--ease)}
-.togi-tracker .barrow .n{text-align:right;color:var(--ink);font-family:var(--mono);font-size:12px}
+.togi-tracker .barrow .n{text-align:right;color:var(--ink);font-family:var(--mono);font-size:12px;white-space:nowrap}
 .togi-tracker .eight{font-size:56px;line-height:1.1;margin-top:4px;display:inline-block}
 .togi-tracker .eight.shake{animation:tg-shake .6s}
 @keyframes tg-shake{20%{transform:rotate(-14deg)}
@@ -310,3 +314,54 @@ to{opacity:1;transform:scale(1)}
 .togi-tracker .pf-c1{grid-column:auto}
 }
 @media (max-width:520px){.togi-tracker .closed li{grid-template-columns:42px 48px minmax(0,1fr) auto 14px}.togi-tracker .closed .ty{white-space:normal;font-size:11px}}
+
+/* Robinhood (options) account, directly under the value chart. Hidden until robinhood_stats validates. */
+.togi-tracker .tg-lead .rh-stats{grid-column:1/-1}
+.togi-tracker .rh-stats[hidden]{display:none}
+.togi-tracker .rh-kpis{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.togi-tracker .rh-kpi{padding:14px;min-width:0}
+.togi-tracker .rh-kpi .v{display:block;margin-top:6px;font-family:var(--mono);font-size:18px;font-weight:600;letter-spacing:-.02em;color:var(--ink);text-decoration:none}
+.togi-tracker .rh-kpi a.v:hover{color:var(--accent);text-decoration:none}
+.togi-tracker .rh-kpi .ext{font-size:.72em;font-weight:500;color:var(--faint)}
+.togi-tracker .rh-kpi a.v:hover .ext{color:var(--accent)}
+.togi-tracker .rh-kpi .s{margin-top:4px;font-size:12px;line-height:1.45;color:var(--muted)}
+.togi-tracker .rh-kpi .s .pos,.togi-tracker .rh-kpi .s .neg{font-family:var(--mono);font-weight:500}
+.togi-tracker .rh-kpi.nd .v{font-family:var(--sans);font-size:15px;font-style:italic;font-weight:500;letter-spacing:0;color:var(--faint)}
+.togi-tracker .rh-kpi.now .topline{opacity:1}
+.togi-tracker .rh-kpi .derived{display:inline-block;margin-right:2px;padding:0 4px;border:1px solid #f2b44155;border-radius:4px;font:600 10px var(--sans);letter-spacing:.12em;text-transform:uppercase;color:var(--accent);vertical-align:1px}
+.togi-tracker .rh-note a{font-weight:500}
+@media (min-width:640px){.togi-tracker .rh-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (min-width:960px){.togi-tracker .rh-kpis{grid-template-columns:repeat(6,minmax(0,1fr))}.togi-tracker .rh-kpi .v{font-size:15px}}
+
+/* Degen meter gauge: graphite through gold, glow and flame once the score is cooked. */
+.togi-tracker .degen-gauge-wrap{display:flex;justify-content:center;margin:4px 0 2px}
+.togi-tracker .degen-gauge{display:block;width:min(100%,320px);height:auto;overflow:visible}
+.togi-tracker .degen-gauge .track{fill:none;stroke:#14171b;stroke-width:16;stroke-linecap:round}
+.togi-tracker .degen-gauge .seg{fill:none;stroke-width:16;stroke-linecap:butt}
+.togi-tracker .degen-gauge .needle{transform-origin:120px 118px}
+.togi-tracker .degen-gauge .hub{fill:var(--ink);stroke:var(--bg);stroke-width:2}
+.togi-tracker .degen-gauge .tick{stroke:#3a3f47;stroke-width:1.5}
+.togi-tracker .degen-gauge .tick-lab{fill:var(--faint);font:500 9px var(--mono)}
+.togi-tracker .degen-gauge .glow{fill:none;stroke:#f2b441;stroke-width:20;stroke-linecap:round;opacity:0;filter:blur(5px)}
+.togi-tracker .degen-hot .degen-gauge .glow{opacity:.5}
+.togi-tracker .degen-hot.degen-max .degen-gauge .glow{opacity:.72}
+.togi-tracker .degen-hot{box-shadow:inset 0 1px #ffffff06,0 0 28px #f2b4412e,0 12px 32px #00000029}
+.togi-tracker .degen-hot .score{text-shadow:0 0 18px #f2b44199}
+.togi-tracker .degen-hot .degen-gauge{transform-origin:50% 78%;animation:tg-degen-wobble .7s var(--ease) both}
+.togi-tracker .degen-flame{display:inline-block;transform-origin:50% 80%;font-size:.9em;vertical-align:-1px}
+.togi-tracker .degen-hot .degen-flame{animation:tg-flicker .8s ease-in-out infinite}
+@keyframes tg-flicker{0%,100%{transform:scale(1) rotate(-6deg);filter:none}
+50%{transform:scale(1.18) rotate(8deg);filter:drop-shadow(0 0 6px #f2b441cc)}
+}
+@keyframes tg-degen-wobble{0%{transform:rotate(0)}
+20%{transform:rotate(-2.4deg)}
+45%{transform:rotate(2deg)}
+70%{transform:rotate(-1deg)}
+100%{transform:rotate(0)}
+}
+.togi-tracker .degen-latest{margin-top:14px;font-size:13.5px;color:var(--muted)}
+.togi-tracker .degen-latest a{font-weight:600}
+.togi-tracker .degen[data-tier="chill"] .score{color:var(--muted)}
+.togi-tracker .degen[data-tier="unhinged"] .score{color:#c9a24a}
+.togi-tracker .degen[data-tier="spicy"] .score{color:var(--accent)}
+.togi-tracker .degen[data-tier="cooked"] .score{color:var(--accent)}

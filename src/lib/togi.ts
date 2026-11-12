@@ -53,6 +53,8 @@ export type TogiData = {
   side_quests: { date: string; text: string; source_url: string }[];
   /** Optional, newer part of the feed. Validated separately by isTogiPortfolio. */
   portfolio?: unknown;
+  /** Optional. Validated separately by isRobinhoodStats; a missing key hides the panel. */
+  robinhood_stats?: unknown;
 };
 
 export type TogiAccount = {
@@ -117,6 +119,24 @@ export type TogiPortfolio = {
   concentration?: { ticker: string; pct_of_account: number; value: number; account?: string; as_of: string; source_url?: string; text?: string } | null;
   closed?: { known_realized_total: number | null; count_known?: number; count_undisclosed?: number; note?: string; items: TogiClosed[] } | null;
   commentary?: { date: string; text: string; source_url?: string }[];
+};
+
+/** Optional `robinhood_stats` object. Validated by isRobinhoodStats; missing or malformed hides the panel. */
+export type RobinhoodPoint = { date: string; value: number; label: string; source_url: string };
+
+export type RobinhoodLatest = RobinhoodPoint & { day_change: number; day_change_pct: number };
+
+export type RobinhoodToday = { value: number; derived: boolean; method: string; source_url: string };
+
+export type RobinhoodStats = {
+  starting_deposit: string;
+  first_posted: RobinhoodPoint;
+  peak: RobinhoodPoint;
+  low_after_fidelity_move: RobinhoodPoint;
+  latest: RobinhoodLatest;
+  today_start: RobinhoodToday;
+  note: string;
+  withdrawal_source_url: string;
 };
 
 export type TogiSource = "live" | "snapshot";
@@ -232,6 +252,24 @@ export function isTogiPortfolio(value: unknown): value is TogiPortfolio {
     if (!Array.isArray(value.commentary)) return false;
     for (const q of value.commentary) if (!isObj(q) || !isDate(q.date) || !isStr(q.text)) return false;
   }
+  return true;
+}
+
+const isPoint = (v: unknown): v is RobinhoodPoint =>
+  isObj(v) && isDate(v.date) && isNum(v.value) && isStr(v.label) && isStr(v.source_url);
+
+/**
+ * Shape check for the optional `robinhood_stats` object. When it is missing or fails,
+ * /togi/ hides the Robinhood panel and renders everything else as before.
+ */
+export function isRobinhoodStats(value: unknown): value is RobinhoodStats {
+  if (!isObj(value) || !isStr(value.starting_deposit)) return false;
+  if (!isPoint(value.first_posted) || !isPoint(value.peak) || !isPoint(value.low_after_fidelity_move)) return false;
+  const latest = value.latest;
+  if (!isObj(latest) || !isNum(latest.day_change) || !isNum(latest.day_change_pct) || !isPoint(latest)) return false;
+  const today = value.today_start;
+  if (!isObj(today) || !isNum(today.value) || typeof today.derived !== "boolean" || !isStr(today.method) || !isStr(today.source_url)) return false;
+  if (!isStr(value.note) || !isStr(value.withdrawal_source_url)) return false;
   return true;
 }
 
