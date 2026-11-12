@@ -1,8 +1,9 @@
 // DOM rendering for the Togi Tracker page, ported from the standalone tracker's app.js.
 // Runs only in the browser, after the data has loaded. Every string from the feed is
 // HTML-escaped and every link goes through safeXUrl, since the feed is third-party data.
-import { isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "@/lib/togi";
+import { isRobinhoodStats, isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "../../lib/togi";
 import { renderPortfolioHtml } from "./portfolio";
+import { renderRobinhoodHtml } from "./robinhood";
 
 const usd = (n: number, dp = 0) =>
   (n < 0 ? "-" : "") + "$" + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
@@ -18,10 +19,50 @@ const linkify = (s: string) =>
   esc(s).replace(/(https:\/\/x\.com\/ShaneStoffer\/status\/\d+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer">post ↗</a>');
 const ext = 'target="_blank" rel="noopener noreferrer"';
 
+/** Needle angle in CSS degrees: 0 sits on the left, 100 on the right, 50 straight up. */
+export function degenNeedleAngle(score: number): number {
+  const clamped = Math.max(0, Math.min(100, score));
+  return -90 + 180 * (clamped / 100);
+}
+
+/** Semicircle gauge markup. The needle starts at 0; the caller sweeps it to `degenNeedleAngle`. */
+function degenGaugeSvg(degen: number, verdict: string): string {
+  const cx = 120, cy = 118, r = 86;
+  const xy = (a: number, rr = r): [number, number] => [cx + Math.cos(a) * rr, cy - Math.sin(a) * rr];
+  const arc = (a0: number, a1: number, rr = r) => {
+    const p0 = xy(a0, rr), p1 = xy(a1, rr);
+    return `M ${p0[0].toFixed(2)} ${p0[1].toFixed(2)} A ${rr} ${rr} 0 0 1 ${p1[0].toFixed(2)} ${p1[1].toFixed(2)}`;
+  };
+  const cuts: [number, string][] = [[0, "#5d5546"], [30, "#c9a24a"], [60, "#f2b441"], [90, "#f2b441"]];
+  const segs = cuts.map((c, i) => {
+    const a0 = Math.PI * (1 - c[0] / 100);
+    const next = cuts[i + 1] ? cuts[i + 1][0] : 100;
+    const a1 = Math.PI * (1 - next / 100);
+    return `<path class="seg" d="${arc(a0, a1)}" stroke="${c[1]}"${c[0] >= 90 ? ' stroke-linecap="round"' : ""}/>`;
+  }).join("");
+  const ticks = [0, 25, 50, 75, 100].map((v) => {
+    const a = Math.PI * (1 - v / 100);
+    const inner = xy(a, r + 4), outer = xy(a, r + 12), lab = xy(a, r + 24);
+    return `<line class="tick" x1="${inner[0].toFixed(1)}" y1="${inner[1].toFixed(1)}" x2="${outer[0].toFixed(1)}" y2="${outer[1].toFixed(1)}"/><text class="tick-lab" x="${lab[0].toFixed(1)}" y="${lab[1].toFixed(1)}" text-anchor="middle" dominant-baseline="middle">${v}</text>`;
+  }).join("");
+  const label = verdict.replace(/🔥/g, "").trim();
+  return `<svg class="degen-gauge" viewBox="0 0 240 156" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${degen}" aria-label="Degen meter ${degen} out of 100, ${esc(label)}">
+    <path class="glow" d="${arc(Math.PI, 0)}" />
+    <path class="track" d="${arc(Math.PI, 0)}" />
+    ${segs}
+    ${ticks}
+    <g class="needle" id="degen-needle" transform="rotate(-90 120 118)">
+      <polygon points="120,34 123.5,118 116.5,118" fill="#f3f5f7"/>
+      <circle class="hub" cx="120" cy="118" r="6.5"/>
+    </g>
+  </svg>`;
+}
+
 /** Renders the tracker into `root`. Returns a cleanup function. */
 export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const m = D.meta, T = D.trades;
   const timers: number[] = [];
+  let needleFrame = 0;
   let alive = true;
   const $ = (id: string) => root.querySelector<HTMLElement>(`#${id}`)!;
   const later = (fn: () => void, ms: number) => { timers.push(window.setTimeout(() => alive && fn(), ms)); };
@@ -95,12 +136,49 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const parts: [string, number, number][] = [["Options plays", nOpt, 10], ["0DTE lottery tickets", n0, 15], ['"Full port" moments', nFP, 10], ["Dream-based theses", nDream, 5], ["Casino & sports side quests", nCasino, 5]];
   const raw = parts.reduce((a, p) => a + p[1] * p[2], 0), degen = Math.min(100, raw);
   count($("degen"), degen, (v) => String(Math.round(v)));
-  $("degenverdict").textContent = degen >= 90 ? "fully cooked 🔥" : degen >= 60 ? "spicy" : degen >= 30 ? "mildly unhinged" : "suspiciously responsible";
+  const degenVerdict = degen >= 90 ? "fully cooked 🔥" : degen >= 60 ? "spicy" : degen >= 30 ? "mildly unhinged" : "suspiciously responsible";
+  const verdictEl = $("degenverdict");
+  verdictEl.textContent = degen >= 90 ? "fully cooked " : degenVerdict;
+  if (degen >= 90) {
+    const flame = document.createElement("span");
+    flame.className = "degen-flame";
+    flame.setAttribute("aria-hidden", "true");
+    flame.textContent = "🔥";
+    verdictEl.appendChild(flame);
+  }
+  const panel = $("degen-panel");
+  const tier = degen >= 90 ? "cooked" : degen >= 60 ? "spicy" : degen >= 30 ? "unhinged" : "chill";
+  panel.dataset.tier = tier;
+  panel.classList.toggle("degen-hot", degen >= 90);
+  panel.classList.toggle("degen-max", degen >= 100);
+  $("degen-gauge").innerHTML = degenGaugeSvg(degen, degenVerdict);
+  const needle = $("degen-needle");
+  const targetAng = degenNeedleAngle(degen);
+  const setAng = (a: number) => needle.setAttribute("transform", `rotate(${a.toFixed(3)} 120 118)`);
+  // Overshoot ease (easeOutBack): the needle sweeps past the score, then settles.
+  const easeOutBack = (t: number) => {
+    const c1 = 1.70158, c3 = c1 + 1;
+    return 1 + c3 * Math.pow(t - 1, 3) + c1 * Math.pow(t - 1, 2);
+  };
+  if (RM) { setAng(targetAng); }
+  else {
+    const t0 = performance.now(), ms = 1400;
+    const sweep = (t: number) => {
+      if (!alive) return;
+      const p = Math.min(1, (t - t0) / ms);
+      setAng(-90 + (targetAng + 90) * easeOutBack(p));
+      if (p < 1) needleFrame = requestAnimationFrame(sweep);
+    };
+    needleFrame = requestAnimationFrame(sweep);
+  }
   const maxPts = Math.max(...parts.map((p) => p[1] * p[2]), 1);
-  $("degenbars").innerHTML = parts.map((p) =>
-    `<div class="barrow"><span>${p[0]}</span><span class="bt"><i data-w="${((p[1] * p[2]) / maxPts * 100).toFixed(0)}"></i></span><span class="n">${p[1]} · +${p[1] * p[2]}</span></div>`,
+  $("degenbars").innerHTML = parts.map((p, i) =>
+    `<div class="barrow" style="${RM ? "" : `animation-delay:${i * 90}ms`}"><span>${p[0]}</span><span class="bt"><i data-w="${((p[1] * p[2]) / maxPts * 100).toFixed(0)}" style="${RM ? "" : `transition-delay:${120 + i * 90}ms`}"></i></span><span class="n">${p[1]} · +${p[1] * p[2]}</span></div>`,
   ).join("");
-  later(() => root.querySelectorAll<HTMLElement>("#degenbars i").forEach((i) => { i.style.width = i.dataset.w + "%"; }), 200);
+  later(() => root.querySelectorAll<HTMLElement>("#degenbars i").forEach((i) => { i.style.width = i.dataset.w + "%"; }), RM ? 0 : 200);
+  let latestMove = T[0];
+  for (const t of T) if (t.date > latestMove.date) latestMove = t;
+  $("degenlatest").innerHTML = `Latest degen move: <a href="${esc(safeXUrl(latestMove.source_url))}" ${ext}>$${esc(latestMove.ticker)} ${esc(latestMove.type)} · ${fmtDate(latestMove.date)} ↗</a>`;
   $("degenfine").textContent = `Joke formula: options play +10, 0DTE +15, "full port" +10, dream thesis +5, casino or sports side quest +5, capped at 100 (raw ${raw}). The counts are real, from the posts below. The score means nothing.`;
 
   // ---- Magic 8-ball (joke) ----
@@ -207,13 +285,13 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
 
   // ---- Confetti ----
   let lastParty = 0;
-  function party(el: HTMLElement) {
+  function party(el: HTMLElement, count = 46) {
     if (RM || !alive) return;
     const now = Date.now();
     if (now - lastParty < 1500) return;
     lastParty = now;
     const r = el.getBoundingClientRect(), box = $("confetti"), cols = ["#f2b441", "#52d18b", "#f3f5f7", "#ffd98a", "#a8781f"];
-    for (let i = 0; i < 46; i++) {
+    for (let i = 0; i < count; i++) {
       const c = document.createElement("i");
       const a = Math.random() * Math.PI * 2, d = 80 + Math.random() * 180;
       c.style.left = r.left + r.width / 2 + "px";
@@ -229,11 +307,25 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   }
   const ps = root.querySelector<HTMLElement>(".stat.party");
   if (ps) { ps.addEventListener("mouseenter", () => party(ps)); ps.addEventListener("click", () => party(ps)); }
+  if (!RM && degen >= 100) later(() => party($("degen-panel"), 28), 1500);
 
   // ---- Side quests ----
   $("side").innerHTML = D.side_quests.map((s) =>
     `<li><span class="dt">${fmtDate(s.date)}</span>${esc(s.text)} <a href="${safeXUrl(s.source_url)}" ${ext}>post ↗</a></li>`,
   ).join("");
+
+  // ---- Robinhood options account (optional; hidden when robinhood_stats is missing or malformed) ----
+  const rh = $("robinhood-stats");
+  if (isRobinhoodStats(D.robinhood_stats)) {
+    const html = renderRobinhoodHtml(D.robinhood_stats);
+    $("rh-kpis").innerHTML = html.kpis;
+    $("rh-note").innerHTML = html.note;
+    rh.hidden = false;
+  } else {
+    $("rh-kpis").innerHTML = "";
+    $("rh-note").textContent = "";
+    rh.hidden = true;
+  }
 
   // ---- Portfolio (optional part of the feed; hidden when missing or malformed) ----
   const pf = $("portfolio");
@@ -249,5 +341,5 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
     marks.forEach((e) => { e.addEventListener("mouseenter", () => hl(e.dataset.t ?? null)); e.addEventListener("mouseleave", () => hl(null)); });
   }
 
-  return () => { alive = false; timers.forEach((t) => clearTimeout(t)); };
+  return () => { alive = false; cancelAnimationFrame(needleFrame); timers.forEach((t) => clearTimeout(t)); };
 }

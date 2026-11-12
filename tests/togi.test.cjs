@@ -201,6 +201,113 @@ test("tip button only accepts https x.com / twitter.com links", () => {
   }
 });
 
+// ---- Robinhood options panel (optional `robinhood_stats`) and the degen gauge ----
+const { renderRobinhoodHtml } = require("../src/components/togi/robinhood.ts");
+const { degenNeedleAngle } = require("../src/components/togi/renderTogi.ts");
+
+const RH = {
+  starting_deposit: "not disclosed",
+  first_posted: { date: "2026-10-05", value: 48518, label: "First MRNA calls", source_url: "https://x.com/ShaneStoffer/status/2107162184111321310" },
+  peak: { date: "2026-10-22", value: 915450.97, label: "Peak", source_url: "https://x.com/ShaneStoffer/status/2113333655863242975" },
+  low_after_fidelity_move: { date: "2026-11-03", value: 36345.65, label: "Low", source_url: "https://x.com/ShaneStoffer/status/2117684405791854807" },
+  latest: {
+    date: "2026-11-12", value: 360650.39, day_change: 281804.75, day_change_pct: 357.41,
+    label: "Now", source_url: "https://x.com/ShaneStoffer/status/2120915114518011948",
+  },
+  today_start: {
+    value: 78845.64, derived: true,
+    method: "latest value minus the day's change from the same screenshot",
+    source_url: "https://x.com/ShaneStoffer/status/2120915114518011948",
+  },
+  note: "The ~$800,000 withdrawal to buy GPRO and the Nov 2–3 move to Fidelity mean there's no clean all-time gain for Robinhood alone, and it's not summed into the Fidelity headline.",
+  withdrawal_source_url: "https://x.com/ShaneStoffer/status/2118777789960925617",
+};
+
+test("robinhood_stats is optional and a bad copy does not reject the rest of the feed", () => {
+  assert.equal(togi.isRobinhoodStats(undefined), false);
+  assert.equal(togi.isRobinhoodStats(RH), true);
+  assert.equal(snapshot.robinhood_stats, undefined);
+  assert.equal(togi.isTogiData(snapshot), true);
+  for (const bad of [null, "x", [], {}, { ...RH, starting_deposit: 1 }, { ...RH, latest: { ...RH.latest, day_change: "up" } },
+    { ...RH, today_start: { ...RH.today_start, derived: "yes" } }, { ...RH, first_posted: { ...RH.first_posted, date: "Tuesday" } }]) {
+    assert.equal(togi.isRobinhoodStats(bad), false);
+    assert.equal(togi.isTogiData({ ...snapshot, robinhood_stats: bad }), true);
+  }
+});
+
+test("robinhood panel formats currency, links each stat, and links the withdrawal in the note", () => {
+  const html = renderRobinhoodHtml(RH);
+  const all = html.kpis + html.note;
+  assert.match(html.kpis, /not disclosed/);
+  assert.match(html.kpis, /deposit never posted/);
+  assert.match(html.kpis, /\$48,518\.00/);
+  assert.match(html.kpis, /\$915,450\.97/);
+  assert.match(html.kpis, /\$36,345\.65/);
+  assert.match(html.kpis, /after the move to Fidelity/);
+  assert.match(html.kpis, /\$360,650\.39/);
+  assert.match(html.kpis, /class="pos">\+\$281,804\.75 \(\+357\.41%\)/);
+  assert.match(html.kpis, /\$78,845\.64/);
+  assert.match(html.kpis, /class="derived"[^>]*>derived</);
+  assert.match(html.kpis, /latest value minus the day&#39;s change from the same screenshot/);
+  assert.match(html.note, /href="https:\/\/x\.com\/ShaneStoffer\/status\/2118777789960925617"/);
+  assert.match(html.note, /~\$800,000 withdrawal to buy \$GPRO/);
+  assert.match(html.note, /not summed into the Fidelity headline/);
+  for (const [, href] of all.matchAll(/href="([^"]*)"/g)) {
+    assert.match(href, /^https:\/\/(x|twitter)\.com\/[A-Za-z0-9_]+\/status\/\d+$/);
+  }
+});
+
+test("robinhood panel escapes feed text and drops non-X links", () => {
+  const html = renderRobinhoodHtml({
+    ...RH,
+    starting_deposit: "<b>not disclosed</b>",
+    note: '<img src=x onerror=alert(1)> The ~$800,000 withdrawal to buy GPRO',
+    withdrawal_source_url: "javascript:alert(1)",
+    latest: { ...RH.latest, label: '"><script>x</script>', source_url: "https://evil.example/status/1" },
+    today_start: { ...RH.today_start, method: "<script>alert(1)</script>", source_url: "javascript:alert(1)" },
+  });
+  const all = html.kpis + html.note;
+  assert.doesNotMatch(all, /<img|<script|javascript:|evil\.example/);
+  assert.match(all, /&lt;img/);
+  assert.match(all, /&lt;script&gt;/);
+  assert.match(html.note, /~\$800,000 withdrawal to buy GPRO/);
+  assert.doesNotMatch(html.note, /<a /);
+  assert.match(html.kpis, new RegExp(`href="${togi.TOGI_PROFILE_URL}"`));
+});
+
+test("a down day on Robinhood renders in the loss color", () => {
+  const html = renderRobinhoodHtml({ ...RH, latest: { ...RH.latest, day_change: -1200.5, day_change_pct: -3.2 } });
+  assert.match(html.kpis, /class="neg">-\$1,200\.50 \(-3\.2%\)/);
+});
+
+test("degen needle sits at the left at 0 and the right at 100", () => {
+  assert.equal(degenNeedleAngle(0), -90);
+  assert.equal(degenNeedleAngle(50), 0);
+  assert.equal(degenNeedleAngle(100), 90);
+  assert.equal(degenNeedleAngle(120), 90);
+  assert.equal(degenNeedleAngle(-4), -90);
+});
+
+test("degen meter keeps the joke formula and only animates when motion is allowed", () => {
+  const src = fs.readFileSync("src/components/togi/renderTogi.ts", "utf8");
+  assert.match(src, /const nOpt = T\.filter\(\(t\) => \/puts\|calls\/i\.test\(t\.type\)\)\.length;/);
+  assert.match(src, /const raw = parts\.reduce\(\(a, p\) => a \+ p\[1\] \* p\[2\], 0\), degen = Math\.min\(100, raw\);/);
+  assert.match(src, /\$\("degenfine"\)\.textContent = `Joke formula: options play \+10, 0DTE \+15, "full port" \+10, dream thesis \+5, casino or sports side quest \+5, capped at 100 \(raw \$\{raw\}\)\. The counts are real, from the posts below\. The score means nothing\.`;/);
+  assert.match(src, /if \(RM\) \{ setAng\(targetAng\); \}/);
+  assert.match(src, /if \(!RM && degen >= 100\) later\(\(\) => party\(\$\("degen-panel"\), 28\), 1500\);/);
+  const page = fs.readFileSync("src/components/togi/TogiTracker.tsx", "utf8");
+  assert.match(page, /<span className="badge joke">Joke formula<\/span>/);
+  assert.match(page, /id="degen-gauge"/);
+  assert.match(page, /id="degenlatest"/);
+  assert.match(page, /id="robinhood-stats"[^>]*\bhidden>/);
+  const chart = page.indexOf('id="chart"'), rh = page.indexOf('id="robinhood-stats"'), twist = page.indexOf("Plot twist");
+  assert.ok(chart > -1 && chart < rh && rh < twist, "Robinhood panel sits right after the account chart");
+  const render = src;
+  assert.match(render, /isRobinhoodStats\(D\.robinhood_stats\)/);
+  assert.match(render, /rh\.hidden = false/);
+  assert.match(render, /rh\.hidden = true/);
+});
+
 test("tip button hides without a valid tip_url and keeps the note as plain text", () => {
   const meta = snapshot.meta;
   assert.equal(meta.tip_url, "https://x.com/ShaneStoffer");
