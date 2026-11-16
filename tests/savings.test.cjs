@@ -114,22 +114,25 @@ test("revenue: no file means $0 revenue and return equals net", async () => {
   assert.equal(S.revenue, 0); assert.equal(S.revenue_count, 0); assert.deepEqual(S.revenue_by_biz, []);
   assert.equal(S.return_full, S.net_full); assert.equal(S.return_full, -140);
   assert.equal(S.return_pro, 150);
-  // Committed ledger through Nov 11, 2026: header-only revenue, so return equals net.
-  assert.equal(data.summary.as_of, "2026-11-11");
-  assert.equal(data.summary.day, 10);
+  // Committed ledger through Nov 16, 2026: header-only revenue, so return equals net.
+  assert.equal(data.summary.as_of, "2026-11-16");
+  assert.equal(data.summary.day, 15);
   assert.equal(data.summary.days, 30);
-  assert.equal(data.summary.prorated, 100);
-  assert.equal(data.summary.total, 3560);
-  assert.equal(data.summary.credited, 72);
-  assert.equal(data.tasks.length, 85);
-  assert.equal(data.tasks.filter((t) => t.value === 0).length, 13);
+  assert.equal(data.summary.prorated, 150);
+  assert.equal(data.summary.total, 5166);
+  assert.equal(data.summary.hours, 157);
+  assert.equal(data.summary.credited, 101);
+  assert.equal(data.tasks.length, 122);
+  assert.equal(data.tasks.filter((t) => t.value === 0).length, 21);
   assert.equal(data.summary.revenue, 0); assert.deepEqual(data.revenue, []);
-  assert.equal(data.summary.return_full, 3260); assert.equal(data.summary.net_full, 3260);
-  assert.equal(data.summary.return_pro, 3460);
+  assert.equal(data.summary.return_full, 4866); assert.equal(data.summary.net_full, 4866);
+  assert.equal(data.summary.return_pro, 5016);
+  assert.equal(data.summary.by_role.length, 11);
+  assert.equal(data.summary.by_biz.length, 7);
   for (const label of ["Book layout", "Book editor", "Graphic designer", "Project manager (spec + review)", "Market research analyst", "Web developer"]) {
     assert.ok(data.summary.by_role.some((r) => r.label === label), label);
   }
-  for (const label of ["Survival book", "Ops"]) {
+  for (const label of ["Survival book", "Ops", "Normii"]) {
     assert.ok(data.summary.by_biz.some((b) => b.label === label), label);
   }
 });
