@@ -4,37 +4,42 @@
     "month": 1,
     "start": "2026-11-02",
     "end": "2026-12-01",
-    "as_of": "2026-11-11",
-    "day": 10,
+    "as_of": "2026-11-16",
+    "day": 15,
     "days": 30,
     "spend": 300,
     "plans": [
       200,
       100
     ],
-    "prorated": 100,
-    "total": 3560,
-    "hours": 110.5,
-    "credited": 72,
-    "net_full": 3260,
-    "net_pro": 3460,
-    "ratio_full": 11.866666666666667,
-    "ratio_pro": 35.6,
+    "prorated": 150,
+    "total": 5166,
+    "hours": 157,
+    "credited": 101,
+    "net_full": 4866,
+    "net_pro": 5016,
+    "ratio_full": 17.22,
+    "ratio_pro": 34.44,
     "by_role": [
       {
         "label": "Web developer",
-        "value": 900,
-        "hours": 22.5
+        "value": 1600,
+        "hours": 40
+      },
+      {
+        "label": "Data analyst",
+        "value": 840,
+        "hours": 28
       },
       {
         "label": "SEO specialist",
-        "value": 577.5,
-        "hours": 16.5
+        "value": 682.5,
+        "hours": 19.5
       },
       {
         "label": "Research VA",
-        "value": 450,
-        "hours": 22.5
+        "value": 490,
+        "hours": 24.5
       },
       {
         "label": "Content writer",
@@ -42,29 +47,24 @@
         "hours": 12.5
       },
       {
+        "label": "Book layout",
+        "value": 350,
+        "hours": 7
+      },
+      {
         "label": "Social media manager",
         "value": 300,
         "hours": 12
       },
       {
-        "label": "Book layout",
-        "value": 300,
-        "hours": 6
-      },
-      {
-        "label": "Data analyst",
-        "value": 240,
-        "hours": 8
-      },
-      {
         "label": "Graphic designer",
-        "value": 150,
-        "hours": 6
+        "value": 187.5,
+        "hours": 7.5
       },
       {
         "label": "Project manager (spec + review)",
-        "value": 98,
-        "hours": 2
+        "value": 171.5,
+        "hours": 3.5
       },
       {
         "label": "Market research analyst",
@@ -80,23 +80,23 @@
     "by_biz": [
       {
         "label": "BimmerQuote",
-        "value": 1542.5,
-        "hours": 49
-      },
-      {
-        "label": "Survival book",
-        "value": 527,
-        "hours": 12.5
+        "value": 2117.5,
+        "hours": 66
       },
       {
         "label": "TonnageCheck",
-        "value": 522.5,
-        "hours": 19
+        "value": 942.5,
+        "hours": 31.5
       },
       {
         "label": "ThinkOperator",
-        "value": 480,
-        "hours": 13
+        "value": 817.5,
+        "hours": 22.5
+      },
+      {
+        "label": "Survival book",
+        "value": 577,
+        "hours": 13.5
       },
       {
         "label": "X / social",
@@ -105,15 +105,20 @@
       },
       {
         "label": "Ops",
-        "value": 128,
-        "hours": 3
+        "value": 278,
+        "hours": 8
+      },
+      {
+        "label": "Normii",
+        "value": 73.5,
+        "hours": 1.5
       }
     ],
     "revenue": 0,
     "revenue_count": 0,
     "revenue_by_biz": [],
-    "return_full": 3260,
-    "return_pro": 3460
+    "return_full": 4866,
+    "return_pro": 5016
   },
   "tasks": [
     {
@@ -1488,6 +1493,604 @@
         "kind": "pr",
         "label": "PR #24",
         "href": "https://github.com/mvxswell/operator/pull/24"
+      }
+    },
+    {
+      "date": "2026-11-11",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Update the Grok Bot savings tracker through Nov 11 (PR #25)",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR #25",
+        "href": "https://github.com/mvxswell/operator/pull/25"
+      }
+    },
+    {
+      "date": "2026-11-11",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Cache-bust /togi/ preview images so X fetches the new card (PR #26)",
+      "role": "Web developer",
+      "hours": 0.5,
+      "rate": 40,
+      "value": 20,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR #26",
+        "href": "https://github.com/mvxswell/operator/pull/26"
+      }
+    },
+    {
+      "date": "2026-11-11",
+      "bot": "Coconut",
+      "business": "Survival book",
+      "task": "Applied listing-kit changes: support email, buyer-stamped PDFs, and review gate",
+      "role": "Book layout",
+      "hours": 1,
+      "rate": 50,
+      "value": 50,
+      "credit": "Full",
+      "issues": "Listings are still unpublished; credited as an update to the already-delivered kit",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "Side Hustle CEO",
+      "business": "Ops",
+      "task": "Morning rundown: GSC across sites + open decisions",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "TonnageCheck CEO",
+      "business": "TonnageCheck",
+      "task": "LG decoder: OEM spec-sheet research",
+      "role": "Research VA",
+      "hours": 2,
+      "rate": 20,
+      "value": 40,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "TonnageCheck CEO",
+      "business": "TonnageCheck",
+      "task": "LG decoder page: build and deploy (PR #30)",
+      "role": "Web developer",
+      "hours": 1,
+      "rate": 40,
+      "value": 40,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR #30",
+        "href": "https://github.com/mvxswell/tonnagecheck/pull/30"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "Audit",
+      "business": "TonnageCheck",
+      "task": "Accuracy baseline delta (used in PRs #31-#38)",
+      "role": "Data analyst",
+      "hours": 2,
+      "rate": 30,
+      "value": 60,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "TonnageCheck CEO",
+      "business": "TonnageCheck",
+      "task": "Accuracy fixes: LG tonnage swap and listing-title follow-up (PRs #31, #36)",
+      "role": "Web developer",
+      "hours": 1,
+      "rate": 40,
+      "value": 40,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "link",
+        "label": "Link (private)"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "TonnageCheck CEO",
+      "business": "TonnageCheck",
+      "task": "Accuracy fixes: Bosch certified capacity, compares, and guide table (PRs #32, #37, #38)",
+      "role": "Web developer",
+      "hours": 1.5,
+      "rate": 40,
+      "value": 60,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "link",
+        "label": "Link (private)"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "TonnageCheck CEO",
+      "business": "TonnageCheck",
+      "task": "Accuracy fixes: thermostat labels, price attribution, and climate-zone parser (PRs #33-#35)",
+      "role": "Web developer",
+      "hours": 2,
+      "rate": 40,
+      "value": 80,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "link",
+        "label": "Link (private)"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "Audit",
+      "business": "TonnageCheck",
+      "task": "PR accuracy reviews for #31-#38 (used for follow-up fixes)",
+      "role": "Data analyst",
+      "hours": 2,
+      "rate": 30,
+      "value": 60,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "Audit",
+      "business": "BimmerQuote",
+      "task": "Baseline accuracy audit (469 pages; 23 findings used in PR #36)",
+      "role": "Data analyst",
+      "hours": 3,
+      "rate": 30,
+      "value": 90,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "BimmerQuote CEO",
+      "business": "BimmerQuote",
+      "task": "Audit fixes (D-19): 23 baseline findings plus /methodology/ and /sources/ (PR #36)",
+      "role": "SEO specialist",
+      "hours": 3,
+      "rate": 35,
+      "value": 105,
+      "credit": "Full",
+      "issues": "Merged 9:49 PM ET Nov 12",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR (private repo)"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Robinhood options panel and degen gauge on /togi/ (PR #27)",
+      "role": "Web developer",
+      "hours": 2,
+      "rate": 40,
+      "value": 80,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR #27",
+        "href": "https://github.com/mvxswell/operator/pull/27"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Option A homepage mockup (used in PR #28)",
+      "role": "Graphic designer",
+      "hours": 1.5,
+      "rate": 25,
+      "value": 37.5,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Founder site previews v2–v4b (approved copy; not published)",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Not published (D-16 Not yet); $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-12",
+      "bot": "Normii CEO",
+      "business": "Normii",
+      "task": "2-week IG restart plan (used for D-21 to D-26)",
+      "role": "Project manager (spec + review)",
+      "hours": 1.5,
+      "rate": 49,
+      "value": 73.5,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "bot": "Side Hustle CEO",
+      "business": "Ops",
+      "task": "Morning rundown: GSC across sites + open decisions",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "bot": "Paragon CEO",
+      "business": "Paragon Exterior",
+      "task": "Static rebuild and noindexed preview of the live site",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Preview only; not live on the real domain; $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "bot": "BMW CEO",
+      "business": "BMW",
+      "task": "E46 M3 comps tracker v1 (local only)",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Not used yet; $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "bot": "BMW CEO",
+      "business": "BMW",
+      "task": "E9x M3 rarity tool v1 (local prototype)",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Not used yet; $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-13",
+      "bot": "Normii CEO",
+      "business": "Normii",
+      "task": "Week 1 one-take IG talking points and film pack",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Not posted yet; $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "bot": "Side Hustle CEO",
+      "business": "Ops",
+      "task": "Morning rundown: GSC across sites + open decisions",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "bot": "BimmerQuote CEO",
+      "business": "BimmerQuote",
+      "task": "Read-only diagnosis of the Google visibility drop (used for D-29)",
+      "role": "Data analyst",
+      "hours": 2,
+      "rate": 30,
+      "value": 60,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "bot": "Audit",
+      "business": "BimmerQuote",
+      "task": "Independent diagnosis of the Google visibility drop (used for D-29)",
+      "role": "Data analyst",
+      "hours": 2,
+      "rate": 30,
+      "value": 60,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-14",
+      "bot": "BimmerQuote CEO",
+      "business": "BimmerQuote",
+      "task": "D-29 consolidation: fold thin variants, 301 retired URLs, guide index floor (PR #37)",
+      "role": "Web developer",
+      "hours": 5,
+      "rate": 40,
+      "value": 200,
+      "credit": "Full",
+      "issues": "Pages 472 to 181; 291 retired URLs 301. Merged 9:47 PM ET Nov 14",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR (private repo)"
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "bot": "Side Hustle CEO",
+      "business": "Ops",
+      "task": "Morning rundown: GSC across sites + open decisions",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "bot": "BimmerQuote CEO",
+      "business": "BimmerQuote",
+      "task": "Read-only 301 check of all 291 retired URLs after PR #37",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Operator Test drop-off analysis (used for the Nov 16-22 plan)",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Two how-to guide drafts (employee turnover; losing a biggest customer)",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Not published; $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Streaks and badges spec",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Not built; $0 until used",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-15",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Supabase keep-alive hardened to a daily routine",
+      "role": "Web developer",
+      "hours": 0.5,
+      "rate": 40,
+      "value": 20,
+      "credit": "Full",
+      "issues": "Routine only; nothing on the public site changed",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "bot": "Side Hustle CEO",
+      "business": "Ops",
+      "task": "Morning rundown: GSC across sites + open decisions",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "bot": "ThinkOperator CEO",
+      "business": "ThinkOperator",
+      "task": "Option A homepage revamp: live hero panel and full-size headings (PR #28)",
+      "role": "Web developer",
+      "hours": 3,
+      "rate": 40,
+      "value": 120,
+      "credit": "Full",
+      "issues": "Merged and deployed Nov 16",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR #28",
+        "href": "https://github.com/mvxswell/operator/pull/28"
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "bot": "TonnageCheck CEO",
+      "business": "TonnageCheck",
+      "task": "Redirects file plus LG slug renames with 301s (PR #39)",
+      "role": "Web developer",
+      "hours": 1,
+      "rate": 40,
+      "value": 40,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR #39",
+        "href": "https://github.com/mvxswell/tonnagecheck/pull/39"
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "bot": "Audit",
+      "business": "BimmerQuote",
+      "task": "PR accuracy reviews of #37 and the #38 preview (used for D-35)",
+      "role": "Data analyst",
+      "hours": 1,
+      "rate": 30,
+      "value": 30,
+      "credit": "Full",
+      "issues": "",
+      "evidence": {
+        "kind": "file",
+        "label": "File on the box"
+      }
+    },
+    {
+      "date": "2026-11-16",
+      "bot": "BimmerQuote CEO",
+      "business": "BimmerQuote",
+      "task": "Quality-only fixes from the PR #37 review (PR #38 draft)",
+      "role": "(no credit)",
+      "hours": 0,
+      "rate": 0,
+      "value": 0,
+      "credit": "None",
+      "issues": "Still a draft preview; $0 until used",
+      "evidence": {
+        "kind": "pr",
+        "label": "PR (private repo)"
       }
     }
   ],
