@@ -1,8 +1,8 @@
 /**
  * Togi Tracker (/togi/): an unofficial fan tracker of Togi's (Shane Stoffer) public
  * stock-challenge posts. The data is maintained outside this repo and served by the
- * tracker's own Worker, so the page reads it live in the browser and falls back to a
- * bundled snapshot (src/data/togiSnapshot.json) when the live feed is unreachable.
+ * tracker's own Worker. /togi/ and the homepage read it live in the browser and fall
+ * back to a bundled snapshot (src/data/togiSnapshot.json) when the live feed is unreachable.
  *
  * The live feed is third-party data, so it is validated here and every link it
  * carries is restricted to an X post URL before it reaches the page.
@@ -271,6 +271,48 @@ export function isRobinhoodStats(value: unknown): value is RobinhoodStats {
   if (!isObj(today) || !isNum(today.value) || typeof today.derived !== "boolean" || !isStr(today.method) || !isStr(today.source_url)) return false;
   if (!isStr(value.note) || !isStr(value.withdrawal_source_url)) return false;
   return true;
+}
+
+/** The four numbers the homepage needs. The full feed stays on /togi/. */
+export type TogiHeadline = {
+  goal: number;
+  starting_value: number;
+  latest_value: number;
+  latest_value_date: string;
+};
+
+export function togiHeadline(data: TogiData): TogiHeadline {
+  const meta = data.meta;
+  return {
+    goal: meta.goal,
+    starting_value: meta.starting_value,
+    latest_value: meta.latest_value,
+    latest_value_date: meta.latest_value_date,
+  };
+}
+
+/**
+ * Homepage fetch. Same feed and shape check as loadTogiData, but only the headline
+ * comes back. A failure keeps the caller's snapshot headline.
+ */
+export async function loadTogiHeadline(
+  fallback: TogiHeadline,
+  fetchImpl: typeof fetch = fetch,
+  timeoutMs = 5000,
+): Promise<{ headline: TogiHeadline; source: TogiSource }> {
+  const controller = typeof AbortController === "function" ? new AbortController() : undefined;
+  const timer = setTimeout(() => controller?.abort(), timeoutMs);
+  try {
+    const res = await fetchImpl(TOGI_LIVE_URL, { cache: "no-store", credentials: "omit", signal: controller?.signal });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data: unknown = await res.json();
+    if (!isTogiData(data)) throw new Error("unexpected feed shape");
+    return { headline: togiHeadline(data), source: "live" };
+  } catch {
+    return { headline: fallback, source: "snapshot" };
+  } finally {
+    clearTimeout(timer);
+  }
 }
 
 /**

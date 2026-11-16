@@ -20,13 +20,35 @@ export function secureHtml(html, presenceOrigin = "", analyticsEnabled = false, 
   return clean.replace("<head>", `<head><meta data-export-security="true" http-equiv="Content-Security-Policy" content="${policy}"><meta data-export-security="true" name="referrer" content="strict-origin-when-cross-origin">`);
 }
 
+const TOGI_FEED_ORIGIN = "https://togi-tracker.mrm1244.workers.dev";
+
+/**
+ * Origins every exported document may contact. The homepage hero reads the Togi
+ * feed, and a client navigation keeps the CSP of the first document, so the
+ * origin has to be present even on pages that do not fetch it themselves.
+ */
+export const SHARED_CONNECT_ORIGINS = [TOGI_FEED_ORIGIN];
+
 /**
  * Extra connect-src origins for one route only, keyed by the export directory.
- * /togi/ reads the Togi Tracker feed live (see src/lib/togi.ts); no other page may.
+ * /togi/ reads the same feed (see src/lib/togi.ts).
  */
 export const ROUTE_CONNECT_ORIGINS = {
-  togi: "https://togi-tracker.mrm1244.workers.dev",
+  togi: TOGI_FEED_ORIGIN,
 };
+
+function connectOrigins(...parts) {
+  const seen = new Set();
+  const out = [];
+  for (const part of parts) {
+    for (const origin of String(part ?? "").split(/\s+/)) {
+      if (!origin || seen.has(origin)) continue;
+      seen.add(origin);
+      out.push(origin);
+    }
+  }
+  return out.join(" ");
+}
 
 export async function secureExport(root, presenceOrigin = "", analyticsEnabled = false, extraOrigin = "", rel = "") {
   let count = 0;
@@ -35,7 +57,7 @@ export async function secureExport(root, presenceOrigin = "", analyticsEnabled =
     if (entry.isDirectory()) count += await secureExport(path, presenceOrigin, analyticsEnabled, extraOrigin, rel ? `${rel}/${entry.name}` : entry.name);
     else if (entry.name.endsWith(".html")) {
       const routeOrigin = ROUTE_CONNECT_ORIGINS[rel] ?? "";
-      const origins = [extraOrigin, routeOrigin].filter(Boolean).join(" ");
+      const origins = connectOrigins(extraOrigin, ...SHARED_CONNECT_ORIGINS, routeOrigin);
       await writeFile(path, secureHtml(await readFile(path, "utf8"), presenceOrigin, analyticsEnabled, origins));
       count += 1;
     }

@@ -1,6 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import "./home.css";
+import { HeroLive } from "@/components/home/HeroLive";
+import { TogiHomeCard } from "@/components/home/TogiHomeCard";
 import { WeeklySignup } from "@/components/home/WeeklySignup";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CASES } from "@/content/cases/catalog";
@@ -10,6 +11,7 @@ import savingsJson from "@/data/grokBotSavings.json";
 import togiJson from "@/data/togiSnapshot.json";
 import { CATEGORIES } from "@/lib/categories";
 import { isSavingsData, niceDate, ratio, signedUsd, usd } from "@/lib/grokBotSavings";
+import { isTogiData, togiHeadline } from "@/lib/togi";
 
 const START_HERE = [
   {
@@ -34,21 +36,11 @@ const START_HERE = [
   },
 ] as const;
 
-function compactUsd(n: number): string {
-  if (n >= 1_000_000) return `$${Number((n / 1_000_000).toFixed(2))}M`;
-  if (n >= 1_000) return `$${Math.round(n / 1_000)}K`;
-  return usd(n);
-}
-
 export default function HomePage() {
   if (!isSavingsData(savingsJson)) throw new Error("grokBotSavings.json is invalid");
+  if (!isTogiData(togiJson)) throw new Error("togiSnapshot.json is invalid");
   const savings = savingsJson.summary;
-  const togi = togiJson.meta;
-  const togiPct = Math.max(0, Math.min(100, (togi.latest_value / togi.goal) * 100));
-  const togiValue = compactUsd(togi.latest_value);
-  const togiGoal = compactUsd(togi.goal);
-  const togiStart = compactUsd(togi.starting_value);
-  const togiPctLabel = `${togiPct.toFixed(1)}%`;
+  const togi = togiHeadline(togiJson);
   const guides = START_HERE.map((item) => {
     const guide = getGuide(item.slug);
     if (!guide) throw new Error(`Missing start-here guide ${item.slug}`);
@@ -60,7 +52,7 @@ export default function HomePage() {
       <section className="hh-hero" aria-labelledby="home-title">
         <div className="hh-hero-copy">
           <p className="hh-eyebrow">Think Operator</p>
-          <h1 id="home-title">
+          <h1 id="home-title" className="hh-h1">
             Make the calls an owner has to make.<br />
             <span className="hh-gold">Practice them here.</span>
           </h1>
@@ -68,47 +60,18 @@ export default function HomePage() {
             Think Operator is the playbook and practice ground for people who run businesses. Read a short guide, practice the same judgment, and watch live trackers of real work, with sources shown. No account needed.
           </p>
           <div className="hh-cta">
-            <Link prefetch={false} href="/guides/" className="hh-btn hh-btn-primary">Browse the playbooks</Link>
-            <Link prefetch={false} href="/operator/" className="hh-btn hh-btn-ghost">Take the Operator Test</Link>
+            <Link prefetch={false} href="/operator/" className="hh-btn hh-btn-primary">Take the Operator Test</Link>
+            <Link prefetch={false} href="/guides/" className="hh-btn hh-btn-ghost">Browse the playbooks</Link>
           </div>
           <p className="hh-fine">{`${GUIDES.length} guides · ${CASES.length} cases · ${BANK_STATS.standard} scenarios · ${CATEGORIES.length} skills`}</p>
         </div>
-        <div className="hh-art" aria-hidden="true">
-          <div className="hh-art-tile">
-            <Image src="/brand/mark.svg" alt="" width={96} height={96} unoptimized className="hh-art-mark" />
-          </div>
-          <span className="hh-art-line l1" /><span className="hh-art-line l2" /><span className="hh-art-line l3" />
-        </div>
-
-        <ul className="hh-ticker" aria-label="Live numbers">
-          <li className="hh-tick-li hh-tick-togi">
-            <a href="/togi/" className="hh-tick" aria-label={`Togi Tracker: ${togiValue} of ${togiGoal}`}>
-              <span className="hh-tick-k">Togi</span>
-              <span className="hh-tick-v">{togiValue} / {togiGoal}</span>
-              <span className="hh-chev" aria-hidden="true">›</span>
-            </a>
-          </li>
-          <li className="hh-tick-li">
-            <Link prefetch={false} href="/grok-bot-savings-tracker/" className="hh-tick" aria-label={`Grok Bot Savings Tracker: ${ratio(savings.ratio_full)}, ${signedUsd(savings.return_full)} return`}>
-              <span className="hh-tick-k">Grok Bot</span>
-              <span className="hh-tick-v">{ratio(savings.ratio_full)} · {signedUsd(savings.return_full)} return</span>
-              <span className="hh-chev" aria-hidden="true">›</span>
-            </Link>
-          </li>
-          <li className="hh-tick-li">
-            <Link prefetch={false} href="/daily/" className="hh-tick" aria-label="Daily Decision: New call every day">
-              <span className="hh-tick-k">Daily Decision</span>
-              <span className="hh-tick-v">New call every day</span>
-              <span className="hh-chev" aria-hidden="true">›</span>
-            </Link>
-          </li>
-        </ul>
+        <HeroLive togi={togi} grokReturn={savings.return_full} grokRatio={savings.ratio_full} />
       </section>
 
       <section className="hh-sec" aria-labelledby="what-title">
         <div className="hh-row-head">
           <div>
-            <h2 id="what-title">What this is</h2>
+            <h2 id="what-title" className="hh-h2">What this is</h2>
             <p className="hh-sub">Three ways to get sharper at the work of running a business.</p>
           </div>
         </div>
@@ -134,7 +97,7 @@ export default function HomePage() {
       <section className="hh-sec" id="start" aria-labelledby="start-title">
         <div className="hh-row-head">
           <div>
-            <h2 id="start-title">Start here</h2>
+            <h2 id="start-title" className="hh-h2">Start here</h2>
             <p className="hh-sub">If a decision is already on your desk, start with a guide. If you want to test your judgment, take a practice test.</p>
           </div>
           <Link prefetch={false} href="/guides/" className="hh-more">All guides →</Link>
@@ -153,7 +116,7 @@ export default function HomePage() {
       <section className="hh-sec" aria-labelledby="practice-title">
         <div className="hh-row-head">
           <div>
-            <h2 id="practice-title">Practice the judgment</h2>
+            <h2 id="practice-title" className="hh-h2">Practice the judgment</h2>
             <p className="hh-sub">Choose first, then read the reasoning. No account needed.</p>
           </div>
           <Link prefetch={false} href="/tests/" className="hh-more">All tests →</Link>
@@ -163,6 +126,7 @@ export default function HomePage() {
             <p className="hh-qtitle">Operator Test</p>
             <p className="hh-qmeta">About 20 questions, adaptive</p>
             <p className="hh-qbody">Finish with an Operator Score and a breakdown across all eight skills.</p>
+            <p className="hh-qfoot">Be first on the board.</p>
           </Link>
           <Link prefetch={false} href="/daily/" className="hh-card hh-qcard hh-daily">
             <p className="hh-qtitle">Daily Decision</p>
@@ -198,22 +162,11 @@ export default function HomePage() {
       <section className="hh-sec" id="trackers" aria-labelledby="trackers-title">
         <div className="hh-row-head">
           <div>
-            <h2 id="trackers-title">Live trackers</h2>
+            <h2 id="trackers-title" className="hh-h2">Live trackers</h2>
             <p className="hh-sub">Real operators, real numbers, sources shown.</p>
           </div>
         </div>
         <div className="hh-tgrid">
-          <a href="/togi/" className="hh-card hh-tcard hh-togi" aria-label={`Togi Tracker: ${togiValue} of ${togiGoal}`}>
-            <div className="hh-tcard-top">
-              <p className="hh-kicker hh-kicker-gold">Togi Tracker</p>
-              <span className="hh-chip hh-chip-live"><span className="hh-dot" aria-hidden="true" />Live</span>
-            </div>
-            <p className="hh-big tabular">{togiValue}<span className="hh-big-unit">of {togiGoal}</span></p>
-            <p className="hh-card-body">Shane Stoffer’s public $10M stock market challenge, every trade with its source. Unofficial fan tracker.</p>
-            <div className="hh-bar" role="img" aria-label={`${togiPctLabel} of the goal`}><i style={{ width: `${togiPct}%` }} /></div>
-            <div className="hh-bar-legend tabular"><span>{togiStart} start</span><span>{togiPctLabel}</span><span>{togiGoal}</span></div>
-            <p className="hh-card-foot">Last reported {niceDate(togi.latest_value_date)} · not financial advice<span className="hh-arrow">→</span></p>
-          </a>
           <Link prefetch={false} href="/grok-bot-savings-tracker/" className="hh-card hh-tcard hh-grok" aria-label={`Grok Bot Savings Tracker: ${signedUsd(savings.return_full)} total return`}>
             <div className="hh-tcard-top">
               <p className="hh-kicker hh-kicker-green">Grok Bot Savings Tracker</p>
@@ -228,6 +181,7 @@ export default function HomePage() {
             </dl>
             <p className="hh-card-foot">{ratio(savings.ratio_full)} value per dollar · estimates · as of {niceDate(savings.as_of)}<span className="hh-arrow">→</span></p>
           </Link>
+          <TogiHomeCard togi={togi} />
         </div>
       </section>
 
@@ -235,7 +189,7 @@ export default function HomePage() {
         <div className="hh-signup">
           <div>
             <p className="hh-eyebrow">Think Operator Weekly</p>
-            <h2 id="weekly-title">One decision, one live number, one playbook.</h2>
+            <h2 id="weekly-title" className="hh-h2">One decision, one live number, one playbook.</h2>
             <p className="hh-lede">A short weekly brief, signed by Maxwell. Skip a week rather than send a thin issue.</p>
           </div>
           <div className="hh-signup-form">
@@ -252,35 +206,12 @@ export default function HomePage() {
         <div className="hh-founder">
           <div className="hh-mono" aria-hidden="true">M</div>
           <div>
-            <h2 id="founder-title">Built by Maxwell</h2>
+            <h2 id="founder-title" className="hh-h2">Built by Maxwell</h2>
             <p>Maxwell grew a home-services company to $5M+ in revenue. He is a sales leader and AI builder in Greater Philadelphia, and he builds in public. Think Operator is the business brand. The other companies he is building show up here as case studies, not as a product grid.</p>
             <div className="hh-founder-links">
               <Link prefetch={false} href="/about/">About Maxwell →</Link>
               <a href="https://x.com/mvxswell" target="_blank" rel="noopener noreferrer">Follow the build @mvxswell</a>
             </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="hh-sec" aria-labelledby="work-title">
-        <div className="hh-row-head">
-          <div>
-            <h2 id="work-title">Work in public</h2>
-            <p className="hh-sub">BimmerQuote and TonnageCheck are companies Maxwell is building. They stay on their own sites. They appear here as case studies of real operating work, not as the product.</p>
-          </div>
-        </div>
-        <div className="hh-cgrid">
-          <div className="hh-card hh-ccard">
-            <span className="hh-chip hh-chip-placeholder">Case study not published yet</span>
-            <h3>BimmerQuote</h3>
-            <p>A live site of BMW repair prices, based on real shop quotes, published as price only.</p>
-            <p className="hh-status">First-party case study not written yet.</p>
-          </div>
-          <div className="hh-card hh-ccard">
-            <span className="hh-chip hh-chip-placeholder">Case study not published yet</span>
-            <h3>TonnageCheck</h3>
-            <p>A heat-pump and HVAC sizing site for homeowners, built in public.</p>
-            <p className="hh-status">First-party case study not written yet.</p>
           </div>
         </div>
       </section>

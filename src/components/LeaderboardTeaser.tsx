@@ -6,21 +6,31 @@ import { leaderboardVisible } from "@/lib/leaderboardConfig";
 import { fetchLeaderboard, type BoardRow } from "@/lib/leaderboard";
 import { Eyebrow } from "./ui";
 
-export function LeaderboardTeaser() {
+export function LeaderboardTeaser({ variant = "section" }: { variant?: "section" | "compact" }) {
   const section = useRef<HTMLElement>(null);
   const [rows, setRows] = useState<BoardRow[] | null>(null);
   const [failed, setFailed] = useState(false);
+  const visible = leaderboardVisible();
 
   useEffect(() => {
-    if (!leaderboardVisible()) return;
+    if (!visible) return;
     let cancelled = false;
-    const load = () => { if (cancelled) return; void fetchLeaderboard("operator", 5)
-      .then((next) => {
-        if (!cancelled) setRows(next);
-      })
-      .catch(() => {
-        if (!cancelled) setFailed(true);
-      }); };
+    const load = () => {
+      if (cancelled) return;
+      void fetchLeaderboard("operator", 5)
+        .then((next) => {
+          if (!cancelled) setRows(next);
+        })
+        .catch(() => {
+          if (!cancelled) setFailed(true);
+        });
+    };
+    if (variant === "compact") {
+      load();
+      return () => {
+        cancelled = true;
+      };
+    }
     const observer = typeof IntersectionObserver === "function" ? new IntersectionObserver((entries) => {
       if (entries.some((entry) => entry.isIntersecting)) { observer?.disconnect(); load(); }
     }, { rootMargin: "100px" }) : null;
@@ -30,9 +40,11 @@ export function LeaderboardTeaser() {
       cancelled = true;
       observer?.disconnect();
     };
-  }, []);
+  }, [variant, visible]);
 
-  if (!leaderboardVisible()) return null;
+  if (variant === "compact") return <CompactBoard rows={rows} failed={failed} visible={visible} />;
+
+  if (!visible) return null;
 
   return (
     <section ref={section} className="border-t border-line-soft py-14 sm:py-16">
@@ -60,5 +72,39 @@ export function LeaderboardTeaser() {
         {failed ? <li className="px-5 py-4 text-sm text-muted">Scores could not be loaded.</li> : null}
       </ol>
     </section>
+  );
+}
+
+function CompactBoard({ rows, failed, visible }: { rows: BoardRow[] | null; failed: boolean; visible: boolean }) {
+  const hasRows = Boolean(rows && rows.length > 0);
+  const empty = !visible || (rows !== null && rows.length === 0);
+  const note = empty
+    ? "No scores posted yet. Take the test and be first on the board."
+    : failed
+      ? "Scores could not be loaded."
+      : rows === null
+        ? "Loading scores…"
+        : null;
+
+  return (
+    <Link prefetch={false} href="/leaderboard/?quiz=operator" className="hh-board">
+      <div className="hh-board-top">
+        <h3>Operator Test board</h3>
+        <span className="hh-more">{hasRows ? "Full leaderboard →" : "Be first →"}</span>
+      </div>
+      {hasRows ? (
+        <ol className="hh-board-rows">
+          {rows!.slice(0, 3).map((row) => (
+            <li key={row.rank}>
+              <span className="tabular">{row.rank}</span>
+              <span>{row.nickname}</span>
+              <span className="tabular">{row.score}</span>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p>{note}</p>
+      )}
+    </Link>
   );
 }

@@ -55,9 +55,26 @@ test("live data is used when the feed answers, the snapshot otherwise", async ()
   }
 });
 
-test("only /togi/ may connect to the Togi feed", async () => {
-  const { ROUTE_CONNECT_ORIGINS } = await import("../scripts/secure-export.mjs");
-  assert.deepEqual(ROUTE_CONNECT_ORIGINS, { togi: togi.TOGI_LIVE_ORIGIN });
+test("the Togi feed is allowed on every page so the homepage hero can read it after a client navigation", async () => {
+  const { ROUTE_CONNECT_ORIGINS, SHARED_CONNECT_ORIGINS } = await import("../scripts/secure-export.mjs");
+  assert.equal(ROUTE_CONNECT_ORIGINS.togi, togi.TOGI_LIVE_ORIGIN);
+  assert.ok(SHARED_CONNECT_ORIGINS.includes(togi.TOGI_LIVE_ORIGIN));
+});
+
+test("homepage headline fetch uses the live feed and falls back to the caller snapshot", async () => {
+  const fallback = togi.togiHeadline(snapshot);
+  const live = { ...snapshot, meta: { ...snapshot.meta, latest_value: 1630000, latest_value_date: "2030-01-02" } };
+  const ok = async (url, init) => {
+    assert.equal(url, togi.TOGI_LIVE_URL);
+    assert.equal(init.credentials, "omit");
+    return { ok: true, json: async () => live };
+  };
+  assert.deepEqual(await togi.loadTogiHeadline(fallback, ok), {
+    headline: { ...fallback, latest_value: 1630000, latest_value_date: "2030-01-02" },
+    source: "live",
+  });
+  const down = async () => { throw new TypeError("Failed to fetch"); };
+  assert.deepEqual(await togi.loadTogiHeadline(fallback, down, 20), { headline: fallback, source: "snapshot" });
 });
 
 test("Togi page keeps its disclaimer and neutral call to action", () => {
