@@ -17,6 +17,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...TEST_LANDINGS.map((test) => ({ path: `/tests/${test.id}` })),
     { path: "/togi" },
     { path: "/grok-bot-savings-tracker" },
+    { path: "/stevewilldoit" },
   ];
   return entries.map((entry) => ({
     url: absoluteUrl(entry.path),
