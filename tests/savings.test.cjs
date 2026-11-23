@@ -114,21 +114,27 @@ test("revenue: no file means $0 revenue and return equals net", async () => {
   assert.equal(S.revenue, 0); assert.equal(S.revenue_count, 0); assert.deepEqual(S.revenue_by_biz, []);
   assert.equal(S.return_full, S.net_full); assert.equal(S.return_full, -140);
   assert.equal(S.return_pro, 150);
-  // Committed ledger through Nov 16, 2026: header-only revenue, so return equals net.
-  assert.equal(data.summary.as_of, "2026-11-16");
-  assert.equal(data.summary.day, 15);
+  // Committed ledger through Nov 23, 2026: header-only revenue, so return equals net.
+  assert.equal(data.summary.as_of, "2026-11-23");
+  assert.equal(data.summary.day, 22);
   assert.equal(data.summary.days, 30);
-  assert.equal(data.summary.prorated, 150);
-  assert.equal(data.summary.total, 5166);
-  assert.equal(data.summary.hours, 157);
-  assert.equal(data.summary.credited, 101);
-  assert.equal(data.tasks.length, 122);
-  assert.equal(data.tasks.filter((t) => t.value === 0).length, 21);
+  assert.equal(data.summary.prorated, 220);
+  assert.equal(data.summary.total, 6526);
+  assert.equal(data.summary.hours, 199);
+  assert.equal(data.summary.credited, 132);
+  assert.equal(data.tasks.length, 159);
+  assert.equal(data.tasks.filter((t) => t.value === 0).length, 27);
   assert.equal(data.summary.revenue, 0); assert.deepEqual(data.revenue, []);
-  assert.equal(data.summary.return_full, 4866); assert.equal(data.summary.net_full, 4866);
-  assert.equal(data.summary.return_pro, 5016);
+  assert.equal(data.summary.return_full, 6226); assert.equal(data.summary.net_full, 6226);
+  assert.equal(data.summary.return_pro, 6306);
   assert.equal(data.summary.by_role.length, 11);
   assert.equal(data.summary.by_biz.length, 7);
+  assert.deepEqual(Object.fromEntries(data.summary.by_biz.map((b) => [b.label, b.value])), {
+    BimmerQuote: 2552.5, TonnageCheck: 1477.5, ThinkOperator: 952.5, "Survival book": 577, Ops: 533, "X / social": 360, Normii: 73.5,
+  });
+  for (const [label, value] of [["Web developer", 1920], ["Data analyst", 1605], ["SEO specialist", 927.5]]) {
+    assert.equal(data.summary.by_role.find((r) => r.label === label).value, value, label);
+  }
   for (const label of ["Book layout", "Book editor", "Graphic designer", "Project manager (spec + review)", "Market research analyst", "Web developer"]) {
     assert.ok(data.summary.by_role.some((r) => r.label === label), label);
   }
