@@ -4,6 +4,7 @@
 import { isRobinhoodStats, isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "../../lib/togi";
 import { renderPortfolioHtml, renderPortfolioSummaryHtml } from "./portfolio";
 import { renderRobinhoodHtml } from "./robinhood";
+import { degenHeat, pickEightBallAnswer, reportedLoss } from "./personality";
 
 const usd = (n: number, dp = 0) =>
   (n < 0 ? "-" : "") + "$" + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: dp, maximumFractionDigits: dp });
@@ -139,7 +140,15 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const nCasino = D.side_quests.filter((s) => /shuffle|slot|bet|units/i.test(s.text)).length;
   const parts: [string, number, number][] = [["Options plays", nOpt, 10], ["0DTE lottery tickets", n0, 15], ['"Full port" moments', nFP, 10], ["Dream-based theses", nDream, 5], ["Casino & sports side quests", nCasino, 5]];
   const raw = parts.reduce((a, p) => a + p[1] * p[2], 0), degen = Math.min(100, raw);
-  $("degen-strip").innerHTML = Array.from({ length: 20 }, (_, i) => `<i${i < degen / 5 ? ' class="lit"' : ""}></i>`).join("");
+  const heat = degenHeat(raw);
+  $("degen-heat").textContent = heat.points.toLocaleString("en-US");
+  $("degen-tier").textContent = `${heat.icon} ${heat.name}`;
+  $("degen-next").textContent = `${heat.remaining.toLocaleString("en-US")} to next tier`;
+  $("degen-strip").setAttribute("aria-valuenow", String(heat.points));
+  $("degen-strip").setAttribute("aria-valuemax", String(heat.next));
+  $("degen-strip").setAttribute("aria-valuetext", `${heat.name}: ${heat.points} joke heat points, next tier at ${heat.next}`);
+  $("degen-strip").innerHTML = Array.from({ length: 20 }, (_, i) => `<i aria-hidden="true"${i < heat.progress / 5 ? ' class="lit"' : ""}></i>`).join("");
+  $("degen-panel").dataset.heat = heat.points >= 500 ? "nuclear" : heat.points >= 250 ? "cooked" : "warming";
   count($("degen"), degen, (v) => String(Math.round(v)));
   const degenVerdict = degen >= 90 ? "fully cooked 🔥" : degen >= 60 ? "spicy" : degen >= 30 ? "mildly unhinged" : "suspiciously responsible";
   const verdictEl = $("degenverdict");
@@ -187,17 +196,26 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("degenfine").textContent = `Joke formula: options play +10, 0DTE +15, "full port" +10, dream thesis +5, casino or sports side quest +5, capped at 100 (raw ${raw}). The counts are real, from the posts below. The score means nothing.`;
 
   // ---- Magic 8-ball (joke) ----
-  const ANS = ["Ask again after his next dream.", "Signs point to GPRO.", "Outlook: 0DTE.", "Reply hazy. Check his X.", "Only if MRNA cooperates.", "Concentrate and full port again.", "Don't count on it. He might, though.", "Cannot predict now. Market's closed.", "It is decidedly… not financial advice."];
-  let last = -1;
+  const recentAnswers: number[] = [];
   ($("shake") as HTMLButtonElement).onclick = () => {
-    let i: number;
-    do { i = Math.floor(Math.random() * ANS.length); } while (i === last);
-    last = i;
+    const result = pickEightBallAnswer(recentAnswers);
+    recentAnswers.push(result.index);
+    if (recentAnswers.length > 3) recentAnswers.shift();
     const e = $("eight"), a = $("answer");
+    const button = $("shake") as HTMLButtonElement;
+    button.disabled = true;
+    button.textContent = "Consulting…";
     e.classList.remove("shake"); a.classList.remove("pop"); void e.offsetWidth;
     e.classList.add("shake");
-    later(() => { a.textContent = ANS[i]; a.classList.add("pop"); }, RM ? 0 : 450);
+    later(() => { a.textContent = result.answer; a.classList.add("pop"); button.disabled = false; button.textContent = "Shake again"; }, RM ? 0 : 450);
   };
+
+  const lossClaim = reportedLoss(D);
+  const lossContext = $("reported-loss");
+  lossContext.hidden = !lossClaim;
+  if (lossClaim) {
+    lossContext.innerHTML = `<div><span class="reported-label">${lossClaim.attribution} · ${fmtDate(lossClaim.date)}</span><strong>≈$700K <span>in his own words</span></strong></div><p>His caption describes “losing the 700k.” Exact realized P&amp;L and the measurement period are unconfirmed; deposits and intraday marks complicate the daily total. This claim is excluded from trade P&amp;L, balances and win-rate calculations.</p><a href="${lossClaim.source}" ${ext}>Read his post ↗</a>`;
+  }
 
   // ---- Tape ----
   const tape = T.map((t) =>

@@ -43,6 +43,7 @@ export function TogiTracker() {
           <header className="tg-top">
             <Mark />
             <h1 className="tg-title">Togi Tracker</h1>
+            <span className="tg-version">V2.0</span>
             <span className="chip">Unofficial</span>
           <nav className="tg-jump" aria-label="Tracker sections">
             <a href="#overview">Dashboard</a>
@@ -98,6 +99,8 @@ export function TogiTracker() {
 
         </div>
 
+        <aside className="reported-loss" id="reported-loss" aria-label="Self-reported loss context" hidden></aside>
+
         <section className="grid2" id="extras">
             <div className="panel challenge-progress"><h2><span aria-hidden="true">◎</span> $10,000,000 challenge</h2>              <div className="road"><div className="road-heading"><span>The road to $10,000,000</span><span aria-hidden="true">🏁</span></div>
                 <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $10M">
@@ -108,11 +111,12 @@ export function TogiTracker() {
 </div>
             <div className="panel panel-depth degen" id="degen-panel">
               <div className="phead">
-                <div><p className="lbl">🔥 Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
+                <div><p className="lbl">🔥 Degen meter</p><p className="heat-value"><span id="degen-heat">0</span><small>HEAT</small></p></div>
                 <span className="badge joke">Joke formula</span>
               </div>
-              <div className="degen-strip" id="degen-strip" aria-hidden="true"></div>
-              <details className="degen-breakdown"><summary>Show the joke formula</summary><div className="degen-gauge-wrap" id="degen-gauge"></div><div className="bars" id="degenbars"></div>
+              <div className="heat-status"><span id="degen-tier"></span><span id="degen-next"></span></div>
+              <div className="degen-strip" id="degen-strip" role="progressbar" aria-label="Joke heat points toward next tier" aria-valuemin={0}></div>
+              <details className="degen-breakdown"><summary>Joke heat, not investment advice · see formula</summary><p className="legacy-degen">Original gauge: <span id="degen">0</span>/100 · <span id="degenverdict"></span></p><div className="degen-gauge-wrap" id="degen-gauge"></div><div className="bars" id="degenbars"></div>
               <p className="fine" id="degenfine"></p><p className="degen-latest" id="degenlatest"></p></details>
             </div>
 

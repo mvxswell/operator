@@ -391,3 +391,27 @@
 @media(max-width:767px){.togi-tracker .chart svg{min-height:184px}.togi-tracker .dashboard-panels>.panel{min-height:0}.togi-tracker .side ul{max-height:300px}}
 .togi-tracker .odds .eight{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 32% 20%,#626465 0,#242729 24%,#08090a 58%,#000 100%);box-shadow:inset 0 1px 2px #ffffff50,0 4px 10px #0008;line-height:1}
 .togi-tracker .eight>span{display:flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;background:#e5e5de;color:#171819;font-size:23px;font-weight:800;box-shadow:0 0 7px #ffffff25}
+/* V2 personality: uncapped joke heat and clearly attributed reporting. */
+.togi-tracker .tg-version{font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--accent);background:#2c210c;border:1px solid #6b4a17;border-radius:5px;padding:3px 6px;white-space:nowrap}
+.togi-tracker .degen .heat-value{display:flex;align-items:baseline;gap:5px;color:#ffc34c;font-size:28px;line-height:1;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
+.togi-tracker .heat-value small{font-size:9px;letter-spacing:.07em;color:var(--muted);font-weight:500}
+.togi-tracker .heat-status{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;font-size:11px;color:var(--muted)}
+.togi-tracker #degen-tier{font-weight:650;font-size:12px;color:#ffc34c;letter-spacing:.02em;text-transform:uppercase}
+.togi-tracker #degen-next{font-size:10px;text-align:right}
+.togi-tracker .degen[data-heat="nuclear"]{border-color:#875522;background:linear-gradient(115deg,#20170d,#101212 70%);box-shadow:inset 0 1px #ffd47212}
+.togi-tracker .degen[data-heat="nuclear"] #degen-tier{color:#ffb654;text-shadow:0 0 12px #ff881c45}
+.togi-tracker .degen[data-heat="nuclear"] .degen-strip .lit{background:linear-gradient(180deg,#ffcf58,#ff9219);box-shadow:0 0 8px #ff94173d}
+.togi-tracker .degen-strip:hover .lit{filter:brightness(1.2)}
+.togi-tracker .legacy-degen{font-size:12px;color:var(--muted);margin-top:14px}
+.togi-tracker .degen .degen-breakdown>summary{font-size:10px}
+.togi-tracker .odds .answer{line-height:1.45;overflow-wrap:anywhere}
+.togi-tracker .odds .btn:disabled{opacity:.7;cursor:wait}
+.togi-tracker .reported-loss{display:grid;grid-template-columns:180px minmax(0,1fr) auto;align-items:center;gap:18px;margin-top:16px;border:1px solid #633830;border-radius:12px;background:#1b1210;padding:14px 18px}
+.togi-tracker .reported-loss[hidden]{display:none}
+.togi-tracker .reported-label{display:block;font-size:10px;color:#dfa89d;margin-bottom:4px}
+.togi-tracker .reported-loss strong{font-size:24px;letter-spacing:-.03em;font-weight:650;color:#ff8b75;white-space:nowrap}
+.togi-tracker .reported-loss strong>span{display:block;font-size:11px;font-weight:400;letter-spacing:0;color:#c79a91}
+.togi-tracker .reported-loss p{font-size:12px;line-height:1.55;color:#c5b2ad}
+.togi-tracker .reported-loss>a{font-size:11px;white-space:nowrap;color:#e3ae9e}
+@media(max-width:767px){.togi-tracker .reported-loss{grid-template-columns:1fr;gap:8px;padding:15px}.togi-tracker .reported-loss strong>span{display:inline;margin-left:8px}.togi-tracker .reported-loss p{font-size:11px}.togi-tracker .tg-version{padding:2px 4px;font-size:9px}}
+@media(max-width:374px){.togi-tracker .tg-title{font-size:18px}.togi-tracker .tg-top{gap:6px}.togi-tracker .tg-top>.mark{width:22px;height:22px}.togi-tracker .tg-top .chip{font-size:8px;padding:3px 5px}}
