@@ -12,6 +12,7 @@ import { PracticeLinks } from "@/components/PracticeLinks";
 import { CountUp } from "@/components/CountUp";
 import { Button, ButtonLink, DataTable, DifficultyPips, Eyebrow, Panel, SkillBar } from "@/components/ui";
 import { findQuestion } from "@/data";
+import { questionNeedsCalculator } from "@/lib/calculatorNeed";
 import { CATEGORY_MAP } from "@/lib/categories";
 import { nextSkillToTrain } from "@/lib/nextSkill";
 import { operatorTier, type OperatorResult } from "@/lib/scoring";
@@ -189,23 +190,20 @@ function Intro({
     run();
   };
 
+  const eyebrow =
+    variant === "operator"
+      ? `${total} questions · about 10 minutes · progress saved on this device`
+      : `${total} questions · adaptive difficulty`;
+
   return (
-    <div className="mx-auto max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+    <div className="mx-auto max-w-3xl px-4 py-10 max-sm:pb-48 sm:px-6 sm:py-14">
       <SharedChallenge quiz={variant === "skill" ? category ?? "" : "operator"} />
       <div className="brand-hero stack-rise">
-        <Eyebrow>{total} questions · adaptive difficulty</Eyebrow>
+        <Eyebrow>{eyebrow}</Eyebrow>
         <h1 className="mt-4 text-3xl font-semibold tracking-[-0.02em] text-ink sm:text-4xl">
           {title}
         </h1>
         <p className="mt-4 text-[16px] leading-relaxed text-muted">{introBody}</p>
-
-        <Panel className="mt-8 divide-y divide-line-soft">
-          <Rule text="Questions get harder as you get them right, and easier if you slip." />
-          <Rule text="Everything you need to answer is in the scenario. No trivia, no outside knowledge." />
-          <Rule text="Accuracy counts most, difficulty next, speed last — guessing quickly will not help." />
-          <Rule text="Press 1–4 or A–D to answer, then Enter for the next question." />
-          <Rule text="A scratch calculator is available during every question." />
-        </Panel>
 
         {personalBest > 0 ? (
           <p className="mt-6 text-sm text-muted">
@@ -214,7 +212,7 @@ function Intro({
           </p>
         ) : null}
 
-        <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+        <div className={`mt-8 flex flex-wrap gap-3 ${pending ? "flex-col sm:flex-row" : "flex-row"} max-sm:fixed max-sm:inset-x-0 max-sm:bottom-0 max-sm:z-40 max-sm:mt-0 max-sm:border-t max-sm:border-line max-sm:bg-bg/92 max-sm:px-4 max-sm:pt-3 max-sm:pb-[max(0.75rem,env(safe-area-inset-bottom))] max-sm:backdrop-blur-md`}>
           {pending ? (
             <>
               <Button size="lg" onClick={() => begin(onResume)}>
@@ -225,30 +223,57 @@ function Intro({
               </Button>
             </>
           ) : (
-            <Button size="lg" onClick={() => begin(onStart)}>
+            <Button size="lg" className="max-sm:flex-1" onClick={() => begin(onStart)}>
               {personalBest > 0 ? `Beat ${personalBest}` : "Start"}
             </Button>
           )}
           {backHref ? (
-            <ButtonLink href={backHref} variant={pending ? "ghost" : "secondary"} size="lg">
+            <ButtonLink href={backHref} variant={pending ? "ghost" : "secondary"} size="lg" className="max-sm:shrink-0">
               {backLabel ?? "Back"}
             </ButtonLink>
           ) : null}
+          {pending ? (
+            <p className="text-[13px] text-faint sm:basis-full">Saved on this device for 24 hours.</p>
+          ) : null}
         </div>
-        {pending ? (
-          <p className="mt-3 text-[13px] text-faint">Saved on this device for 24 hours.</p>
-        ) : null}
+
+        <Panel className="mt-8 divide-y divide-line-soft">
+          <Rule text="Questions get harder as you get them right, and easier if you slip." />
+          <Rule text="Everything you need to answer is in the scenario. No trivia, no outside knowledge." />
+        </Panel>
+
+        <HowItWorks />
       </div>
     </div>
   );
 }
 
-function Rule({ text }: { text: string }) {
+function Rule({ text, className = "" }: { text: string; className?: string }) {
   return (
-    <p className="flex gap-3 px-5 py-3.5 text-sm leading-relaxed text-muted">
+    <p className={`flex gap-3 px-5 py-3.5 text-sm leading-relaxed text-muted ${className}`}>
       <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
       {text}
     </p>
+  );
+}
+
+function HowItWorks() {
+  return (
+    <details className="group mt-4 rounded-xl border border-line bg-surface">
+      <summary className="flex cursor-pointer list-none items-center justify-between px-5 py-4 text-sm font-medium text-ink [&::-webkit-details-marker]:hidden">
+        How it works
+        <span className="text-muted group-open:hidden" aria-hidden="true">+</span>
+        <span className="hidden text-muted group-open:inline" aria-hidden="true">−</span>
+      </summary>
+      <div className="divide-y divide-line-soft border-t border-line-soft">
+        <Rule text="Accuracy counts most, difficulty next, speed last — guessing quickly will not help." />
+        <Rule
+          className="[@media(pointer:coarse)]:hidden"
+          text="Press 1–4 or A–D to answer, then Enter for the next question."
+        />
+        <Rule text="A scratch calculator opens on questions with figures to work." />
+      </div>
+    </details>
   );
 }
 
@@ -276,9 +301,11 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
   const revealed = phase === "feedback";
   const correct = revealed && selectedChoiceId === current.question.correctChoiceId;
   const progress = (answeredCount / total) * 100;
+  const showCalculator = questionNeedsCalculator(current.question);
+  const bottomPad = showCalculator ? "pb-28 sm:pb-32" : revealed ? "pb-24" : "pb-10";
 
   return (
-    <div className="mx-auto max-w-2xl px-4 pb-28 pt-8 sm:px-6 sm:pb-32 sm:pt-12">
+    <div className={`mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:pt-12 ${bottomPad}`}>
       {/* Progress header */}
       <div className="panel-depth mb-8 rounded-xl border border-line bg-surface p-4">
         <div className="mb-2 flex items-center justify-between text-[11px] uppercase tracking-[0.14em] text-muted">
@@ -310,7 +337,7 @@ function Run({ engine }: AssessmentProps & { engine: Engine }) {
         revealed={revealed}
       />
 
-      <Calculator />
+      {showCalculator ? <Calculator /> : null}
 
       {revealed ? (
         <div data-quiz-feedback className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-bg/92 backdrop-blur-md">

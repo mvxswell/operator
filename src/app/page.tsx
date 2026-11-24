@@ -124,7 +124,7 @@ export default function HomePage() {
         <div className="hh-qgrid">
           <Link prefetch={false} href="/operator/" className="hh-card hh-qcard">
             <p className="hh-qtitle">Operator Test</p>
-            <p className="hh-qmeta">About 20 questions, adaptive</p>
+            <p className="hh-qmeta">20 questions · about 10 minutes</p>
             <p className="hh-qbody">Finish with an Operator Score and a breakdown across all eight skills.</p>
             <p className="hh-qfoot">Be first on the board.</p>
           </Link>
