@@ -47,16 +47,18 @@ export function renderRobinhoodHtml(R: RobinhoodStats): { kpis: string; note: st
   const undisclosed = /^not disclosed$/i.test(deposit);
   const started = undisclosed ? "not disclosed" : deposit;
   const fp = R.first_posted, pk = R.peak, lo = R.low_after_fidelity_move, lt = R.latest, ts = R.today_start;
-  const day = `<span class="${lt.day_change >= 0 ? "pos" : "neg"}">${signedUsd(lt.day_change)} (${signedPct(lt.day_change_pct)})</span> today · ${fmtDate(lt.date)}`;
-  const method = ts.method.trim();
-  const todaySub = `${ts.derived ? `<span class="derived" title="${esc(method)}">derived</span>` : ""}${method ? `${ts.derived ? " · " : ""}${esc(method)}` : ""}`;
+  const day = lt.day_change === null
+    ? `Daily P&amp;L not disclosed · ${fmtDate(lt.date)}`
+    : `<span class="${lt.day_change >= 0 ? "pos" : "neg"}">${signedUsd(lt.day_change)}${lt.day_change_pct === null ? "" : ` (${signedPct(lt.day_change_pct)})`}</span> today · ${fmtDate(lt.date)}`;
+  const method = ts?.method.trim() ?? "";
+  const todaySub = ts ? `${ts.derived ? `<span class="derived" title="${esc(method)}">derived</span>` : ""}${method ? `${ts.derived ? " · " : ""}${esc(method)}` : ""}` : "Latest screenshot uses a different return period";
   const kpis = [
     cell("Started with", `<span class="v">${esc(started)}</span>`, undisclosed ? "deposit never posted" : "", undisclosed ? "nd" : ""),
     cell("First posted", moneyLink(fp.value, fp.source_url, fp.label), fmtDate(fp.date)),
     cell("Peak", moneyLink(pk.value, pk.source_url, pk.label), fmtDate(pk.date)),
     cell("Low", moneyLink(lo.value, lo.source_url, lo.label), `${fmtDate(lo.date)} · after the move to Fidelity`),
     cell("Now", moneyLink(lt.value, lt.source_url, lt.label), day, "now"),
-    cell("Started today", moneyLink(ts.value, ts.source_url, method || ts.method), todaySub, "today"),
+    cell("Started today", ts ? moneyLink(ts.value, ts.source_url, method) : '<span class="v">not disclosed</span>', todaySub, "today"),
   ].join("");
   return { kpis, note: robinhoodNoteHtml(R.note, R.withdrawal_source_url) };
 }

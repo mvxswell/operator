@@ -392,6 +392,18 @@
 .togi-tracker .odds .eight{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at 32% 20%,#626465 0,#242729 24%,#08090a 58%,#000 100%);box-shadow:inset 0 1px 2px #ffffff50,0 4px 10px #0008;line-height:1}
 .togi-tracker .eight>span{display:flex;align-items:center;justify-content:center;width:27px;height:27px;border-radius:50%;background:#e5e5de;color:#171819;font-size:23px;font-weight:800;box-shadow:0 0 7px #ffffff25}
 /* V2 personality: uncapped joke heat and clearly attributed reporting. */
+.togi-tracker .broker-pnl{display:grid;grid-template-columns:1fr 1fr;gap:20px 36px;margin-top:16px;padding:23px 26px}
+.togi-tracker .broker-pnl[hidden]{display:none}
+.togi-tracker .broker-pnl h2{font-size:15px;margin:6px 0 10px}
+.togi-tracker .pnl-amount{font-size:clamp(25px,3vw,38px);font-weight:650;letter-spacing:-.035em;font-variant-numeric:tabular-nums;line-height:1.25;margin:8px 0}
+.togi-tracker .pnl-return>a{font-size:11px;color:var(--muted)}
+.togi-tracker .pnl-balance{align-self:center}
+.togi-tracker .pnl-balance .pnl-amount{font-size:28px}
+.togi-tracker .pnl-balance .fine{max-width:420px}
+.togi-tracker .pnl-method{grid-column:1/-1;font-size:12px;color:var(--muted);line-height:1.7}
+.togi-tracker .pnl-method summary{cursor:pointer;color:var(--accent);font-size:11px}
+.togi-tracker .pnl-method p{margin-top:10px;max-width:100ch}
+@media(max-width:600px){.togi-tracker .broker-pnl{grid-template-columns:1fr;gap:18px;padding:20px}.togi-tracker .pnl-balance .pnl-amount{font-size:24px}.togi-tracker .pnl-amount{font-size:32px}}
 .togi-tracker .tg-version{font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--accent);background:#2c210c;border:1px solid #6b4a17;border-radius:5px;padding:3px 6px;white-space:nowrap}
 .togi-tracker .degen .heat-value{display:flex;align-items:baseline;gap:5px;color:#ffc34c;font-size:28px;line-height:1;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
 .togi-tracker .heat-value small{font-size:9px;letter-spacing:.07em;color:var(--muted);font-weight:500}
