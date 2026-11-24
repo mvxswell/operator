@@ -61,7 +61,7 @@ export function TogiTracker() {
             <section className="panel panel-depth meter" aria-label="Road to $10M">
               <div className="meter-top">
                 <div>
-                  <p className="lbl">The $10M challenge</p>
+                  <p className="lbl">Fidelity · The $10M challenge</p>
                   <p className="score tabular" id="cur">$–</p><p id="hero-day" className="hero-day"></p>
                   <a className="src" id="cursrc" href={TOGI_PROFILE_URL} {...ext}></a>
                 </div>
@@ -87,7 +87,7 @@ export function TogiTracker() {
                   <button type="button" data-account="options" aria-pressed="false">Robinhood</button>
                 </div>
               </div>
-              <div className="chart-heading"><h2>Account performance</h2><span id="chart-context">Posted account values</span></div>
+              <div className="chart-heading"><h2>Posted account balances</h2><span id="chart-context">Posted account values</span></div>
               <div className="chart-readout" id="chart-readout" aria-live="polite"></div>
               <div id="chart" className="chart"></div>
               <p className="fine">Posted values, not a live market chart. Hover or focus a point for its receipt. Accounts are shown separately; money moved between them.</p>
@@ -99,6 +99,7 @@ export function TogiTracker() {
 
         </div>
 
+        <section className="panel broker-pnl" id="broker-pnl" aria-label="Broker-reported Robinhood P&L" hidden></section>
         <aside className="reported-loss" id="reported-loss" aria-label="Self-reported loss context" hidden></aside>
 
         <section className="grid2" id="extras">

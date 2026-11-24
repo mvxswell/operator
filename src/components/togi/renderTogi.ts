@@ -4,6 +4,7 @@
 import { isRobinhoodStats, isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "../../lib/togi";
 import { renderPortfolioHtml, renderPortfolioSummaryHtml } from "./portfolio";
 import { renderRobinhoodHtml } from "./robinhood";
+import { renderBrokerPnlHtml } from "./pnl";
 import { degenHeat, pickEightBallAnswer, reportedLoss } from "./personality";
 
 const usd = (n: number, dp = 0) =>
@@ -84,8 +85,8 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   // ---- Meter ----
   const cur = m.latest_value, goal = m.goal, start = m.starting_value;
   if (isTogiPortfolio(D.portfolio)) {
-    const account = D.portfolio.accounts.find((a) => a.status === "current") ?? D.portfolio.accounts[0];
-    $("hero-day").innerHTML = typeof account.day_change === "number" ? `<span class="${account.day_change >= 0 ? "pos" : "neg"}">${account.day_change >= 0 ? "+" : ""}${usd(account.day_change, 2)}${typeof account.day_change_pct === "number" ? ` (${account.day_change_pct > 0 ? "+" : ""}${account.day_change_pct}%)` : ""}</span><span>Posted ${fmtDate(account.as_of)}</span>` : "";
+    const account = D.portfolio.accounts.find((a) => a.id === "fidelity" && a.as_of === m.latest_value_date && a.total_value === cur);
+    $("hero-day").innerHTML = account && typeof account.day_change === "number" ? `<span class="${account.day_change >= 0 ? "pos" : "neg"}">${account.day_change >= 0 ? "+" : ""}${usd(account.day_change, 2)}${typeof account.day_change_pct === "number" ? ` (${account.day_change_pct > 0 ? "+" : ""}${account.day_change_pct}%)` : ""}</span><span>Posted ${fmtDate(account.as_of)}</span>` : `<span>Last posted ${fmtDate(m.latest_value_date)} · current value unknown</span>`;
   }
   const pct = Math.min(100, (cur / goal) * 100);
   count($("cur"), cur, (v) => usd(v), start);
@@ -113,6 +114,10 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("gcdate").textContent = fmtDate(m.goal_changed_on);
   ($("gcsrc") as HTMLAnchorElement).href = safeXUrl(m.goal_change_source);
 
+  const brokerPnl = renderBrokerPnlHtml(D);
+  $("broker-pnl").hidden = !brokerPnl;
+  $("broker-pnl").innerHTML = brokerPnl ?? "";
+
   // ---- Stats (known data only) ----
   const decided = T.filter((t) => t.outcome === "win" || t.outcome === "loss");
   const wins = decided.filter((t) => t.outcome === "win");
@@ -122,8 +127,8 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const wr = decided.length ? (wins.length / decided.length) * 100 : null;
   const stats: [string, number | null, (v: number) => string, string, string][] = [
     ["Trades tracked", T.length, (v) => String(Math.round(v)), "posts with a stock or options move", ""],
-    ["Biggest W", best ? best.pnl : null, (v) => "+" + short(v), best ? best.ticker + " " + best.type + (best.pnl_derived ? " (derived)" : "") : "", "pos party"],
-    ["Biggest L", worst ? worst.pnl : null, (v) => short(v), worst ? worst.ticker + " " + worst.type + " · known P&L only" : "", "neg"],
+    ["Biggest recorded W", best ? best.pnl : null, (v) => "+" + short(v), best ? best.ticker + " " + best.type + " · disclosed trades only" + (best.pnl_derived ? " (derived)" : "") : "", "pos party"],
+    ["Biggest recorded L", worst ? worst.pnl : null, (v) => short(v), worst ? worst.ticker + " " + worst.type + " · disclosed trades only" : "", "neg"],
     ["Win rate", wr, (v) => Math.round(v) + "%", wins.length + "W / " + (decided.length - wins.length) + "L where the result is known", ""],
   ];
   $("stats").innerHTML = stats.map((s, i) =>

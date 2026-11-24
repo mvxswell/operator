@@ -71,6 +71,8 @@ export type TogiAccount = {
   cash_note?: string;
   pending_activity?: number | null;
   buying_power?: number | null;
+  /** Broker chart return over its displayed three-month window; not a trade subtotal. */
+  period_change_3m?: number | null;
   open_positions_note?: string;
   source_url?: string;
 };
@@ -94,7 +96,7 @@ export type TogiPosition = {
   source_url?: string;
   status?: string;
   note?: string | null;
-  latest_update?: { as_of: string; value: number; pct_of_account: number; unrealized_pct?: number | null; source_url?: string; label?: string };
+  latest_update?: { as_of: string; value: number | null; pct_of_account: number | null; unrealized_pct?: number | null; source_url?: string; label?: string };
 };
 
 export type TogiClosed = {
@@ -124,7 +126,7 @@ export type TogiPortfolio = {
 /** Optional `robinhood_stats` object. Validated by isRobinhoodStats; missing or malformed hides the panel. */
 export type RobinhoodPoint = { date: string; value: number; label: string; source_url: string };
 
-export type RobinhoodLatest = RobinhoodPoint & { day_change: number; day_change_pct: number };
+export type RobinhoodLatest = RobinhoodPoint & { day_change: number | null; day_change_pct: number | null };
 
 export type RobinhoodToday = { value: number; derived: boolean; method: string; source_url: string };
 
@@ -134,7 +136,7 @@ export type RobinhoodStats = {
   peak: RobinhoodPoint;
   low_after_fidelity_move: RobinhoodPoint;
   latest: RobinhoodLatest;
-  today_start: RobinhoodToday;
+  today_start: RobinhoodToday | null;
   note: string;
   withdrawal_source_url: string;
 };
@@ -227,7 +229,7 @@ export function isTogiPortfolio(value: unknown): value is TogiPortfolio {
   for (const a of value.accounts) {
     if (!isObj(a) || !isStr(a.id) || !isStr(a.name) || !isStr(a.status) || !isDate(a.as_of) || !isNum(a.total_value)) return false;
     if (!numOrNull(a.cash)) return false;
-    if (![a.day_change, a.day_change_pct, a.unrealized_total, a.unrealized_total_pct, a.pending_activity, a.buying_power].every(optNum)) return false;
+    if (![a.day_change, a.day_change_pct, a.unrealized_total, a.unrealized_total_pct, a.pending_activity, a.buying_power, a.period_change_3m].every(optNum)) return false;
     if (![a.cash_note, a.open_positions_note, a.source_url].every(optStr)) return false;
   }
   if (!Array.isArray(value.positions) || !value.positions.length) return false;
@@ -238,7 +240,7 @@ export function isTogiPortfolio(value: unknown): value is TogiPortfolio {
     if (p.option !== null && p.option !== undefined && !isObj(p.option)) return false;
     if (![p.note, p.source_url, p.status].every(optStr)) return false;
     const u = p.latest_update;
-    if (u !== undefined && u !== null && (!isObj(u) || !isDate(u.as_of) || !isNum(u.value) || !isNum(u.pct_of_account) || !optNum(u.unrealized_pct) || !optStr(u.label))) return false;
+    if (u !== undefined && u !== null && (!isObj(u) || !isDate(u.as_of) || !numOrNull(u.value) || !numOrNull(u.pct_of_account) || !optNum(u.unrealized_pct) || !optStr(u.label))) return false;
   }
   if (value.open_options !== undefined && !Array.isArray(value.open_options)) return false;
   const k = value.concentration;
@@ -266,9 +268,9 @@ export function isRobinhoodStats(value: unknown): value is RobinhoodStats {
   if (!isObj(value) || !isStr(value.starting_deposit)) return false;
   if (!isPoint(value.first_posted) || !isPoint(value.peak) || !isPoint(value.low_after_fidelity_move)) return false;
   const latest = value.latest;
-  if (!isObj(latest) || !isNum(latest.day_change) || !isNum(latest.day_change_pct) || !isPoint(latest)) return false;
+  if (!isObj(latest) || !numOrNull(latest.day_change) || !numOrNull(latest.day_change_pct) || !isPoint(latest)) return false;
   const today = value.today_start;
-  if (!isObj(today) || !isNum(today.value) || typeof today.derived !== "boolean" || !isStr(today.method) || !isStr(today.source_url)) return false;
+  if (today !== null && (!isObj(today) || !isNum(today.value) || typeof today.derived !== "boolean" || !isStr(today.method) || !isStr(today.source_url))) return false;
   if (!isStr(value.note) || !isStr(value.withdrawal_source_url)) return false;
   return true;
 }

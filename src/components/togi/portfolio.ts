@@ -7,7 +7,7 @@
 // - *_derived figures are labelled "derived".
 // - anything older than stale_after_days (or marked last_known) reads "Last known".
 // - the Fidelity and Robinhood totals are never added together (money moved between them).
-// - a position's latest_update, when present, is the figure shown; the earlier one is kept as context.
+// - a complete latest_update is shown; a quote without a position value stays context only.
 import { xPostUrl, type TogiAccount, type TogiPortfolio, type TogiPosition } from "../../lib/togi";
 
 export const ND = '<span class="nd">not disclosed</span>';
@@ -46,10 +46,10 @@ const asOf = (row: { as_of: string; status?: string }, P: TogiPortfolio, today: 
     ? `<span class="asof stale">Last known · ${fmtDate(row.as_of)}</span>`
     : `<span class="asof">As of ${fmtDate(row.as_of)}</span>`;
 
-/** The figure to show for a position: its latest_update when present. */
+/** A quote alone cannot establish position size or value; keep the dated valuation. */
 function shown(p: TogiPosition) {
   const u = p.latest_update;
-  return u
+  return u && u.value !== null && u.pct_of_account !== null
     ? { value: u.value, pct: u.pct_of_account, unrealized_pct: u.unrealized_pct ?? null, as_of: u.as_of, status: p.status, updated: true }
     : { value: p.value, pct: p.pct_of_account, unrealized_pct: p.unrealized_pct, as_of: p.as_of, status: p.status, updated: false };
 }
@@ -62,7 +62,7 @@ export function renderPortfolioSummaryHtml(P: TogiPortfolio): string {
   return `<div class="summary-head"><h2><span aria-hidden="true">▤</span> Portfolio <span class="summary-count">(${positions.length})</span></h2><a href="#portfolio">Details</a></div>
     <table class="summary-table"><thead><tr><th>Symbol</th><th>Value</th><th>Unrealized</th></tr></thead><tbody>${positions.slice(0, 6).map((p) => {
       const s = shown(p);
-      return `<tr><td><b>${esc(p.ticker)}</b><span>${esc(p.name)}</span></td><td>${usd(s.value)}<span>${s.pct}% of account</span></td><td class="${tone(p.latest_update ? s.unrealized_pct : p.unrealized)}">${p.latest_update ? (s.unrealized_pct == null ? ND : pct(s.unrealized_pct)) : signed(p.unrealized, (v) => short(v))}<span>${p.latest_update ? "unrealized" : pct(p.unrealized_pct)}</span></td></tr>`;
+      return `<tr><td><b>${esc(p.ticker)}</b><span>${esc(p.name)}</span></td><td>${usd(s.value)}<span>${s.pct}% of account</span></td><td class="${tone(s.updated ? s.unrealized_pct : p.unrealized)}">${s.updated ? (s.unrealized_pct == null ? ND : pct(s.unrealized_pct)) : signed(p.unrealized, (v) => short(v))}<span>${s.updated ? "unrealized" : pct(p.unrealized_pct)}</span></td></tr>`;
     }).join("")}</tbody></table><a class="summary-foot" href="#portfolio">All holdings, account details &amp; source posts</a>`;
 }
 
@@ -83,7 +83,7 @@ export function renderPortfolioHtml(P: TogiPortfolio, today: Date = new Date()):
     [esc(primary.name), usd(primary.total_value, 0), `${signed(primary.day_change, (v) => usd(v, 2))} on the day · ${asOf(primary, P, today)}`, ""],
     ["Open positions", String(pos.length + opts.length), `${pos.length} stock/fund · ${opts.length} options`, ""],
     ["Unrealized P&amp;L", signed(primary.unrealized_total, (v) => usd(v, 0)), primary.unrealized_total_pct == null ? "on open positions" : `${pct(primary.unrealized_total_pct)} on open positions`, tone(primary.unrealized_total)],
-    ["Known realized P&amp;L", C ? signed(C.known_realized_total, (v) => usd(v, 0)) : ND, C ? `${C.count_known ?? 0} closed with P&amp;L · ${C.count_undisclosed ?? 0} not disclosed` : "", C ? tone(C.known_realized_total) : ""],
+    ["Recorded trade subtotal", C ? signed(C.known_realized_total, (v) => usd(v, 0)) : ND, C ? `${C.count_known ?? 0} disclosed · ${C.count_undisclosed ?? 0} unknown · incomplete, not account P&amp;L` : "", C ? tone(C.known_realized_total) : ""],
     ["Cash", primary.cash == null ? ND : usd(primary.cash, 2), primary.pending_activity != null ? `${usd(primary.pending_activity, 2)} pending activity` : "", primary.cash == null ? "ndv" : ""],
   ];
 
@@ -113,14 +113,14 @@ export function renderPortfolioHtml(P: TogiPortfolio, today: Date = new Date()):
     const unit = p.asset_type === "fund" ? "units" : p.asset_type === "option" ? "contracts" : "sh";
     const cost = p.cost_basis == null ? `cost ${ND}` : `cost ≈${short(p.cost_basis)}${p.cost_basis_derived ? ` ${DERIVED}` : ""}`;
     const earlier = u
-      ? `<span class="upd">${esc(u.label ?? "Later update")}. Earlier: ${usd(p.value, 0)} · ${p.pct_of_account}% · ${signed(p.unrealized, (v) => short(v))}${p.unrealized_pct == null ? "" : ` (${pct(p.unrealized_pct)})`} as of ${fmtDate(p.as_of)} ${link(p.source_url, "post ↗")}</span>`
+      ? `<span class="upd">${esc(u.label ?? "Later update")} · ${fmtDate(u.as_of)} ${link(u.source_url, "update post ↗")}. Earlier: ${usd(p.value, 0)} · ${p.pct_of_account}% · ${signed(p.unrealized, (v) => short(v))}${p.unrealized_pct == null ? "" : ` (${pct(p.unrealized_pct)})`} as of ${fmtDate(p.as_of)} ${link(p.source_url, "post ↗")}</span>`
       : "";
     return `<div class="pf-row" data-t="${esc(p.ticker)}">
       <div class="pf-c1"><b class="tk2">$${esc(p.ticker)}</b><span class="tag">${esc(p.asset_type)}${opt}</span>${s.updated ? '<span class="tag new">latest update</span>' : ""}
         <span class="meta2">${esc(p.name)} · ${Number(p.shares).toLocaleString("en-US")} ${unit} @ ${p.last_price == null ? ND : "$" + p.last_price}</span></div>
       <div class="pf-c2"><span class="mono">${usd(s.value, 0)}</span><span class="bt"><i style="width:${Math.min(100, (s.pct / maxPct) * 100).toFixed(1)}%;background:${p.account === donutAcct ? color(p, dpos.indexOf(p)) : GREYS[3]}"></i></span><span class="meta2">${s.pct}% of acct</span></div>
-      <div class="pf-c3"><span class="mono ${tone(u ? s.unrealized_pct : p.unrealized)}">${u ? (s.unrealized_pct == null ? ND : pct(s.unrealized_pct)) : signed(p.unrealized, (v) => short(v))}</span><span class="meta2">${u ? "unrealized" : pct(p.unrealized_pct)}</span><span class="meta2">${cost}</span></div>
-      <div class="pf-foot">${asOf(s, P, today)} ${link(u ? u.source_url : p.source_url, "source ↗")}${earlier}${p.note ? ` <span class="pnote">${esc(p.note)}</span>` : ""}</div>
+      <div class="pf-c3"><span class="mono ${tone(s.updated ? s.unrealized_pct : p.unrealized)}">${s.updated ? (s.unrealized_pct == null ? ND : pct(s.unrealized_pct)) : signed(p.unrealized, (v) => short(v))}</span><span class="meta2">${s.updated ? "unrealized" : pct(p.unrealized_pct)}</span><span class="meta2">${cost}</span></div>
+      <div class="pf-foot">${asOf(s, P, today)} ${link(s.updated ? u?.source_url : p.source_url, "source ↗")}${earlier}${p.note ? ` <span class="pnote">${esc(p.note)}</span>` : ""}</div>
     </div>`;
   }).join("");
 
@@ -132,7 +132,7 @@ export function renderPortfolioHtml(P: TogiPortfolio, today: Date = new Date()):
 
   const items = (C?.items ?? []).slice().sort((a, b) => b.date.localeCompare(a.date));
   const closed = C
-    ? `<p class="lbl">Closed positions · realized</p><p class="closed-tot mono ${tone(C.known_realized_total)}">${signed(C.known_realized_total, (v) => usd(v, 0))}</p><p class="meta2">${esc(C.note ?? "")}</p>
+    ? `<p class="lbl">Closed positions · partial trade subtotal</p><p class="closed-tot mono ${tone(C.known_realized_total)}">${signed(C.known_realized_total, (v) => usd(v, 0))}</p><p class="meta2">Incomplete trade receipts across accounts and dates; excludes undisclosed results. Do not add this subtotal to broker returns or treat it as total account profit.</p><p class="meta2">${esc(C.note ?? "")}</p>
       <ul class="closed">${items.map((t) => `<li><span class="dt">${fmtDate(t.date).replace(/, \d{4}$/, "")}</span><b>$${esc(t.ticker)}</b><span class="ty">${esc(t.type)}</span><span class="mono ${tone(t.pnl)}">${t.pnl == null ? ND : signed(t.pnl, (v) => usd(v, 0))}${t.pnl != null && t.pnl_derived ? ` ${DERIVED}` : ""}</span><span class="lk">${link(t.source_url, "↗")}</span></li>`).join("")}</ul>`
     : "";
 
