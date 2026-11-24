@@ -68,8 +68,8 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const later = (fn: () => void, ms: number) => { timers.push(window.setTimeout(() => alive && fn(), ms)); };
   const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-  function count(el: HTMLElement, to: number, fmt: (v: number) => string, from = 0, ms = 1400) {
-    if (RM) { el.textContent = fmt(to); return; }
+  function count(el: HTMLElement, to: number, fmt: (v: number) => string, from = 0, ms = 0) {
+    if (RM || ms === 0) { el.textContent = fmt(to); return; }
     const t0 = performance.now();
     const f = (t: number) => {
       if (!alive) return;
@@ -202,14 +202,14 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("tape").innerHTML = tapeAll + tapeAll;
 
   // ---- Chart (inline SVG) ----
-  (function chart() {
+  function chart() {
     const H = D.account_history.slice().sort((a, b) => a.date.localeCompare(b.date));
-    const narrow = $("chart").clientWidth < 600, W = narrow ? 520 : 900, Ht = narrow ? 340 : 360, P = { l: 60, r: 12, t: 14, b: 30 };
+    const W = Math.max(240, $("chart").clientWidth), narrow = W < 600, Ht = 260, P = { l: 52, r: 16, t: 18, b: 30 };
     const t0 = new Date(H[0].date).getTime(), t1 = new Date(H[H.length - 1].date).getTime() || t0 + 1;
     const vmax = Math.max(...H.map((h) => h.value)) * 1.12;
     const x = (d: string) => P.l + ((new Date(d).getTime() - t0) / (t1 - t0 || 1)) * (W - P.l - P.r);
     const y = (v: number) => Ht - P.b - (v / vmax) * (Ht - P.t - P.b);
-    let g = '<defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#f2b441" stop-opacity=".28"/><stop offset="1" stop-color="#f2b441" stop-opacity="0"/></linearGradient></defs>';
+    let g = '<defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8b85d" stop-opacity=".12"/><stop offset="1" stop-color="#e8b85d" stop-opacity="0"/></linearGradient></defs>';
     for (let i = 0; i <= 4; i++) {
       const v = (vmax / 4) * i;
       g += `<line x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}" stroke="#1a1d22"/><text x="${P.l - 8}" y="${y(v) + 4}" fill="#7d848e" font-size="13" font-family="Geist Mono,monospace" text-anchor="end">${short(v)}</text>`;
@@ -233,13 +233,16 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
       if (!pts.length) return;
       const line = pts.map((p) => x(p.date) + "," + y(p.value)).join(" ");
       if (area) g += `<polygon fill="url(#ga)" points="${x(pts[0].date)},${y(0)} ${line} ${x(pts[pts.length - 1].date)},${y(0)}"/>`;
-      g += `<polyline class="ln" fill="none" stroke="${c}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" points="${line}"/>`;
+      g += `<polyline class="ln" fill="none" stroke="${c}" stroke-width="2"${area ? "" : ' stroke-dasharray="5 4"'} stroke-linejoin="round" stroke-linecap="round" points="${line}"/>`;
       pts.forEach((p) => {
-        g += `<a href="${safeXUrl(p.source_url)}" ${ext}><circle cx="${x(p.date)}" cy="${y(p.value)}" r="5.5" fill="${c}" stroke="#08090b" stroke-width="2.5"><title>${fmtDate(p.date)}: ${usd(p.value, 0)} (${esc(p.label)})</title></circle></a>`;
+        g += `<a href="${safeXUrl(p.source_url)}" aria-label="${esc(p.account)} · ${fmtDate(p.date)}: ${usd(p.value, 0)} · ${esc(p.label)} · open source post" ${ext}><circle cx="${x(p.date)}" cy="${y(p.value)}" r="5.5" fill="${c}" stroke="#08090b" stroke-width="2.5"><title>${fmtDate(p.date)}: ${usd(p.value, 0)} (${esc(p.label)})</title></circle></a>`;
       });
     });
     $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Account value over time">${g}</svg>`;
-  })();
+  }
+  chart();
+  const chartObserver = new ResizeObserver(chart);
+  chartObserver.observe($("chart"));
 
   // ---- Trades ----
   const vibe = (t: TogiTrade) => {
@@ -260,13 +263,13 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
       const pnl = typeof t.pnl === "number"
         ? `<span class="pnl ${t.pnl >= 0 ? "pos" : "neg"}">${t.pnl >= 0 ? "+" : ""}${usd(t.pnl)}${t.pnl_derived ? "*" : ""}</span>`
         : `<span class="pnl nd">P&amp;L not disclosed</span>`;
-      return `<article class="trade brand-card k-${k}${isBest ? " biggest" : ""}" style="animation-delay:${Math.min(i, 8) * 40}ms"><div class="topline"></div>
-        <div class="row"><span class="tk">$${esc(t.ticker)}</span>${pnl}</div>
-        <div class="tags"><span class="tag ${vc}">${esc(vt)}</span>${isBest ? '<span class="tag trophy">🏆 Biggest W</span>' : ""}<span class="tag">${vibe(t)}</span><span class="tag">${esc(t.type)}${t.direction ? " · " + esc(t.direction) : ""}</span><span class="date">${fmtDate(t.date)}</span></div>
+      return `<article class="trade brand-card k-${k}${isBest ? " biggest" : ""}" style="animation-delay:${Math.min(i, 8) * 40}ms">
+        <div class="trade-position"><span class="date">${fmtDate(t.date)}</span><h3 class="tk">$${esc(t.ticker)}</h3><span class="tag ${vc}">${esc(vt)}</span>${isBest ? '<span class="tag trophy">🏆 Biggest W</span>' : ""}</div>
+        <div class="trade-body"><div class="tags"><span class="tag">${vibe(t)}</span><span class="tag">${esc(t.type)}${t.direction ? " · " + esc(t.direction) : ""}</span></div>
         <p class="d">${esc(t.details)}</p>
         ${isFinite(Number(t.account_value)) && t.account_value ? `<p class="n">Account value shown: <b>${usd(Number(t.account_value), 2)}</b></p>` : ""}
         ${t.note ? `<p class="n">${linkify(t.note)}${t.pnl_derived ? " (*derived from his screenshots)" : ""}</p>` : ""}
-        <a class="go" href="${safeXUrl(t.source_url)}" ${ext}>View the post on X <span>→</span></a>
+        <a class="go" href="${safeXUrl(t.source_url)}" ${ext}>View source post ↗</a></div><div class="trade-result">${pnl}</div>
       </article>`;
     }).join("");
     root.querySelectorAll<HTMLElement>(".trade.biggest").forEach((el) => {
@@ -276,11 +279,13 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   }
   root.querySelectorAll<HTMLButtonElement>(".seg button").forEach((b) => {
     b.onclick = () => {
-      root.querySelectorAll(".seg button").forEach((x) => x.classList.remove("on"));
+      root.querySelectorAll(".seg button").forEach((x) => { x.classList.remove("on"); x.setAttribute("aria-pressed", "false"); });
       b.classList.add("on");
+      b.setAttribute("aria-pressed", "true");
       render(b.dataset.f ?? "all");
     };
   });
+  root.querySelectorAll<HTMLButtonElement>(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === "all")));
   render("all");
 
   // ---- Confetti ----
@@ -341,5 +346,5 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
     marks.forEach((e) => { e.addEventListener("mouseenter", () => hl(e.dataset.t ?? null)); e.addEventListener("mouseleave", () => hl(null)); });
   }
 
-  return () => { alive = false; cancelAnimationFrame(needleFrame); timers.forEach((t) => clearTimeout(t)); };
+  return () => { alive = false; chartObserver.disconnect(); cancelAnimationFrame(needleFrame); timers.forEach((t) => clearTimeout(t)); };
 }

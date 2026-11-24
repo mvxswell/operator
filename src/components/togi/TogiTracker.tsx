@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import snapshotJson from "@/data/togiSnapshot.json";
-import { isTogiData, loadTogiData, TOGI_PROFILE_URL, togiTip, type TogiData, type TogiSource } from "@/lib/togi";
+import { isRobinhoodStats, isTogiData, isTogiPortfolio, loadTogiData, TOGI_PROFILE_URL, togiTip, type TogiData, type TogiSource } from "@/lib/togi";
 import { fmtDate, renderTogi } from "./renderTogi";
 
 if (!isTogiData(snapshotJson)) throw new Error("Togi Tracker snapshot does not match the expected shape");
@@ -23,7 +23,7 @@ function Mark({ small = false }: { small?: boolean }) {
 /** The tracker markup. Data-driven parts are filled by renderTogi once the feed (or snapshot) loads. */
 export function TogiTracker() {
   const root = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip> } | null>(null);
+  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip>; hasPortfolio: boolean; hasRobinhood: boolean } | null>(null);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
@@ -31,7 +31,7 @@ export function TogiTracker() {
     loadTogiData(SNAPSHOT).then(({ data, source }) => {
       if (cancelled || !root.current) return;
       cleanup = renderTogi(root.current, data);
-      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta) });
+      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta), hasPortfolio: isTogiPortfolio(data.portfolio), hasRobinhood: isRobinhoodStats(data.robinhood_stats) });
     });
     return () => { cancelled = true; cleanup?.(); };
   }, []);
@@ -44,7 +44,8 @@ export function TogiTracker() {
             <Mark />
             <h1 className="tg-title">Togi Tracker</h1>
             <span className="chip">Unofficial</span>
-            <Link className="navcta" href="/operator/">Take the test →</Link>
+            <div className="feed-status" role="status"><span className="feed-dot" />{state ? state.source === "live" ? "Live feed connected" : "Saved snapshot" : "Connecting to feed…"}<span className="feed-date">{state ? `Updated ${fmtDate(state.asOf)}` : "Public posts, tracked"}</span></div>
+            <Link className="navcta" href="/operator/">Take the Operator Test</Link>
           </header>
 
           {/* Shown only when the feed has an https x.com / twitter.com tip_url. The note is plain text. */}
@@ -57,19 +58,25 @@ export function TogiTracker() {
             </div>
           )}
 
-          <nav className="tg-jump" aria-label="Tracker sections"><a href="#overview">Overview</a><a href="#accounts">Accounts</a><a href="#trades">Trade history</a><a href="#extras">Degen zone</a></nav>
-          <div className="tg-intro" id="overview"><p className="eyebrow">The road to $10 million</p><h2>Challenge overview</h2><p className="sub">Publicly posted account values, trades and receipts.</p></div>
+          <nav className="tg-jump" aria-label="Tracker sections">
+            <a href="#overview">Dashboard</a>
+            {state?.hasPortfolio && <a href="#portfolio">Portfolio</a>}
+            <a href="#trades">Trade history</a>
+            {state?.hasRobinhood && <a href="#robinhood-stats">Robinhood stats</a>}
+            <a href="#extras">Degen zone</a><a href="#side-quests">Side quests</a>
+          </nav>
+          <div className="tg-intro" id="overview"><div><p className="eyebrow">The $10M challenge</p><h2>Big trades. Bigger ambitions.</h2></div><p className="sub">Every W. Every L. Every receipt.</p></div>
           <div className="tg-lead" id="accounts">
             <section className="panel panel-depth meter" aria-label="Road to $10M">
               <div className="meter-top">
                 <div>
-                  <p className="lbl">Currently at · latest posted value</p>
+                  <p className="lbl">Challenge account · latest posted value</p>
                   <p className="score tabular" id="cur">$–</p>
                   <a className="src" id="cursrc" href={TOGI_PROFILE_URL} {...ext}></a>
                 </div>
                 <span className="badge" id="pctbadge">–</span>
               </div>
-              <div className="road">
+              <div className="road"><div className="road-heading"><span>The road to $10,000,000</span><span aria-hidden="true">🏁</span></div>
                 <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $10M">
                   <div className="fill" id="fill"><span className="rider" aria-hidden="true">🚀</span></div>
                 </div>
@@ -77,14 +84,14 @@ export function TogiTracker() {
               </div>
               <div className="meter-foot">
                 <div><p className="lbl">To go</p><p className="mono tabular" id="togo">–</p></div>
-                <div><p className="lbl">From his start</p><p className="mono tabular" id="fromstart">–</p></div>
-                <div><p className="lbl">Needs</p><p className="mono tabular acc" id="mult">–</p></div>
+                <div><p className="lbl">Progress from start</p><p className="mono tabular" id="fromstart">–</p></div>
+                <div><p className="lbl">Multiple needed</p><p className="mono tabular acc" id="mult">–</p></div>
               </div>
-              <p className="caveat" id="caveat"></p>
+              <details className="account-context"><summary>Account context &amp; important caveats</summary><p className="caveat" id="caveat"></p></details>
             </section>
 
             <section className="panel panel-depth chartp">
-              <div className="sechead"><div><p className="eyebrow">Receipts</p><h2>Account value over time</h2></div>
+              <div className="sechead"><div><p className="eyebrow">Account history</p><h2>The journey so far</h2></div><span className="chart-period">All posted history</span>
                 <div className="legend"><span><i className="dot g"></i>Challenge (Fidelity shares)</span><span><i className="dot w"></i>Options (Robinhood)</span></div></div>
               <div id="chart" className="chart"></div>
               <p className="fine">Every dot is a screenshot or number he posted. Tap one to open the post. Money moved between accounts on Nov 2, so the two lines aren&apos;t one running total.</p>
@@ -102,6 +109,39 @@ export function TogiTracker() {
 
         </div>
 
+        <div className="tg-intro compact" id="extras"><div><p className="eyebrow">Off the terminal</p><h2>A little due degeneracy.</h2></div><p className="sub">The score means nothing. The receipts are real.</p></div>
+          <section className="grid2">
+            <div className="panel panel-depth degen" id="degen-panel">
+              <div className="phead">
+                <div><p className="lbl">Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
+                <span className="badge joke">Joke formula</span>
+              </div>
+              <div className="degen-gauge-wrap" id="degen-gauge"></div>
+              <details className="degen-breakdown" open><summary>How cooked? See the breakdown</summary><div className="bars" id="degenbars"></div>
+              <p className="fine" id="degenfine"></p></details>
+              <p className="degen-latest" id="degenlatest"></p>
+            </div>
+
+            <div className="panel panel-depth odds">
+              <div className="phead">
+                <div><p className="lbl">Magic 8-Ball</p><p className="eight" id="eight">🎱</p></div>
+                <span className="badge joke">Joke · not a probability</span>
+              </div>
+              <p className="answer" id="answer" aria-live="polite">Will he hit $10M?</p>
+              <button className="btn primary sm" id="shake" type="button">Shake it</button>
+              <div className="realmath">
+                <p className="lbl">The real math</p>
+                <p><b className="mono tabular" id="mult2">–</b> from his latest posted value, or about <b className="mono tabular" id="dbl">–</b> doublings.</p>
+              </div>
+            </div>
+        <section className="panel panel-depth side" id="side-quests">
+          <p className="eyebrow">Side quests</p>
+          <h2>Not counted in the challenge</h2>
+          <ul id="side"></ul>
+        </section>
+
+          </section>
+
         {/* Optional: filled from the feed's `portfolio` object, stays hidden without one. */}
         <section id="portfolio" className="panel panel-depth portfolio" aria-label="Portfolio" hidden>
           <div id="pf"></div>
@@ -117,35 +157,10 @@ export function TogiTracker() {
               <button type="button" data-f="loss">L&apos;s</button>
               <button type="button" data-f="other">Other</button>
             </div></div>
-          <div id="timeline" className="timeline"></div>
+          <div className="trade-columns" aria-hidden="true"><span>Position / outcome</span><span>Trade notes &amp; receipts</span><span>Reported P&amp;L</span></div>
+          <div id="timeline" className="timeline" aria-live="polite"></div>
         </section>
 
-        <div className="tg-intro" id="extras"><p className="eyebrow">The fun stuff</p><h2>Degen zone</h2></div>
-          <section className="grid2">
-            <div className="panel panel-depth degen" id="degen-panel">
-              <div className="phead">
-                <div><p className="lbl">Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
-                <span className="badge joke">Joke formula</span>
-              </div>
-              <div className="degen-gauge-wrap" id="degen-gauge"></div>
-              <div className="bars" id="degenbars"></div>
-              <p className="degen-latest" id="degenlatest"></p>
-              <p className="fine" id="degenfine"></p>
-            </div>
-
-            <div className="panel panel-depth odds">
-              <div className="phead">
-                <div><p className="lbl">Odds he hits $10M</p><p className="eight" id="eight">🎱</p></div>
-                <span className="badge joke">Joke · not a probability</span>
-              </div>
-              <p className="answer" id="answer" aria-live="polite">Shake the Magic 8-Ball.</p>
-              <button className="btn primary sm" id="shake" type="button">Shake it</button>
-              <div className="realmath">
-                <p className="lbl">The real math</p>
-                <p><b className="mono tabular" id="mult2">–</b> from his latest posted value, or about <b className="mono tabular" id="dbl">–</b> doublings.</p>
-              </div>
-            </div>
-          </section>
           <section className="twist brand-card rise d1">
             <div className="topline"></div>
             <div className="twist-l">
@@ -164,12 +179,6 @@ export function TogiTracker() {
             <a className="btn ghost" id="latestbtn" href={TOGI_PROFILE_URL} {...ext}>Latest post ↗</a>
           </div>
           <p className="meta" id="herometa"></p>
-        </section>
-
-        <section className="panel panel-depth side">
-          <p className="eyebrow">Side quests</p>
-          <h2>Not counted in the challenge</h2>
-          <ul id="side"></ul>
         </section>
 
         <section className="brand-hero cta">

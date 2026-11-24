@@ -135,6 +135,6 @@ export function renderPortfolioHtml(P: TogiPortfolio, today: Date = new Date()):
     <div><div class="pf-thead"><span>Position</span><span>Value · % of acct</span><span>Unrealized</span></div><div class="pf-rows">${rows}</div></div>
   </div>
   <div class="pf-sub"><div class="pf-box">${accounts}</div>${closed ? `<div class="pf-box">${closed}</div>` : ""}</div>
-  ${say ? `<div class="pf-say">${say}</div>` : ""}
+  ${say ? `<details class="pf-say"><summary>Portfolio commentary <span>${(P.commentary ?? []).length} public updates</span></summary>${say}</details>` : ""}
   <p class="fine">${esc(P.method ?? "")} “derived” = worked out from his screenshots. Anything older than ${days} days without an update is marked “Last known”.</p>`;
 }
