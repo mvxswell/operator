@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import snapshotJson from "@/data/togiSnapshot.json";
-import { isTogiData, loadTogiData, TOGI_PROFILE_URL, togiTip, type TogiData, type TogiSource } from "@/lib/togi";
+import { isRobinhoodStats, isTogiData, isTogiPortfolio, loadTogiData, TOGI_PROFILE_URL, togiTip, type TogiData, type TogiSource } from "@/lib/togi";
 import { fmtDate, renderTogi } from "./renderTogi";
 
 if (!isTogiData(snapshotJson)) throw new Error("Togi Tracker snapshot does not match the expected shape");
@@ -23,7 +23,7 @@ function Mark({ small = false }: { small?: boolean }) {
 /** The tracker markup. Data-driven parts are filled by renderTogi once the feed (or snapshot) loads. */
 export function TogiTracker() {
   const root = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip> } | null>(null);
+  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip>; hasPortfolio: boolean; hasRobinhood: boolean } | null>(null);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
@@ -31,7 +31,7 @@ export function TogiTracker() {
     loadTogiData(SNAPSHOT).then(({ data, source }) => {
       if (cancelled || !root.current) return;
       cleanup = renderTogi(root.current, data);
-      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta) });
+      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta), hasPortfolio: isTogiPortfolio(data.portfolio), hasRobinhood: isRobinhoodStats(data.robinhood_stats) });
     });
     return () => { cancelled = true; cleanup?.(); };
   }, []);
@@ -44,57 +44,127 @@ export function TogiTracker() {
             <Mark />
             <h1 className="tg-title">Togi Tracker</h1>
             <span className="chip">Unofficial</span>
-            <Link className="navcta" href="/operator/">Take the test →</Link>
+          <nav className="tg-jump" aria-label="Tracker sections">
+            <a href="#overview">Dashboard</a>
+            {state?.hasPortfolio && <a href="#portfolio">Portfolio</a>}
+            <a href="#trades">Trade history</a>
+            {state?.hasRobinhood && <a href="#robinhood-stats">Robinhood stats</a>}
+            <a href="#extras">Degen zone</a><a href="#side-quests">Side quests</a>
+          </nav>
+            <div className="feed-status" role="status"><span className="feed-dot" />{state ? state.source === "live" ? "Live feed connected" : "Saved snapshot" : "Connecting to feed…"}<span className="feed-date">{state ? `Updated ${fmtDate(state.asOf)}` : "Public posts, tracked"}</span></div>
+            <Link className="navcta" href="/operator/">Take the Operator Test</Link>
           </header>
 
-          {/* Shown only when the feed has an https x.com / twitter.com tip_url. The note is plain text. */}
-          {state?.tip && (
-            <div className="tg-tip">
-              <a className="tip-btn" href={state.tip.url} {...ext}>
-                <span aria-hidden="true">💸</span> Tip Togi
-              </a>
-              {state.tip.note && <p className="tip-note">{state.tip.note}</p>}
-            </div>
-          )}
-
-          <div className="tg-lead">
+          <div id="overview" className="overview-anchor" />
+          <div className="tg-lead" id="accounts">
             <section className="panel panel-depth meter" aria-label="Road to $10M">
               <div className="meter-top">
                 <div>
-                  <p className="lbl">Currently at · latest posted value</p>
-                  <p className="score tabular" id="cur">$–</p>
+                  <p className="lbl">The $10M challenge</p>
+                  <p className="score tabular" id="cur">$–</p><p id="hero-day" className="hero-day"></p>
                   <a className="src" id="cursrc" href={TOGI_PROFILE_URL} {...ext}></a>
                 </div>
                 <span className="badge" id="pctbadge">–</span>
               </div>
-              <div className="road">
+              <div className="meter-foot">
+                <div><p className="lbl">To go</p><p className="mono tabular" id="togo">–</p></div>
+                <div><p className="lbl">Progress from start</p><p className="mono tabular" id="fromstart">–</p></div>
+                <div><p className="lbl">Multiple needed</p><p className="mono tabular acc" id="mult">–</p></div>
+              </div>
+              <details className="account-context"><summary>Account context &amp; important caveats</summary><p className="caveat" id="caveat"></p></details>
+            </section>
+
+            <section className="panel panel-depth chartp">
+              <div className="chart-toolbar">
+                <div className="chart-ranges" role="group" aria-label="Chart date range">
+                  <button type="button" data-range="7" aria-pressed="false">1W</button>
+                  <button type="button" data-range="30" aria-pressed="false">1M</button>
+                  <button type="button" data-range="all" aria-pressed="true">ALL</button>
+                </div>
+                <div className="chart-accounts" role="group" aria-label="Chart account">
+                  <button type="button" data-account="challenge" aria-pressed="true">Fidelity</button>
+                  <button type="button" data-account="options" aria-pressed="false">Robinhood</button>
+                </div>
+              </div>
+              <div className="chart-heading"><h2>Account performance</h2><span id="chart-context">Posted account values</span></div>
+              <div className="chart-readout" id="chart-readout" aria-live="polite"></div>
+              <div id="chart" className="chart"></div>
+              <p className="fine">Posted values, not a live market chart. Hover or focus a point for its receipt. Accounts are shown separately; money moved between them.</p>
+            </section>
+
+          </div>
+
+
+
+        </div>
+
+        <section className="grid2" id="extras">
+            <div className="panel challenge-progress"><h2><span aria-hidden="true">◎</span> $10,000,000 challenge</h2>              <div className="road"><div className="road-heading"><span>The road to $10,000,000</span><span aria-hidden="true">🏁</span></div>
                 <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $10M">
                   <div className="fill" id="fill"><span className="rider" aria-hidden="true">🚀</span></div>
                 </div>
                 <div className="ms" id="milestones"></div>
               </div>
-              <div className="meter-foot">
-                <div><p className="lbl">To go</p><p className="mono tabular" id="togo">–</p></div>
-                <div><p className="lbl">From his start</p><p className="mono tabular" id="fromstart">–</p></div>
-                <div><p className="lbl">Needs</p><p className="mono tabular acc" id="mult">–</p></div>
+</div>
+            <div className="panel panel-depth degen" id="degen-panel">
+              <div className="phead">
+                <div><p className="lbl">🔥 Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
+                <span className="badge joke">Joke formula</span>
               </div>
-              <p className="caveat" id="caveat"></p>
-            </section>
+              <div className="degen-strip" id="degen-strip" aria-hidden="true"></div>
+              <details className="degen-breakdown"><summary>Show the joke formula</summary><div className="degen-gauge-wrap" id="degen-gauge"></div><div className="bars" id="degenbars"></div>
+              <p className="fine" id="degenfine"></p><p className="degen-latest" id="degenlatest"></p></details>
+            </div>
 
-            <section className="panel panel-depth chartp">
-              <div className="sechead"><div><p className="eyebrow">Receipts</p><h2>Account value over time</h2></div>
-                <div className="legend"><span><i className="dot g"></i>Challenge (Fidelity shares)</span><span><i className="dot w"></i>Options (Robinhood)</span></div></div>
-              <div id="chart" className="chart"></div>
-              <p className="fine">Every dot is a screenshot or number he posted. Tap one to open the post. Money moved between accounts on Nov 2, so the two lines aren&apos;t one running total.</p>
-            </section>
+            <div className="panel panel-depth odds">
+              <div className="phead">
+                <div><p className="lbl">Magic 8-Ball</p><p className="eight" id="eight" aria-hidden="true"><span>8</span></p></div>
+                <span className="badge joke">Joke · not a probability</span>
+              </div>
+              <p className="answer" id="answer" aria-live="polite">Will he hit $10M?</p>
+              <button className="btn primary sm" id="shake" type="button">Shake it</button>
+              <details className="realmath">
+                <summary>The real math</summary>
+                <p><b className="mono tabular" id="mult2">–</b> from his latest posted value, or about <b className="mono tabular" id="dbl">–</b> doublings.</p>
+              </details>
+            </div>
+          </section>
 
+        <div className="dashboard-panels">
+          <section className="panel overview-portfolio" id="portfolio-preview" aria-label="Portfolio summary" hidden></section>
+          <section className="panel overview-trades" aria-label="Recent trades"><div className="summary-head"><h2><span aria-hidden="true">⇄</span> Recent trades</h2><a href="#trades">View all</a></div><div id="recent-trades"></div></section>
+        <section className="panel panel-depth side" id="side-quests">
+          <h2><span aria-hidden="true">♜</span> Side quests</h2><p className="side-note">Not counted in the challenge</p>
+          <ul id="side"></ul>
+        </section>
+
+        </div>
+        <section className="stats" id="stats" aria-label="Stats from known data"></section>
             {/* Filled from the feed's `robinhood_stats`. Stays hidden when that key is missing. */}
             <section id="robinhood-stats" className="panel panel-depth rh-stats" aria-label="Robinhood (options) account" hidden>
               <div className="sechead"><div><p className="eyebrow">Options account</p><h2>Robinhood (options) account</h2></div></div>
               <div className="rh-kpis" id="rh-kpis"></div>
               <p className="caveat" id="rh-note"></p>
             </section>
-          </div>
+
+        {/* Optional: filled from the feed's `portfolio` object, stays hidden without one. */}
+        <section id="portfolio" className="panel panel-depth portfolio" aria-label="Portfolio" hidden>
+          <div id="pf"></div>
+        </section>
+
+        <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
+
+        <section id="trades" className="trades">
+          <div className="sechead"><div><p className="eyebrow">The tape</p><h2>Every trade he&apos;s posted</h2></div>
+            <div className="seg" role="group" aria-label="Filter trades">
+              <button type="button" data-f="all" className="on">All</button>
+              <button type="button" data-f="win">W&apos;s</button>
+              <button type="button" data-f="loss">L&apos;s</button>
+              <button type="button" data-f="other">Other</button>
+            </div></div>
+          <div className="trade-columns" aria-hidden="true"><span>Position / outcome</span><span>Trade notes &amp; receipts</span><span>Reported P&amp;L</span></div>
+          <div id="timeline" className="timeline" aria-live="polite"></div>
+        </section>
 
           <section className="twist brand-card rise d1">
             <div className="topline"></div>
@@ -105,42 +175,6 @@ export function TogiTracker() {
             <p className="twist-q">“no longer 3ms goal. I&apos;m going for 10ms now.” <a id="gcsrc" href={TOGI_PROFILE_URL} {...ext}>post ↗</a></p>
           </section>
 
-          <section className="stats" id="stats" aria-label="Stats from known data"></section>
-
-          <section className="grid2">
-            <div className="panel panel-depth degen" id="degen-panel">
-              <div className="phead">
-                <div><p className="lbl">Degen meter</p><p className="score tabular" id="degen">0</p><p className="sub">out of 100 · <span id="degenverdict"></span></p></div>
-                <span className="badge joke">Joke formula</span>
-              </div>
-              <div className="degen-gauge-wrap" id="degen-gauge"></div>
-              <div className="bars" id="degenbars"></div>
-              <p className="degen-latest" id="degenlatest"></p>
-              <p className="fine" id="degenfine"></p>
-            </div>
-
-            <div className="panel panel-depth odds">
-              <div className="phead">
-                <div><p className="lbl">Odds he hits $10M</p><p className="eight" id="eight">🎱</p></div>
-                <span className="badge joke">Joke · not a probability</span>
-              </div>
-              <p className="answer" id="answer" aria-live="polite">Shake the Magic 8-Ball.</p>
-              <button className="btn primary sm" id="shake" type="button">Shake it</button>
-              <div className="realmath">
-                <p className="lbl">The real math</p>
-                <p><b className="mono tabular" id="mult2">–</b> from his latest posted value, or about <b className="mono tabular" id="dbl">–</b> doublings.</p>
-              </div>
-            </div>
-          </section>
-        </div>
-
-        {/* Optional: filled from the feed's `portfolio` object, stays hidden without one. */}
-        <section id="portfolio" className="panel panel-depth portfolio" aria-label="Portfolio" hidden>
-          <div id="pf"></div>
-        </section>
-
-        <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
-
         <section className="brand-hero hero solo">
           <p className="eyebrow">Stock market challenge · Fan tracker</p>
           <h2 className="hero-h">Can Togi turn <span className="acc">$950K</span> into <span className="acc">$10M</span>?</h2>
@@ -150,23 +184,6 @@ export function TogiTracker() {
             <a className="btn ghost" id="latestbtn" href={TOGI_PROFILE_URL} {...ext}>Latest post ↗</a>
           </div>
           <p className="meta" id="herometa"></p>
-        </section>
-
-        <section id="trades" className="trades">
-          <div className="sechead"><div><p className="eyebrow">The tape</p><h2>Every trade he&apos;s posted</h2></div>
-            <div className="seg" role="group" aria-label="Filter trades">
-              <button type="button" data-f="all" className="on">All</button>
-              <button type="button" data-f="win">W&apos;s</button>
-              <button type="button" data-f="loss">L&apos;s</button>
-              <button type="button" data-f="other">Other</button>
-            </div></div>
-          <div id="timeline" className="timeline"></div>
-        </section>
-
-        <section className="panel panel-depth side">
-          <p className="eyebrow">Side quests</p>
-          <h2>Not counted in the challenge</h2>
-          <ul id="side"></ul>
         </section>
 
         <section className="brand-hero cta">
@@ -181,6 +198,17 @@ export function TogiTracker() {
       </div>
 
       <footer className="wrap foot">
+          {/* Shown only when the feed has an https x.com / twitter.com tip_url. The note is plain text. */}
+          {state?.tip && (
+            <div className="tg-tip">
+              <a className="tip-btn" href={state.tip.url} {...ext}>
+                <span aria-hidden="true">💸</span> Tip Togi
+              </a>
+              {state.tip.note && <p className="tip-note">{state.tip.note}</p>}
+            </div>
+          )}
+
+
         <p><b>Unofficial fan tracker.</b> Not affiliated with, endorsed by, or run by Togi / Shane Stoffer. Every number comes from his public posts on X (<a href={TOGI_PROFILE_URL} {...ext}>@ShaneStoffer</a>), and every trade links its source. If he didn&apos;t post a number, it says &quot;not disclosed&quot;. Some figures may be partial or out of date.</p>
         <p><b>Not financial advice.</b> Please don&apos;t copy anyone&apos;s options trades because of a dream. 0DTE contracts can go to zero by lunch.</p>
         <div className="footrow">

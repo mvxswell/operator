@@ -1,0 +1,146 @@
+{
+  "origin": "http://127.0.0.1:3000",
+  "livePayload": {
+    "updated": "2026-11-23",
+    "trades": 55,
+    "history": 41
+  },
+  "checks": [
+    {
+      "rendererParity": {
+        "differences": [],
+        "missingLinks": [],
+        "tradeChanges": [],
+        "originalSourceLinks": 105,
+        "redesignSourceLinks": 105
+      }
+    },
+    {
+      "viewport": "small-mobile",
+      "width": 320,
+      "scrollWidth": 320,
+      "chartWidth": 254,
+      "chartViewBox": 254,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "viewport": "mobile",
+      "width": 390,
+      "scrollWidth": 390,
+      "chartWidth": 324,
+      "chartViewBox": 324,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "viewport": "tablet-portrait",
+      "width": 768,
+      "scrollWidth": 768,
+      "chartWidth": 309,
+      "chartViewBox": 309,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "viewport": "tablet",
+      "width": 834,
+      "scrollWidth": 834,
+      "chartWidth": 342,
+      "chartViewBox": 342,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "viewport": "tablet-landscape",
+      "width": 1024,
+      "scrollWidth": 1024,
+      "chartWidth": 437,
+      "chartViewBox": 437,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "viewport": "desktop",
+      "width": 1440,
+      "scrollWidth": 1440,
+      "chartWidth": 679,
+      "chartViewBox": 679,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "viewport": "wide-desktop",
+      "width": 1920,
+      "scrollWidth": 1920,
+      "chartWidth": 784,
+      "chartViewBox": 784,
+      "trades": 55,
+      "points": 41,
+      "overflow": []
+    },
+    {
+      "chartAccount": "options",
+      "range": "7",
+      "shown": 11
+    },
+    {
+      "chartAccount": "options",
+      "range": "30",
+      "shown": 19
+    },
+    {
+      "chartAccount": "options",
+      "range": "all",
+      "shown": 33
+    },
+    {
+      "chartAccount": "challenge",
+      "range": "7",
+      "shown": 2
+    },
+    {
+      "chartAccount": "challenge",
+      "range": "30",
+      "shown": 5
+    },
+    {
+      "chartAccount": "challenge",
+      "range": "all",
+      "shown": 8
+    },
+    "Source readout and crosshair respond to keyboard focus; portfolio and recent-trade previews match live records",
+    {
+      "filter": "win",
+      "count": 9
+    },
+    {
+      "filter": "loss",
+      "count": 7
+    },
+    {
+      "filter": "other",
+      "count": 39
+    },
+    {
+      "filter": "all",
+      "count": 55
+    },
+    "8-Ball gives new answers; breakdown, full live caveats and all 39 commentary posts expand",
+    "Missing optional portfolio / Robinhood sections and navigation hide cleanly",
+    "Single posted value renders correctly for each account without fabricated history or invalid coordinates",
+    {
+      "offlineFallback": 12
+    },
+    "Malformed live response falls back to snapshot",
+    "Client navigation to Operator Test cleans up tracker and chart observer"
+  ],
+  "errors": [],
+  "passed": true
+}

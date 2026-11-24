@@ -56,6 +56,16 @@ function shown(p: TogiPosition) {
 
 const GREYS = ["#c9a24a", "#9c8250", "#7a6a4c", "#5d5546", "#4a4640", "#3a3936", "#2e2f31"];
 
+/** Compact overview; values use the same latest-update rules as the complete portfolio. */
+export function renderPortfolioSummaryHtml(P: TogiPortfolio): string {
+  const positions = P.positions.slice().sort((a, b) => shown(b).value - shown(a).value);
+  return `<div class="summary-head"><h2><span aria-hidden="true">▤</span> Portfolio <span class="summary-count">(${positions.length})</span></h2><a href="#portfolio">Details</a></div>
+    <table class="summary-table"><thead><tr><th>Symbol</th><th>Value</th><th>Unrealized</th></tr></thead><tbody>${positions.slice(0, 6).map((p) => {
+      const s = shown(p);
+      return `<tr><td><b>${esc(p.ticker)}</b><span>${esc(p.name)}</span></td><td>${usd(s.value)}<span>${s.pct}% of account</span></td><td class="${tone(p.latest_update ? s.unrealized_pct : p.unrealized)}">${p.latest_update ? (s.unrealized_pct == null ? ND : pct(s.unrealized_pct)) : signed(p.unrealized, (v) => short(v))}<span>${p.latest_update ? "unrealized" : pct(p.unrealized_pct)}</span></td></tr>`;
+    }).join("")}</tbody></table><a class="summary-foot" href="#portfolio">All holdings, account details &amp; source posts</a>`;
+}
+
 /** Inner HTML for the Portfolio section. */
 export function renderPortfolioHtml(P: TogiPortfolio, today: Date = new Date()): string {
   const days = P.stale_after_days ?? 7;
@@ -135,6 +145,6 @@ export function renderPortfolioHtml(P: TogiPortfolio, today: Date = new Date()):
     <div><div class="pf-thead"><span>Position</span><span>Value · % of acct</span><span>Unrealized</span></div><div class="pf-rows">${rows}</div></div>
   </div>
   <div class="pf-sub"><div class="pf-box">${accounts}</div>${closed ? `<div class="pf-box">${closed}</div>` : ""}</div>
-  ${say ? `<div class="pf-say">${say}</div>` : ""}
+  ${say ? `<details class="pf-say"><summary>Portfolio commentary <span>${(P.commentary ?? []).length} public updates</span></summary>${say}</details>` : ""}
   <p class="fine">${esc(P.method ?? "")} “derived” = worked out from his screenshots. Anything older than ${days} days without an update is marked “Last known”.</p>`;
 }
