@@ -1,7 +1,7 @@
 :HL["/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/css/049227916d2b4ec0.css","style"]
+:HL["/_next/static/css/fc76cd594aaf529d.css","style"]
 3:[["children",{"s":"__PAGE__","h":160}]]
 2:[["children",{"s":{"n":"category","t":"d","k":"sales","s":[]},"h":96,"c":"$Q3"}]]
 1:[["children",{"s":"skills","h":96,"c":"$Q2"}]]
-0:{"b":"FwR6iIzl1TeFj1dYsLfG9","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
+0:{"b":"73VygEPVdapFmR1_ide2o","t":{"t":{"s":"","h":80,"c":"$Q1"}}}
