@@ -271,6 +271,16 @@
 <priority>0.7</priority>
 </url>
 <url>
+<loc>https://thinkoperator.com/guides/how-to-reduce-employee-turnover/</loc>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
+<loc>https://thinkoperator.com/guides/what-to-do-when-you-lose-your-biggest-customer/</loc>
+<changefreq>monthly</changefreq>
+<priority>0.7</priority>
+</url>
+<url>
 <loc>https://thinkoperator.com/tests/</loc>
 <changefreq>monthly</changefreq>
 <priority>0.8</priority>
