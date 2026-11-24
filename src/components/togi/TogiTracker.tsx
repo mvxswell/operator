@@ -57,7 +57,9 @@ export function TogiTracker() {
             </div>
           )}
 
-          <div className="tg-lead">
+          <nav className="tg-jump" aria-label="Tracker sections"><a href="#overview">Overview</a><a href="#accounts">Accounts</a><a href="#trades">Trade history</a><a href="#extras">Degen zone</a></nav>
+          <div className="tg-intro" id="overview"><p className="eyebrow">The road to $10 million</p><h2>Challenge overview</h2><p className="sub">Publicly posted account values, trades and receipts.</p></div>
+          <div className="tg-lead" id="accounts">
             <section className="panel panel-depth meter" aria-label="Road to $10M">
               <div className="meter-top">
                 <div>
@@ -96,17 +98,29 @@ export function TogiTracker() {
             </section>
           </div>
 
-          <section className="twist brand-card rise d1">
-            <div className="topline"></div>
-            <div className="twist-l">
-              <p className="eyebrow">Plot twist · <span id="gcdate"></span></p>
-              <p className="twist-h"><s>$3,000,000</s> <span className="arrow">→</span> <span className="acc">$10,000,000</span></p>
-            </div>
-            <p className="twist-q">“no longer 3ms goal. I&apos;m going for 10ms now.” <a id="gcsrc" href={TOGI_PROFILE_URL} {...ext}>post ↗</a></p>
-          </section>
-
           <section className="stats" id="stats" aria-label="Stats from known data"></section>
 
+        </div>
+
+        {/* Optional: filled from the feed's `portfolio` object, stays hidden without one. */}
+        <section id="portfolio" className="panel panel-depth portfolio" aria-label="Portfolio" hidden>
+          <div id="pf"></div>
+        </section>
+
+        <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
+
+        <section id="trades" className="trades">
+          <div className="sechead"><div><p className="eyebrow">The tape</p><h2>Every trade he&apos;s posted</h2></div>
+            <div className="seg" role="group" aria-label="Filter trades">
+              <button type="button" data-f="all" className="on">All</button>
+              <button type="button" data-f="win">W&apos;s</button>
+              <button type="button" data-f="loss">L&apos;s</button>
+              <button type="button" data-f="other">Other</button>
+            </div></div>
+          <div id="timeline" className="timeline"></div>
+        </section>
+
+        <div className="tg-intro" id="extras"><p className="eyebrow">The fun stuff</p><h2>Degen zone</h2></div>
           <section className="grid2">
             <div className="panel panel-depth degen" id="degen-panel">
               <div className="phead">
@@ -132,14 +146,14 @@ export function TogiTracker() {
               </div>
             </div>
           </section>
-        </div>
-
-        {/* Optional: filled from the feed's `portfolio` object, stays hidden without one. */}
-        <section id="portfolio" className="panel panel-depth portfolio" aria-label="Portfolio" hidden>
-          <div id="pf"></div>
-        </section>
-
-        <div className="tape" aria-hidden="true"><div className="tape-inner" id="tape"></div></div>
+          <section className="twist brand-card rise d1">
+            <div className="topline"></div>
+            <div className="twist-l">
+              <p className="eyebrow">Plot twist · <span id="gcdate"></span></p>
+              <p className="twist-h"><s>$3,000,000</s> <span className="arrow">→</span> <span className="acc">$10,000,000</span></p>
+            </div>
+            <p className="twist-q">“no longer 3ms goal. I&apos;m going for 10ms now.” <a id="gcsrc" href={TOGI_PROFILE_URL} {...ext}>post ↗</a></p>
+          </section>
 
         <section className="brand-hero hero solo">
           <p className="eyebrow">Stock market challenge · Fan tracker</p>
@@ -150,17 +164,6 @@ export function TogiTracker() {
             <a className="btn ghost" id="latestbtn" href={TOGI_PROFILE_URL} {...ext}>Latest post ↗</a>
           </div>
           <p className="meta" id="herometa"></p>
-        </section>
-
-        <section id="trades" className="trades">
-          <div className="sechead"><div><p className="eyebrow">The tape</p><h2>Every trade he&apos;s posted</h2></div>
-            <div className="seg" role="group" aria-label="Filter trades">
-              <button type="button" data-f="all" className="on">All</button>
-              <button type="button" data-f="win">W&apos;s</button>
-              <button type="button" data-f="loss">L&apos;s</button>
-              <button type="button" data-f="other">Other</button>
-            </div></div>
-          <div id="timeline" className="timeline"></div>
         </section>
 
         <section className="panel panel-depth side">
