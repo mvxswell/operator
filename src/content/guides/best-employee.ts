@@ -94,7 +94,7 @@ const guide: Guide = {
     },
     {
       type: "p",
-      text: "Tell the team the path within a week. People fill a silence with rumors, and the best remaining people update their own plans while you \"think about it.\" You can still be sad they left. The business needs an owner for the work anyway.",
+      text: "Tell the team the path within a week. People fill a silence with rumors, and the best remaining people update their own plans while you \"think about it.\" You can still be sad they left. The business needs an owner for the work anyway. Also see [How to Reduce Employee Turnover](/guides/how-to-reduce-employee-turnover/).",
     },
     { type: "h2", text: "Try the call" },
     {
