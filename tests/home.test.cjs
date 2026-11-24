@@ -64,7 +64,7 @@ test("homepage is one static design, with the approved copy and section order", 
     assert.ok(next > at, heading);
     at = next;
   }
-  assert.equal(GUIDES.length, 35);
+  assert.equal(GUIDES.length, 37);
   assert.equal(CASES.length, 48);
   assert.equal(BANK_STATS.standard, 96);
   assert.equal(CATEGORIES.length, 8);
@@ -167,7 +167,7 @@ test("built homepage HTML contains the hero and sections", { skip: !fs.existsSyn
   for (const heading of ["What this is", "Start here", "Practice the judgment", "Live trackers", "One decision, one live number, one playbook.", "Built by Maxwell", "How to Find the Bottleneck in Your Business", "How to Decide Which Product to Shut Down"]) {
     assert.ok(html.includes(heading), heading);
   }
-  assert.match(html, /35 guides · 48 cases · 96 scenarios · 8 skills/);
+  assert.match(html, /37 guides · 48 cases · 96 scenarios · 8 skills/);
   assert.match(html, /class="hh-h1"/);
   assert.match(html, /Take the Operator Test/);
   assert.match(html, /Browse the playbooks/);

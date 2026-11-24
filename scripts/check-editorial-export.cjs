@@ -73,4 +73,5 @@ while (pending.length) {
   }
 }
 for (const route of pages) assert.ok(visited.has(route), `${route}: reachable from home through real anchors`);
-console.log(`PASS: ${pages.length} editorial pages with unique metadata, canonicals, OG PNGs, sitemap and llms entries; 46 Article graphs; all 32 new URLs reachable without JavaScript.`);
+const articlePages = pages.filter((route) => route !== "/tests/" && route !== "/guides/");
+console.log(`PASS: ${pages.length} editorial pages with unique metadata, canonicals, OG PNGs, sitemap and llms entries; ${articlePages.length} Article graphs; all ${pages.length} editorial URLs reachable without JavaScript.`);
