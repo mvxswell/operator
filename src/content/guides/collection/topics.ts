@@ -9,9 +9,9 @@ export const GUIDE_TOPICS = [
     "how-to-find-the-bottleneck", "how-to-prioritize", "how-to-create-sops", "how-to-scale-operations", "how-to-run-a-weekly-operating-review", "how-to-choose-business-kpis", "how-to-fix-missed-deadlines", "how-to-plan-capacity-before-taking-on-more-work",
   ] },
   { id: "strategy", name: "Strategy", description: "Choose the market, offer, and next commitment with evidence and explicit tradeoffs.", slugs: [
-    "why-is-my-business-not-growing", "why-are-sales-down", "how-to-get-more-customers", "should-you-expand", "how-to-decide-which-product-to-shut-down", "how-to-test-a-new-market-before-expanding", "how-to-set-quarterly-business-priorities", "how-to-decide-whether-to-discount-a-deal",
+    "why-is-my-business-not-growing", "why-are-sales-down", "how-to-get-more-customers", "should-you-expand", "how-to-decide-which-product-to-shut-down", "how-to-test-a-new-market-before-expanding", "how-to-set-quarterly-business-priorities", "how-to-decide-whether-to-discount-a-deal", "what-to-do-when-you-lose-your-biggest-customer",
   ] },
   { id: "people", name: "People", description: "Move decisions to the right owner and make feedback and accountability useful.", slugs: [
-    "what-to-do-when-your-best-employee-quits", "how-to-delegate", "how-to-handle-an-underperforming-manager", "how-to-stop-every-decision-coming-to-the-ceo", "how-to-resolve-conflict-between-sales-and-operations", "how-to-run-effective-one-on-one-meetings",
+    "what-to-do-when-your-best-employee-quits", "how-to-reduce-employee-turnover", "how-to-delegate", "how-to-handle-an-underperforming-manager", "how-to-stop-every-decision-coming-to-the-ceo", "how-to-resolve-conflict-between-sales-and-operations", "how-to-run-effective-one-on-one-meetings",
   ] },
 ] as const;

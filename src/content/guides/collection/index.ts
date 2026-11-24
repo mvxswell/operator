@@ -22,10 +22,14 @@ import underperformingManager from "../underperforming-manager";
 import ceoDecisionBottleneck from "../ceo-decision-bottleneck";
 import salesOpsConflict from "../sales-ops-conflict";
 import oneOnOnes from "../one-on-ones";
+import reduceTurnover from "../reduce-turnover";
+import loseBiggestCustomer from "../lose-biggest-customer";
 
 export type { Guide } from "../types";
 export const NEW_GUIDES: Guide[] = [weeklyReview, businessKpis, missedDeadlines, capacityPlanning, firstOpsManager, hiringScorecard, hireOrOutsource, onboardManager, sixMonthRunway, cashForecast, lateCustomer, unprofitableCustomer, shutProduct, marketTest, quarterlyPriorities, discountDeal, underperformingManager, ceoDecisionBottleneck, salesOpsConflict, oneOnOnes];
-export const GUIDES: Guide[] = [...ORIGINAL_GUIDES, ...NEW_GUIDES];
+/** November 2026 guides. Kept out of NEW_GUIDES so the October batch keeps its dates. */
+export const LATEST_GUIDES: Guide[] = [reduceTurnover, loseBiggestCustomer];
+export const GUIDES: Guide[] = [...ORIGINAL_GUIDES, ...NEW_GUIDES, ...LATEST_GUIDES];
 
 export function getGuide(slug: string): Guide | null {
   return GUIDES.find((guide) => guide.slug === slug) ?? null;

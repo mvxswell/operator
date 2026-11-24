@@ -6,7 +6,7 @@ The site is a static export. Assessment scores and practice history are calculat
 
 ## Start here
 
-- [Guide hub](https://thinkoperator.com/guides/): 35 practical frameworks grouped into hiring, finance, ops cadence, strategy, and people.
+- [Guide hub](https://thinkoperator.com/guides/): 37 practical frameworks grouped into hiring, finance, ops cadence, strategy, and people.
 - [Test hub](https://thinkoperator.com/tests/): what each existing quiz and scenario set tests.
 - [Daily Decision](https://thinkoperator.com/daily/): one dated prompt and a browser-local streak.
 - [Built by Maxwell](https://thinkoperator.com/about/): founder and builder. Think Operator is the business brand.
@@ -62,6 +62,8 @@ The site is a static export. Assessment scores and practice history are calculat
 - [How to Stop Every Decision Coming to the CEO](https://thinkoperator.com/guides/how-to-stop-every-decision-coming-to-the-ceo/): Stop decisions returning to the CEO. Map the approval queue, assign decision rights, define escalation rules, and review outcomes without taking work back.
 - [How to Resolve Conflict Between Sales and Operations](https://thinkoperator.com/guides/how-to-resolve-conflict-between-sales-and-operations/): Resolve sales and operations conflict by tracing promises, capacity, and handoffs. Set an acceptance rule and make exceptions visible before a deal is sold.
 - [How to Run Effective One-on-One Meetings](https://thinkoperator.com/guides/how-to-run-effective-one-on-one-meetings/): Run one-on-one meetings that unblock decisions and build judgment. Use the employee's agenda, specific feedback, commitments, and a reliable follow-up loop.
+- [How to Reduce Employee Turnover](https://thinkoperator.com/guides/how-to-reduce-employee-turnover/): A team-wide retention system: find why people actually leave, fix the job and the load, and talk with the people you want to keep before a resignation lands.
+- [What to Do When You Lose Your Biggest Customer](https://thinkoperator.com/guides/what-to-do-when-you-lose-your-biggest-customer/): When a big account leaves, protect cash first, find out why they left, and rebuild a pipeline that does not depend on one customer. Skip panic discounts.
 
 ## Site information
 
