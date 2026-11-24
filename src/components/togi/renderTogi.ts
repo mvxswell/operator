@@ -2,7 +2,7 @@
 // Runs only in the browser, after the data has loaded. Every string from the feed is
 // HTML-escaped and every link goes through safeXUrl, since the feed is third-party data.
 import { isRobinhoodStats, isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "../../lib/togi";
-import { renderPortfolioHtml } from "./portfolio";
+import { renderPortfolioHtml, renderPortfolioSummaryHtml } from "./portfolio";
 import { renderRobinhoodHtml } from "./robinhood";
 
 const usd = (n: number, dp = 0) =>
@@ -82,6 +82,10 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
 
   // ---- Meter ----
   const cur = m.latest_value, goal = m.goal, start = m.starting_value;
+  if (isTogiPortfolio(D.portfolio)) {
+    const account = D.portfolio.accounts.find((a) => a.status === "current") ?? D.portfolio.accounts[0];
+    $("hero-day").innerHTML = typeof account.day_change === "number" ? `<span class="${account.day_change >= 0 ? "pos" : "neg"}">${account.day_change >= 0 ? "+" : ""}${usd(account.day_change, 2)}${typeof account.day_change_pct === "number" ? ` (${account.day_change_pct > 0 ? "+" : ""}${account.day_change_pct}%)` : ""}</span><span>Posted ${fmtDate(account.as_of)}</span>` : "";
+  }
   const pct = Math.min(100, (cur / goal) * 100);
   count($("cur"), cur, (v) => usd(v), start);
   count($("pctbadge"), pct, (v) => v.toFixed(1) + "% to $10M");
@@ -135,6 +139,7 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const nCasino = D.side_quests.filter((s) => /shuffle|slot|bet|units/i.test(s.text)).length;
   const parts: [string, number, number][] = [["Options plays", nOpt, 10], ["0DTE lottery tickets", n0, 15], ['"Full port" moments', nFP, 10], ["Dream-based theses", nDream, 5], ["Casino & sports side quests", nCasino, 5]];
   const raw = parts.reduce((a, p) => a + p[1] * p[2], 0), degen = Math.min(100, raw);
+  $("degen-strip").innerHTML = Array.from({ length: 20 }, (_, i) => `<i${i < degen / 5 ? ' class="lit"' : ""}></i>`).join("");
   count($("degen"), degen, (v) => String(Math.round(v)));
   const degenVerdict = degen >= 90 ? "fully cooked 🔥" : degen >= 60 ? "spicy" : degen >= 30 ? "mildly unhinged" : "suspiciously responsible";
   const verdictEl = $("degenverdict");
@@ -201,45 +206,77 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const tapeAll = tape + `<span><b>ROAD TO $10M</b> ${pct.toFixed(1)}%</span><span>NOT FINANCIAL ADVICE</span>`;
   $("tape").innerHTML = tapeAll + tapeAll;
 
-  // ---- Chart (inline SVG) ----
+  // ---- Historical account chart: one account at a time, with source receipts. ----
+  let chartAccount = D.account_history.some((p) => p.account === "challenge") ? "challenge" : "options";
+  let chartRange = "all";
   function chart() {
-    const H = D.account_history.slice().sort((a, b) => a.date.localeCompare(b.date));
-    const W = Math.max(240, $("chart").clientWidth), narrow = W < 600, Ht = 260, P = { l: 52, r: 16, t: 18, b: 30 };
-    const t0 = new Date(H[0].date).getTime(), t1 = new Date(H[H.length - 1].date).getTime() || t0 + 1;
-    const vmax = Math.max(...H.map((h) => h.value)) * 1.12;
-    const x = (d: string) => P.l + ((new Date(d).getTime() - t0) / (t1 - t0 || 1)) * (W - P.l - P.r);
-    const y = (v: number) => Ht - P.b - (v / vmax) * (Ht - P.t - P.b);
-    let g = '<defs><linearGradient id="ga" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#e8b85d" stop-opacity=".12"/><stop offset="1" stop-color="#e8b85d" stop-opacity="0"/></linearGradient></defs>';
-    for (let i = 0; i <= 4; i++) {
-      const v = (vmax / 4) * i;
-      g += `<line x1="${P.l}" x2="${W - P.r}" y1="${y(v)}" y2="${y(v)}" stroke="#1a1d22"/><text x="${P.l - 8}" y="${y(v) + 4}" fill="#7d848e" font-size="13" font-family="Geist Mono,monospace" text-anchor="end">${short(v)}</text>`;
+    const history = D.account_history.slice().sort((a, b) => a.date.localeCompare(b.date));
+    const accountPoints = history.filter((p) => p.account === chartAccount);
+    if (!accountPoints.length) return;
+    const latestTime = Date.parse(accountPoints[accountPoints.length - 1].date);
+    const cutoff = chartRange === "all" ? -Infinity : latestTime - Number(chartRange) * 864e5;
+    const selected = accountPoints.filter((p) => Date.parse(p.date) >= cutoff);
+    const W = Math.max(240, $("chart").clientWidth), Ht = 184, P = { l: 10, r: 65, t: 16, b: 28 };
+    const firstTime = Date.parse(selected[0].date), lastTime = Date.parse(selected[selected.length - 1].date);
+    const min = Math.min(...selected.map((p) => p.value)), max = Math.max(...selected.map((p) => p.value));
+    const pad = Math.max((max - min) * .18, max * .025, 1);
+    const low = Math.max(0, min - pad), high = max + pad;
+    const x = (date: string) => P.l + (lastTime === firstTime ? .5 : (Date.parse(date) - firstTime) / (lastTime - firstTime)) * (W - P.l - P.r);
+    const y = (v: number) => Ht - P.b - ((v - low) / (high - low)) * (Ht - P.t - P.b);
+    const readout = (point: typeof history[number]) => {
+      $("chart-readout").innerHTML = `<strong>${usd(point.value, 2)}</strong><span>${fmtDate(point.date)}</span><a href="${safeXUrl(point.source_url)}" ${ext}>Source post ↗</a>`;
+    };
+    $("chart-context").textContent = chartAccount === "challenge" ? "Fidelity · challenge shares" : "Robinhood · options account";
+    readout(selected[selected.length - 1]);
+    let g = '<defs><linearGradient id="tg-chart-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#35d87c" stop-opacity=".22"/><stop offset="1" stop-color="#35d87c" stop-opacity=".015"/></linearGradient></defs>';
+    for (let i = 0; i <= 3; i++) {
+      const value = low + ((high - low) / 3) * i;
+      g += `<line x1="${P.l}" x2="${W - P.r}" y1="${y(value)}" y2="${y(value)}" stroke="#202524"/><text x="${W - P.r + 12}" y="${y(value) + 4}" fill="#9a9e9d" font-size="12">${short(value)}</text>`;
     }
-    // Axis ticks on the 1st and 15th of each month (15th only when narrow).
-    const ticks: string[] = [];
-    const d0 = new Date(t0);
-    for (let y0 = d0.getUTCFullYear(), mo = d0.getUTCMonth(); ticks.length < 24; mo++) {
-      const days = narrow ? [15] : [1, 15];
-      const first = Date.UTC(y0, mo, 1);
-      if (first > t1) break;
-      for (const day of days) {
-        const t = Date.UTC(y0, mo, day);
-        if (t >= t0 && t <= t1) ticks.push(new Date(t).toISOString().slice(0, 10));
-      }
+    const ticks = firstTime === lastTime ? 1 : W < 420 ? 3 : 4;
+    for (let i = 0; i < ticks; i++) {
+      const time = firstTime + (lastTime - firstTime) * i / (ticks - 1 || 1);
+      const date = new Date(time).toISOString().slice(0, 10);
+      g += `<text x="${ticks === 1 ? x(date) : P.l + (W - P.l - P.r) * i / (ticks - 1)}" y="${Ht - 5}" fill="#9a9e9d" font-size="11" text-anchor="${ticks === 1 ? "middle" : i === 0 ? "start" : i === ticks - 1 ? "end" : "middle"}">${fmtDate(date).replace(/, \d{4}$/, "")}</text>`;
     }
-    ticks.forEach((d) => { g += `<text x="${x(d)}" y="${Ht - 8}" fill="#7d848e" font-size="13" text-anchor="middle">${fmtDate(d).replace(/, \d{4}$/, "")}</text>`; });
-    g += `<line x1="${P.l}" x2="${W - P.r}" y1="${y(start)}" y2="${y(start)}" stroke="#f2b44166" stroke-dasharray="4 6"/><text x="${P.l + 6}" y="${y(start) + 16}" fill="#f2b441aa" font-size="12">start ${short(start)}</text>`;
-    ([["challenge", "#f2b441", true], ["options", "#c9ced6", false]] as const).forEach(([k, c, area]) => {
-      const pts = H.filter((h) => h.account === k);
-      if (!pts.length) return;
-      const line = pts.map((p) => x(p.date) + "," + y(p.value)).join(" ");
-      if (area) g += `<polygon fill="url(#ga)" points="${x(pts[0].date)},${y(0)} ${line} ${x(pts[pts.length - 1].date)},${y(0)}"/>`;
-      g += `<polyline class="ln" fill="none" stroke="${c}" stroke-width="2"${area ? "" : ' stroke-dasharray="5 4"'} stroke-linejoin="round" stroke-linecap="round" points="${line}"/>`;
-      pts.forEach((p) => {
-        g += `<a href="${safeXUrl(p.source_url)}" aria-label="${esc(p.account)} · ${fmtDate(p.date)}: ${usd(p.value, 0)} · ${esc(p.label)} · open source post" ${ext}><circle cx="${x(p.date)}" cy="${y(p.value)}" r="5.5" fill="${c}" stroke="#08090b" stroke-width="2.5"><title>${fmtDate(p.date)}: ${usd(p.value, 0)} (${esc(p.label)})</title></circle></a>`;
-      });
+    const line = selected.map((p) => `${x(p.date)},${y(p.value)}`).join(" ");
+    g += `<polygon fill="url(#tg-chart-area)" points="${x(selected[0].date)},${y(low)} ${line} ${x(selected[selected.length - 1].date)},${y(low)}"/><polyline fill="none" stroke="#35d87c" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" points="${line}"/>`;
+    g += `<line id="chart-crosshair" y1="${P.t}" y2="${Ht - P.b}" stroke="#7e8983" stroke-dasharray="3 4" opacity="0"/>`;
+    // Keep every source point in the DOM. Account/range controls select its visibility.
+    history.forEach((p, index) => {
+      const visible = p.account === chartAccount && Date.parse(p.date) >= cutoff;
+      const last = visible && p === selected[selected.length - 1];
+      g += `<a class="chart-point${last ? " last" : ""}" data-point="${index}" href="${safeXUrl(p.source_url)}" aria-label="${esc(p.account)} · ${fmtDate(p.date)}: ${usd(p.value, 2)} · ${esc(p.label)} · open source post" ${visible ? "" : 'style="display:none"'} ${ext}><circle class="point-hit" cx="${x(p.date)}" cy="${y(p.value)}" r="12" fill="transparent"/><circle class="point-dot" cx="${x(p.date)}" cy="${y(p.value)}" r="${last ? 4 : 3.5}" fill="#35d87c" stroke="#0a100d" stroke-width="2"><title>${fmtDate(p.date)}: ${usd(p.value, 2)} (${esc(p.label)})</title></circle></a>`;
     });
-    $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="Account value over time">${g}</svg>`;
+    $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${chartAccount === "challenge" ? "Fidelity" : "Robinhood"} posted account history">${g}</svg>`;
+    root.querySelectorAll<SVGAElement>(".chart-point").forEach((point) => {
+      const show = () => {
+        const p = history[Number(point.dataset.point)];
+        readout(p);
+        const crosshair = $("chart-crosshair");
+        crosshair.setAttribute("x1", String(x(p.date))); crosshair.setAttribute("x2", String(x(p.date))); crosshair.setAttribute("opacity", ".65");
+      };
+      point.onmouseenter = show;
+      point.onfocus = show;
+      point.onmouseleave = () => { $("chart-crosshair").setAttribute("opacity", "0"); };
+    });
   }
+  root.querySelectorAll<HTMLButtonElement>(".chart-accounts button").forEach((button) => {
+    button.setAttribute("aria-pressed", String(button.dataset.account === chartAccount));
+    button.disabled = !D.account_history.some((p) => p.account === button.dataset.account);
+    button.onclick = () => {
+      chartAccount = button.dataset.account!;
+      root.querySelectorAll<HTMLButtonElement>(".chart-accounts button").forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+      chart();
+    };
+  });
+  root.querySelectorAll<HTMLButtonElement>(".chart-ranges button").forEach((button) => {
+    button.onclick = () => {
+      chartRange = button.dataset.range!;
+      root.querySelectorAll<HTMLButtonElement>(".chart-ranges button").forEach((b) => b.setAttribute("aria-pressed", String(b === button)));
+      chart();
+    };
+  });
   chart();
   const chartObserver = new ResizeObserver(chart);
   chartObserver.observe($("chart"));
@@ -287,6 +324,9 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   });
   root.querySelectorAll<HTMLButtonElement>(".seg button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.f === "all")));
   render("all");
+
+  // The overview is a window into the complete ledger below, never a replacement for it.
+  $("recent-trades").innerHTML = `<table class="summary-table"><thead><tr><th>Date</th><th>Symbol</th><th>Result</th><th>P&amp;L</th></tr></thead><tbody>${T.slice().sort((a, b) => b.date.localeCompare(a.date)).slice(0, 5).map((t) => `<tr><td>${fmtDate(t.date).replace(/, \d{4}$/, "")}</td><td><b>${esc(t.ticker)}</b><span>${esc(t.type)}</span></td><td><span class="tag ${verdict(t)[0]}">${esc(t.outcome === "win" ? "Win" : t.outcome === "loss" ? "Loss" : t.outcome === "update" ? "Update" : t.outcome === "open" ? "Open" : t.outcome.replace("open→", "entry → "))}</span></td><td class="${typeof t.pnl === "number" ? t.pnl >= 0 ? "pos" : "neg" : "nd"}">${typeof t.pnl === "number" ? (t.pnl >= 0 ? "+" : "") + short(t.pnl) + (t.pnl_derived ? "*" : "") : "—"}</td></tr>`).join("")}</tbody></table><p class="summary-foot">— P&amp;L not disclosed · <a href="#trades">All ${T.length} trades &amp; receipts</a></p>`;
 
   // ---- Confetti ----
   let lastParty = 0;
@@ -337,7 +377,9 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   let pfHtml = "";
   if (isTogiPortfolio(D.portfolio)) {
     try { pfHtml = renderPortfolioHtml(D.portfolio); } catch { pfHtml = ""; }
+    $("portfolio-preview").innerHTML = renderPortfolioSummaryHtml(D.portfolio);
   }
+  $("portfolio-preview").hidden = !pfHtml;
   $("pf").innerHTML = pfHtml;
   pf.hidden = !pfHtml;
   if (pfHtml) {

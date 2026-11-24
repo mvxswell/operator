@@ -2,7 +2,7 @@
 
 Branch: `togi-redesign`. Builds on the initial redesign commits `b69653a` and `efeeb84`.
 
-The dashboard uses near-black surfaces, restrained gold accents, larger balances, a responsive account-history chart, an allocation-focused portfolio, and a chronological trade ledger. Full trade details remain visible. Account caveats and the complete portfolio-commentary archive expand with native, keyboard-accessible controls. The Degen Meter breakdown starts expanded; the Magic 8-Ball, side quests, tip link, Operator Test links, and disclaimers remain available.
+The dashboard uses near-black surfaces, restrained gold accents, larger balances, a responsive account-history chart, an allocation-focused portfolio, and a chronological trade ledger. Full trade details remain visible. Account caveats and the complete portfolio-commentary archive expand with native, keyboard-accessible controls. The Degen Meter uses the reference's segmented gold bar, with its full gauge and breakdown available on expansion; the Magic 8-Ball, side quests, tip link, Operator Test links, and disclaimers remain available.
 
 ## Scope and data preservation
 
@@ -33,7 +33,19 @@ The existing Worker does not permit localhost through CORS. Natural local reques
 
 The installed Next.js version reports an existing security advisory. Dependency upgrades were kept outside this presentation-only change.
 
+
+## Reference alignment follow-up
+
+The overview now follows the supplied reference: an integrated terminal header, balance and chart side by side, a compact challenge/Degen/8-Ball row, portfolio/recent-trade/side-quest summaries, and four metric cards. Full records and source details continue below the overview.
+
+The chart displays one account at a time with 1W, 1M, and ALL ranges. Ranges are anchored to that account's latest posted date, rather than implying live intraday prices. The green line uses the actual posted values, with a restrained area fill, right-side labels, source readout, keyboard/hover crosshair, and markers revealed on inspection. Every historical point and its receipt remain available through the controls. Single-point ranges display a single point without fabricating a history.
+
+The new summaries reuse the complete portfolio's latest-update rules and the original reported trade outcomes. They do not replace the ledger or calculate new trading returns. The main account card's day change is copied directly from the posted portfolio account and labelled with its posting date.
+
 ## Screenshots
+
+- [Complete compact overview](screenshots/togi-overview.png)
+- [Robinhood chart close-up](screenshots/togi-chart-options.png)
 
 - [Desktop dashboard](screenshots/togi-desktop.png)
 - [Tablet dashboard](screenshots/togi-tablet.png)
