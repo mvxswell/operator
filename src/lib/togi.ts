@@ -47,6 +47,10 @@ export type TogiData = {
     tip_url?: unknown;
     /** Optional. One line shown beside the tip button, rendered as plain text. */
     tip_note?: unknown;
+    /** Optional https link for the "Donate to the kids" button. Invalid values fall back to RMHC. */
+    donate_url?: unknown;
+    /** Optional tracker version from the feed, such as "2.1". Shown as V2.1. */
+    version?: unknown;
   };
   account_history: TogiHistoryPoint[];
   trades: TogiTrade[];
@@ -55,6 +59,8 @@ export type TogiData = {
   portfolio?: unknown;
   /** Optional. Validated separately by isRobinhoodStats; a missing key hides the panel. */
   robinhood_stats?: unknown;
+  /** Optional. Validated by isTogiDonations; a missing or bad key hides the section. */
+  donations?: unknown;
 };
 
 export type TogiAccount = {
@@ -141,6 +147,16 @@ export type RobinhoodStats = {
   withdrawal_source_url: string;
 };
 
+/** One row of the optional top-level `donations` array. `amount_usd: null` means not disclosed. */
+export type TogiDonation = {
+  date: string;
+  recipient: string;
+  amount_usd: number | null;
+  status: "completed" | "pledged";
+  note?: string;
+  source_url: string;
+};
+
 export type TogiSource = "live" | "snapshot";
 
 const DATE = /^\d{4}-\d{2}-\d{2}$/;
@@ -185,6 +201,32 @@ export function tipNoteText(note: unknown): string | null {
 export function togiTip(meta: { tip_url?: unknown; tip_note?: unknown } | null | undefined): { url: string; note: string | null } | null {
   const url = safeTipUrl(meta?.tip_url);
   return url ? { url, note: tipNoteText(meta?.tip_note) } : null;
+}
+
+/** Official RMHC donate page. Used when the feed has no safe donate_url. */
+export const DONATE_FALLBACK_URL = "https://ronaldmcdonaldhouse.org/donate";
+
+const DONATE_HOSTS = new Set(["ronaldmcdonaldhouse.org", "www.ronaldmcdonaldhouse.org"]);
+
+/**
+ * Donate button target. Only an https Ronald McDonald House Charities URL is
+ * followed; anything else (including a missing key) uses the public donate page.
+ */
+export function safeDonateUrl(url: unknown): string {
+  if (typeof url !== "string" || url.length > 500) return DONATE_FALLBACK_URL;
+  let parsed: URL;
+  try { parsed = new URL(url); } catch { return DONATE_FALLBACK_URL; }
+  if (parsed.protocol !== "https:" || !DONATE_HOSTS.has(parsed.hostname)) return DONATE_FALLBACK_URL;
+  if (parsed.username || parsed.password || parsed.port) return DONATE_FALLBACK_URL;
+  return parsed.href;
+}
+
+const VERSION_LABEL = /^[0-9]{1,3}(?:\.[0-9]{1,3}){0,2}$/;
+
+/** Badge text. Prefers meta.version ("2.1" → "V2.1") and falls back to V2.1. */
+export function togiVersionLabel(meta: { version?: unknown } | null | undefined): string {
+  const raw = typeof meta?.version === "string" ? meta.version.trim() : "";
+  return VERSION_LABEL.test(raw) ? `V${raw}` : "V2.1";
 }
 
 const isNum = (v: unknown): v is number => typeof v === "number" && Number.isFinite(v);
@@ -272,6 +314,22 @@ export function isRobinhoodStats(value: unknown): value is RobinhoodStats {
   const today = value.today_start;
   if (today !== null && (!isObj(today) || !isNum(today.value) || typeof today.derived !== "boolean" || !isStr(today.method) || !isStr(today.source_url))) return false;
   if (!isStr(value.note) || !isStr(value.withdrawal_source_url)) return false;
+  return true;
+}
+
+/**
+ * Shape check for the optional top-level `donations` array. A missing key or a
+ * malformed list hides the section; it does not reject the rest of the feed.
+ */
+export function isTogiDonations(value: unknown): value is TogiDonation[] {
+  if (!Array.isArray(value) || !value.length) return false;
+  for (const d of value) {
+    if (!isObj(d) || !isDate(d.date) || !isStr(d.recipient) || !d.recipient.trim()) return false;
+    if (!numOrNull(d.amount_usd)) return false;
+    if (d.status !== "completed" && d.status !== "pledged") return false;
+    if (!isStr(d.source_url)) return false;
+    if (d.note !== undefined && !isStr(d.note)) return false;
+  }
   return true;
 }
 

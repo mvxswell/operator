@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import snapshotJson from "@/data/togiSnapshot.json";
-import { isRobinhoodStats, isTogiData, isTogiPortfolio, loadTogiData, TOGI_PROFILE_URL, togiTip, type TogiData, type TogiSource } from "@/lib/togi";
+import { DONATE_FALLBACK_URL, isRobinhoodStats, isTogiData, isTogiDonations, isTogiPortfolio, loadTogiData, safeDonateUrl, TOGI_PROFILE_URL, togiTip, togiVersionLabel, type TogiData, type TogiSource } from "@/lib/togi";
 import { fmtDate, renderTogi } from "./renderTogi";
 
 if (!isTogiData(snapshotJson)) throw new Error("Togi Tracker snapshot does not match the expected shape");
@@ -23,7 +23,7 @@ function Mark({ small = false }: { small?: boolean }) {
 /** The tracker markup. Data-driven parts are filled by renderTogi once the feed (or snapshot) loads. */
 export function TogiTracker() {
   const root = useRef<HTMLDivElement>(null);
-  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip>; hasPortfolio: boolean; hasRobinhood: boolean } | null>(null);
+  const [state, setState] = useState<{ source: TogiSource; asOf: string; tip: ReturnType<typeof togiTip>; hasPortfolio: boolean; hasRobinhood: boolean; hasDonations: boolean; version: string; donateUrl: string } | null>(null);
 
   useEffect(() => {
     let cleanup: (() => void) | undefined;
@@ -31,7 +31,7 @@ export function TogiTracker() {
     loadTogiData(SNAPSHOT).then(({ data, source }) => {
       if (cancelled || !root.current) return;
       cleanup = renderTogi(root.current, data);
-      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta), hasPortfolio: isTogiPortfolio(data.portfolio), hasRobinhood: isRobinhoodStats(data.robinhood_stats) });
+      setState({ source, asOf: data.meta.last_updated, tip: togiTip(data.meta), hasPortfolio: isTogiPortfolio(data.portfolio), hasRobinhood: isRobinhoodStats(data.robinhood_stats), hasDonations: isTogiDonations(data.donations), version: togiVersionLabel(data.meta), donateUrl: safeDonateUrl(data.meta.donate_url) });
     });
     return () => { cancelled = true; cleanup?.(); };
   }, []);
@@ -43,10 +43,11 @@ export function TogiTracker() {
           <header className="tg-top">
             <Mark />
             <h1 className="tg-title">Togi Tracker</h1>
-            <span className="tg-version">V2.0</span>
+            <span className="tg-version">{state?.version ?? "V2.1"}</span>
             <span className="chip">Unofficial</span>
           <nav className="tg-jump" aria-label="Tracker sections">
             <a href="#overview">Dashboard</a>
+            {state?.hasDonations && <a href="#donations">Donations</a>}
             {state?.hasPortfolio && <a href="#portfolio">Portfolio</a>}
             <a href="#trades">Trade history</a>
             {state?.hasRobinhood && <a href="#robinhood-stats">Robinhood stats</a>}
@@ -55,6 +56,19 @@ export function TogiTracker() {
             <div className="feed-status" role="status"><span className="feed-dot" />{state ? state.source === "live" ? "Live feed connected" : "Saved snapshot" : "Connecting to feed…"}<span className="feed-date">{state ? `Updated ${fmtDate(state.asOf)}` : "Public posts, tracked"}</span></div>
             <Link className="navcta" href="/operator/">Take the Operator Test</Link>
           </header>
+          <p className="tg-follow-row"><a className="tg-follow" href={TOGI_PROFILE_URL} {...ext}>Follow Togi on X · @ShaneStoffer ↗</a></p>
+          <div className="donate-call">
+            <a className="btn primary donate-btn" href={state?.donateUrl ?? DONATE_FALLBACK_URL} {...ext}>Donate to the kids</a>
+            <p className="fine">Unofficial fan-site link. Not affiliated with Ronald McDonald House Charities or with Togi.</p>
+          </div>
+          {/* Filled from the feed's `donations` array. Stays hidden when that key is missing. */}
+          <section id="donations" className="panel donations" aria-label="Donations" hidden>
+            <div className="donations-head">
+              <div><p className="eyebrow">From his posts</p><h2>Donations</h2></div>
+              <p className="donations-sum" id="donations-sum"></p>
+            </div>
+            <div id="donations-list"></div>
+          </section>
 
           <div id="overview" className="overview-anchor" />
           <div className="tg-lead" id="accounts">
