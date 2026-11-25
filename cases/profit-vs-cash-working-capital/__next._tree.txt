@@ -1,7 +1,7 @@
 :HL["/_next/static/media/22a5144ee8d83bca-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
 :HL["/_next/static/media/7d4881bb7e1bf84d-s.p.woff2","font",{"crossOrigin":"","type":"font/woff2"}]
-:HL["/_next/static/css/fc76cd594aaf529d.css","style"]
+:HL["/_next/static/css/50c57d2136bb339d.css","style"]
 3:[["children",{"s":"__PAGE__","h":160}]]
 2:[["children",{"s":{"n":"slug","t":"d","k":"profit-vs-cash-working-capital","s":[]},"h":65632,"c":"$Q3"}]]
 1:[["children",{"s":"cases","h":131168,"c":"$Q2"}]]
-0:{"b":"73VygEPVdapFmR1_ide2o","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
+0:{"b":"6Oan4gam5UU1YVms3RAIK","t":{"t":{"s":"","h":131152,"c":"$Q1"}}}
