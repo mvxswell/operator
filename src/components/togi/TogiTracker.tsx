@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import snapshotJson from "@/data/togiSnapshot.json";
 import { DONATE_FALLBACK_URL, isRobinhoodStats, isTogiData, isTogiDonations, isTogiPortfolio, loadTogiData, safeDonateUrl, TOGI_PROFILE_URL, togiTip, togiVersionLabel, type TogiData, type TogiSource } from "@/lib/togi";
+import { TOGI_FAQS } from "./togiFaq";
 import { fmtDate, renderTogi } from "./renderTogi";
 
 if (!isTogiData(snapshotJson)) throw new Error("Togi Tracker snapshot does not match the expected shape");
@@ -36,13 +37,16 @@ export function TogiTracker() {
     return () => { cancelled = true; cleanup?.(); };
   }, []);
 
+  const asOf = state?.asOf ?? SNAPSHOT.meta.last_updated;
+  const updatedSuffix = state ? (state.source === "live" ? " · live feed" : " · saved snapshot (live feed unavailable)") : "";
+
   return (
     <div className="togi-tracker" ref={root} data-togi-source={state?.source ?? "loading"}>
       <div className="wrap tg-main">
         <div className="tg-topblock">
           <header className="tg-top">
             <Mark />
-            <h1 className="tg-title">Togi Tracker</h1>
+            <p className="tg-title">Togi Tracker</p>
             <span className="tg-version">{state?.version ?? "V2.1"}</span>
             <span className="chip">Unofficial</span>
           <nav className="tg-jump" aria-label="Tracker sections">
@@ -56,6 +60,21 @@ export function TogiTracker() {
             <div className="feed-status" role="status"><span className="feed-dot" />{state ? state.source === "live" ? "Live feed connected" : "Saved snapshot" : "Connecting to feed…"}<span className="feed-date">{state ? `Updated ${fmtDate(state.asOf)}` : "Public posts, tracked"}</span></div>
             <Link className="navcta" href="/operator/">Take the Operator Test</Link>
           </header>
+          <section className="tg-seo" aria-labelledby="togi-seo-title">
+            <h1 id="togi-seo-title">Togi Tracker: SPY calls and the $10M challenge</h1>
+            <p>
+              Unofficial fan tracker of Togi (Shane Stoffer) and the trades he posts publicly on X, including his SPY calls.
+              Every figure on this page comes from those posts. If he did not post a number, it is left as not disclosed.
+              This site is not affiliated with him, and nothing here is financial advice.
+            </p>
+            <p className="tg-seo-updated">
+              Last updated <time dateTime={asOf}>{fmtDate(asOf)}</time>
+              {updatedSuffix}
+            </p>
+            <p>
+              <a className="tg-spy-cta" href="/togi/spy-calls/">Togi SPY calls tracker: every SPY options trade</a>
+            </p>
+          </section>
           <p className="tg-follow-row"><a className="tg-follow" href={TOGI_PROFILE_URL} {...ext}>Follow Togi on X · @ShaneStoffer ↗</a></p>
           <div className="donate-call">
             <a className="btn primary donate-btn" href={state?.donateUrl ?? DONATE_FALLBACK_URL} {...ext}>Donate to the kids</a>
@@ -209,6 +228,18 @@ export function TogiTracker() {
             <div className="btns"><Link className="btn primary" href="/operator/">Take the free Operator Test</Link></div>
           </div>
           <div className="vs" aria-hidden="true"><span className="vs-a">🎰</span><span className="vs-x">vs</span><span className="vs-b">📈</span></div>
+        </section>
+
+        <section id="faq" className="tg-faq" aria-labelledby="togi-faq-title">
+          <h2 id="togi-faq-title">Questions about this tracker</h2>
+          <dl>
+            {TOGI_FAQS.map((faq) => (
+              <div key={faq.question}>
+                <dt>{faq.question}</dt>
+                <dd>{faq.answer}</dd>
+              </div>
+            ))}
+          </dl>
         </section>
       </div>
 
