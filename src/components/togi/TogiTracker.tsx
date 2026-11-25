@@ -47,11 +47,11 @@ export function TogiTracker() {
             <span className="chip">Unofficial</span>
           <nav className="tg-jump" aria-label="Tracker sections">
             <a href="#overview">Dashboard</a>
-            {state?.hasDonations && <a href="#donations">Donations</a>}
             {state?.hasPortfolio && <a href="#portfolio">Portfolio</a>}
             <a href="#trades">Trade history</a>
             {state?.hasRobinhood && <a href="#robinhood-stats">Robinhood stats</a>}
-            <a href="#extras">Degen zone</a><a href="#side-quests">Side quests</a>
+            <a href="#extras">Degen zone</a>
+            {state?.hasDonations && <a href="#donations">Donations</a>}
           </nav>
             <div className="feed-status" role="status"><span className="feed-dot" />{state ? state.source === "live" ? "Live feed connected" : "Saved snapshot" : "Connecting to feed…"}<span className="feed-date">{state ? `Updated ${fmtDate(state.asOf)}` : "Public posts, tracked"}</span></div>
             <Link className="navcta" href="/operator/">Take the Operator Test</Link>
@@ -61,14 +61,6 @@ export function TogiTracker() {
             <a className="btn primary donate-btn" href={state?.donateUrl ?? DONATE_FALLBACK_URL} {...ext}>Donate to the kids</a>
             <p className="fine">Unofficial fan-site link. Not affiliated with Ronald McDonald House Charities or with Togi.</p>
           </div>
-          {/* Filled from the feed's `donations` array. Stays hidden when that key is missing. */}
-          <section id="donations" className="panel donations" aria-label="Donations" hidden>
-            <div className="donations-head">
-              <div><p className="eyebrow">From his posts</p><h2>Donations</h2></div>
-              <p className="donations-sum" id="donations-sum"></p>
-            </div>
-            <div id="donations-list"></div>
-          </section>
 
           <div id="overview" className="overview-anchor" />
           <div className="tg-lead" id="accounts">
@@ -152,10 +144,14 @@ export function TogiTracker() {
         <div className="dashboard-panels">
           <section className="panel overview-portfolio" id="portfolio-preview" aria-label="Portfolio summary" hidden></section>
           <section className="panel overview-trades" aria-label="Recent trades"><div className="summary-head"><h2><span aria-hidden="true">⇄</span> Recent trades</h2><a href="#trades">View all</a></div><div id="recent-trades"></div></section>
-        <section className="panel panel-depth side" id="side-quests">
-          <h2><span aria-hidden="true">♜</span> Side quests</h2><p className="side-note">Not counted in the challenge</p>
-          <ul id="side"></ul>
-        </section>
+          {/* Filled from the feed's `donations` array. Stays hidden when that key is missing. */}
+          <section id="donations" className="panel panel-depth donations" aria-label="Donations" hidden>
+            <div className="donations-head">
+              <div><p className="eyebrow">From his posts</p><h2>Donations</h2></div>
+              <p className="donations-sum" id="donations-sum"></p>
+            </div>
+            <div id="donations-list"></div>
+          </section>
 
         </div>
         <section className="stats" id="stats" aria-label="Stats from known data"></section>
