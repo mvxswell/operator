@@ -410,11 +410,6 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   if (ps) { ps.addEventListener("mouseenter", () => party(ps)); ps.addEventListener("click", () => party(ps)); }
   if (!RM && degen >= 100) later(() => party($("degen-panel"), 28), 1500);
 
-  // ---- Side quests ----
-  $("side").innerHTML = D.side_quests.map((s) =>
-    `<li><span class="dt">${fmtDate(s.date)}</span>${esc(s.text)} <a href="${safeXUrl(s.source_url)}" ${ext}>post ↗</a></li>`,
-  ).join("");
-
   // ---- Donations (optional; hidden when the top-level key is missing or malformed) ----
   const gifts = $("donations");
   if (isTogiDonations(D.donations)) {

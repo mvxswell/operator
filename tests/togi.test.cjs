@@ -200,7 +200,9 @@ test("the old 'Open shares' panel is gone (the Portfolio section replaces it)", 
   const render = fs.readFileSync("src/components/togi/renderTogi.ts", "utf8");
   assert.doesNotMatch(page, /Open shares|id="positions"|id="snapdate"|id="possrc"/);
   assert.doesNotMatch(render, /open_positions_snapshot|"snapdate"|"possrc"|"positions"/);
-  assert.match(page, /Side quests/);
+  assert.doesNotMatch(page, /Side quests|id="side-quests"|id="side"/);
+  assert.doesNotMatch(render, /\$\("side"\)/);
+  assert.match(render, /D\.side_quests\.filter/);
 });
 
 test("tip button only accepts https x.com / twitter.com links", () => {
@@ -455,6 +457,13 @@ test("donate URL, version badge, and follow link", () => {
   assert.doesNotMatch(page, /V2\.0/);
   assert.match(page, /id="donations"[^>]*\bhidden>/);
   assert.match(page, /target: "_blank", rel: "noopener noreferrer"/);
+  const donate = page.indexOf('className="donate-call"');
+  const overview = page.indexOf('id="overview"');
+  const panels = page.indexOf('className="dashboard-panels"');
+  const donations = page.indexOf('id="donations"');
+  const stats = page.indexOf('id="stats"');
+  assert.ok(donate > -1 && donate < overview && overview < panels && panels < donations && donations < stats, "donate stays above the fold area; donations replaces the lower side-quests card");
+  assert.doesNotMatch(page, /#side-quests|Side quests/);
   assert.equal(snapshot.meta.tip_url, "https://x.com/ShaneStoffer");
   const render = fs.readFileSync("src/components/togi/renderTogi.ts", "utf8");
   assert.match(render, /isTogiDonations\(D\.donations\)/);
