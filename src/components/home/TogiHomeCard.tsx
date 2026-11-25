@@ -14,7 +14,7 @@ export function TogiHomeCard({ togi }: { togi: TogiHeadline }) {
         {data.live ? <span className="hh-chip hh-chip-live"><span className="hh-dot" aria-hidden="true" />Live</span> : null}
       </div>
       <p className="hh-big tabular">{data.value}<span className="hh-big-unit">of {data.goal}</span></p>
-      <p className="hh-card-body">Shane Stoffer’s public $10M stock market challenge, every trade with its source. Unofficial fan tracker.</p>
+      <p className="hh-card-body">Shane Stoffer’s public {data.start} to {data.goal} stock market challenge, every trade with its source. Unofficial fan tracker.</p>
       <div className="hh-bar" role="img" aria-label={`${data.pctLabel} of the goal`}><i style={{ width: `${data.pct}%` }} /></div>
       <div className="hh-bar-legend tabular"><span>{data.start} start</span><span>{data.pctLabel}</span><span>{data.goal}</span></div>
       <p className="hh-card-foot">Last reported {niceDate(data.date)} · not financial advice<span className="hh-arrow">→</span></p>

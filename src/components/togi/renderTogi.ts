@@ -1,7 +1,7 @@
 // DOM rendering for the Togi Tracker page, ported from the standalone tracker's app.js.
 // Runs only in the browser, after the data has loaded. Every string from the feed is
 // HTML-escaped and every link goes through safeXUrl, since the feed is third-party data.
-import { isRobinhoodStats, isTogiDonations, isTogiPortfolio, safeXUrl, type TogiData, type TogiDonation, type TogiTrade } from "../../lib/togi";
+import { compactChallengeUsd, currentChallengeView, exactUsd, isRobinhoodStats, isTogiDonations, isTogiPortfolio, priorChallengeList, safeXUrl, type TogiData, type TogiDonation, type TogiTrade } from "../../lib/togi";
 import { renderPortfolioHtml, renderPortfolioSummaryHtml } from "./portfolio";
 import { renderRobinhoodHtml } from "./robinhood";
 import { renderBrokerPnlHtml } from "./pnl";
@@ -115,37 +115,90 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
     f(t0);
   }
 
-  // ---- Meter ----
-  const cur = m.latest_value, goal = m.goal, start = m.starting_value;
-  if (isTogiPortfolio(D.portfolio)) {
-    const account = D.portfolio.accounts.find((a) => a.id === "fidelity" && a.as_of === m.latest_value_date && a.total_value === cur);
-    $("hero-day").innerHTML = account && typeof account.day_change === "number" ? `<span class="${account.day_change >= 0 ? "pos" : "neg"}">${account.day_change >= 0 ? "+" : ""}${usd(account.day_change, 2)}${typeof account.day_change_pct === "number" ? ` (${account.day_change_pct > 0 ? "+" : ""}${account.day_change_pct}%)` : ""}</span><span>Posted ${fmtDate(account.as_of)}</span>` : `<span>Last posted ${fmtDate(m.latest_value_date)} · current value unknown</span>`;
-  }
-  const pct = Math.min(100, (cur / goal) * 100);
-  count($("cur"), cur, (v) => usd(v), start);
-  count($("pctbadge"), pct, (v) => v.toFixed(1) + "% to $10M");
+  // ---- Meter: current challenge only (meta.challenge, else challenges[] status "current") ----
+  const view = currentChallengeView(D);
+  const cur = view.latest_value, goal = view.goal, start = view.starting_value;
+  const goalShort = compactChallengeUsd(goal);
+  const startShort = compactChallengeUsd(start);
+  const broker = view.broker ?? "Robinhood";
+  const pct = Math.min(100, Math.max(0, (cur / goal) * 100));
+  const retiredNote = /Sep 18 post|Robinhood tracked separately/i;
+  $("meter-kicker").textContent = `${broker} · ${startShort} to ${goalShort} challenge`;
+  root.querySelector(".meter")?.setAttribute("aria-label", `Road to ${goalShort}`);
+  $("hero-day").textContent = `${broker} · Posted ${fmtDate(view.latest_value_date)}`;
+  count($("cur"), cur, (v) => exactUsd(Number.isInteger(cur) ? Math.round(v) : v));
+  count($("pctbadge"), pct, (v) => v.toFixed(1) + "% to " + goalShort);
   const curSrc = $("cursrc") as HTMLAnchorElement;
-  curSrc.href = safeXUrl(m.latest_value_source);
-  curSrc.textContent = m.latest_value_label + " · " + fmtDate(m.latest_value_date) + " ↗";
-  ($("latestbtn") as HTMLAnchorElement).href = safeXUrl(m.latest_value_source);
+  curSrc.href = safeXUrl(view.latest_value_source);
+  curSrc.textContent = (view.latest_value_label || "Latest posted value") + " · " + fmtDate(view.latest_value_date) + " ↗";
+  ($("latestbtn") as HTMLAnchorElement).href = safeXUrl(view.latest_value_source);
   count($("togo"), Math.max(0, goal - cur), (v) => short(v));
-  count($("fromstart"), ((cur - start) / (goal - start)) * 100, (v) => v.toFixed(1) + "%");
+  count($("fromstart"), goal === start ? 0 : ((cur - start) / (goal - start)) * 100, (v) => v.toFixed(1) + "%");
   const mult = goal / cur, dbl = Math.log2(mult);
   $("mult").textContent = mult.toFixed(2) + "x";
   $("mult2").textContent = mult.toFixed(2) + "x";
   $("dbl").textContent = dbl.toFixed(1);
-  $("caveat").textContent = "Start: " + usd(start) + ". " + (m.starting_value_note ?? "") + " " + (m.latest_value_caveat ?? "");
+  const note = [view.latest_value_label, m.starting_value_note].filter((part): part is string => typeof part === "string" && part.trim().length > 0 && !retiredNote.test(part)).join(" ");
+  $("caveat").textContent = `This challenge runs on ${broker}. Unofficial fan tracker. Not financial advice. Start: ${exactUsd(start)}. Live mark: ${exactUsd(cur)} on ${fmtDate(view.latest_value_date)}. ${note}`.replace(/\s+/g, " ").trim();
+  const amount = exactUsd(cur);
+  const now = $("meter-now");
+  now.textContent = amount;
+  now.style.left = pct + "%";
+  now.classList.toggle("edge-l", pct < 22);
+  now.classList.toggle("mid", pct >= 22 && pct <= 78);
+  now.classList.toggle("edge-r", pct > 78);
+  $("meter-fill").style.width = pct + "%";
+  const marker = $("meter-marker");
+  marker.style.left = pct + "%";
+  marker.classList.toggle("edge-l", pct < 4);
+  marker.classList.toggle("edge-r", pct > 96);
+  const track = $("meter-track");
+  track.setAttribute("aria-valuenow", pct.toFixed(1));
+  track.setAttribute("aria-label", `Progress to ${goalShort}, now ${amount}`);
+  track.setAttribute("aria-valuetext", `${amount}, ${pct.toFixed(1)}% to ${goalShort}`);
+  const placed: number[] = [];
+  $("meter-ticks").innerHTML = view.milestones.map((v) => {
+    const l = Math.max(0, Math.min(100, (v / goal) * 100));
+    const close = placed.some((p) => Math.abs(p - l) < 14);
+    if (!close) placed.push(l);
+    const edge = l >= 99 ? " edge-r" : l <= 1 ? " edge-l" : "";
+    return `<div class="meter-tick${cur >= v ? " hit" : ""}${close ? " alt" : ""}${edge}" style="left:${l}%">${compactChallengeUsd(v)}</div>`;
+  }).join("");
   $("bar").setAttribute("aria-valuenow", pct.toFixed(1));
-  later(() => { $("fill").style.width = Math.max(pct, 4) + "%"; }, 120);
-  const MS: [number, string, string][] = [[start, "Start", ""], [2e6, "", " alt"], [m.previous_goal, "Old goal", ""], [5e6, "Halfway", ""], [goal, "Goal 🏁", ""]];
-  $("milestones").innerHTML = MS.map(([v, t, c]) => {
+  $("bar").setAttribute("aria-label", `Progress to ${goalShort}`);
+  later(() => { $("fill").style.width = pct + "%"; }, 120);
+  $("road-title").textContent = `${exactUsd(goal)} challenge`;
+  $("road-to").textContent = `The road to ${exactUsd(goal)}`;
+  $("milestones").innerHTML = view.milestones.map((v) => {
     const l = Math.max(0, Math.min(100, (v / goal) * 100));
     const edge = l >= 99 ? " edge-r" : l <= 1 ? " edge-l" : "";
-    return `<div class="m${cur >= v ? " hit" : ""}${c}${edge}" style="left:${l}%">${short(v)}${cur >= v && v > start ? " ✓" : ""}${t ? `<span class="t">${t}</span>` : ""}</div>`;
+    const label = v === start ? "Start" : v === goal ? "Goal" : "";
+    return `<div class="m${cur >= v ? " hit" : ""}${edge}" style="left:${l}%">${compactChallengeUsd(v)}${label ? `<span class="t">${label}</span>` : ""}</div>`;
   }).join("");
+  $("answer").textContent = `Will he hit ${goalShort}?`;
+  $("hero-q").innerHTML = `Can Togi turn <span class="acc">${esc(startShort)}</span> into <span class="acc">${esc(goalShort)}</span>?`;
+  const priors = priorChallengeList(D);
+  const priorEl = $("prior-challenge");
+  const lead = root.querySelector(".tg-lead");
+  if (priors.length) {
+    priorEl.hidden = false;
+    lead?.setAttribute("data-prior", "1");
+    priorEl.innerHTML = priors.map((p) => {
+      const who = p.broker ? ` (${esc(p.broker)})` : "";
+      const when = new Date(p.latest_value_date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+      return `<p class="prior-line">Previous challenge: ${esc(compactChallengeUsd(p.starting_value))} to ${esc(compactChallengeUsd(p.goal))}${who}, last posted ${esc(exactUsd(p.latest_value))} on ${esc(when)}</p><a href="${esc(safeXUrl(p.latest_value_source))}" ${ext}>source post ↗</a>`;
+    }).join("");
+  } else {
+    priorEl.hidden = true;
+    priorEl.innerHTML = "";
+    lead?.removeAttribute("data-prior");
+  }
   $("herometa").textContent = `${T.length} trades tracked · announced ${fmtDate(m.original_announcement.date)} · updated ${fmtDate(m.last_updated)}`;
   $("gcdate").textContent = fmtDate(m.goal_changed_on);
-  ($("gcsrc") as HTMLAnchorElement).href = safeXUrl(m.goal_change_source);
+  $("twist-from").textContent = exactUsd(start);
+  $("twist-to").textContent = exactUsd(goal);
+  $("twist-quote").textContent = view.announcement_text;
+  ($("gcsrc") as HTMLAnchorElement).href = safeXUrl(view.announcement_source);
 
   const brokerPnl = renderBrokerPnlHtml(D);
   $("broker-pnl").hidden = !brokerPnl;
@@ -259,11 +312,19 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   const tape = T.map((t) =>
     `<span><b>${esc(t.ticker)}</b> ${esc(t.type.toUpperCase())} ${typeof t.pnl === "number" ? `<b class="${t.pnl > 0 ? "pos" : "neg"}">${t.pnl > 0 ? "▲ +" : "▼ "}${short(t.pnl)}</b>` : esc(t.outcome.toUpperCase())}</span>`,
   ).join("");
-  const tapeAll = tape + `<span><b>ROAD TO $10M</b> ${pct.toFixed(1)}%</span><span>NOT FINANCIAL ADVICE</span>`;
+  const tapeAll = tape + `<span><b>ROAD TO ${esc(goalShort)}</b> ${pct.toFixed(1)}%</span><span>NOT FINANCIAL ADVICE</span>`;
   $("tape").innerHTML = tapeAll + tapeAll;
 
   // ---- Historical account chart: one account at a time, with source receipts. ----
-  let chartAccount = D.account_history.some((p) => p.account === "challenge") ? "challenge" : "options";
+  const priorRun = priorChallengeList(D).find((item) => item.broker === "Fidelity");
+  const historyForCurrent = view.broker === "Fidelity" ? "challenge" : "options";
+  let chartAccount = D.account_history.some((p) => p.account === historyForCurrent)
+    ? historyForCurrent
+    : D.account_history.some((p) => p.account === "challenge") ? "challenge" : "options";
+  root.querySelectorAll<HTMLButtonElement>(".chart-accounts button").forEach((button) => {
+    if (button.dataset.account === "options") button.textContent = "Robinhood";
+    if (button.dataset.account === "challenge") button.textContent = priorRun ? `Fidelity · ${compactChallengeUsd(priorRun.goal)}` : "Fidelity";
+  });
   let chartRange = "all";
   function chart() {
     const history = D.account_history.slice().sort((a, b) => a.date.localeCompare(b.date));
@@ -282,7 +343,9 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
     const readout = (point: typeof history[number]) => {
       $("chart-readout").innerHTML = `<strong>${usd(point.value, 2)}</strong><span>${fmtDate(point.date)}</span><a href="${safeXUrl(point.source_url)}" ${ext}>Source post ↗</a>`;
     };
-    $("chart-context").textContent = chartAccount === "challenge" ? "Fidelity · challenge shares" : "Robinhood · options account";
+    $("chart-context").textContent = chartAccount === "challenge"
+      ? (priorRun ? `Fidelity · previous ${compactChallengeUsd(priorRun.goal)} run` : "Fidelity · previous run")
+      : "Robinhood · posted balances";
     readout(selected[selected.length - 1]);
     let g = '<defs><linearGradient id="tg-chart-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#35d87c" stop-opacity=".22"/><stop offset="1" stop-color="#35d87c" stop-opacity=".015"/></linearGradient></defs>';
     for (let i = 0; i <= 3; i++) {
@@ -304,7 +367,7 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
       const last = visible && p === selected[selected.length - 1];
       g += `<a class="chart-point${last ? " last" : ""}" data-point="${index}" href="${safeXUrl(p.source_url)}" aria-label="${esc(p.account)} · ${fmtDate(p.date)}: ${usd(p.value, 2)} · ${esc(p.label)} · open source post" ${visible ? "" : 'style="display:none"'} ${ext}><circle class="point-hit" cx="${x(p.date)}" cy="${y(p.value)}" r="12" fill="transparent"/><circle class="point-dot" cx="${x(p.date)}" cy="${y(p.value)}" r="${last ? 4 : 3.5}" fill="#35d87c" stroke="#0a100d" stroke-width="2"><title>${fmtDate(p.date)}: ${usd(p.value, 2)} (${esc(p.label)})</title></circle></a>`;
     });
-    $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${chartAccount === "challenge" ? "Fidelity" : "Robinhood"} posted account history">${g}</svg>`;
+    $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${chartAccount === "challenge" ? "Fidelity previous run" : "Robinhood current challenge"} posted account history">${g}</svg>`;
     root.querySelectorAll<SVGAElement>(".chart-point").forEach((point) => {
       const show = () => {
         const p = history[Number(point.dataset.point)];

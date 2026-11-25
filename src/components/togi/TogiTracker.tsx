@@ -64,14 +64,22 @@ export function TogiTracker() {
 
           <div id="overview" className="overview-anchor" />
           <div className="tg-lead" id="accounts">
-            <section className="panel panel-depth meter" aria-label="Road to $10M">
+            <section className="panel panel-depth meter" aria-label="Road to $1M">
               <div className="meter-top">
                 <div>
-                  <p className="lbl">Fidelity · The $10M challenge</p>
+                  <p className="lbl" id="meter-kicker">Robinhood · $6K to $1M challenge</p>
                   <p className="score tabular" id="cur">$–</p><p id="hero-day" className="hero-day"></p>
                   <a className="src" id="cursrc" href={TOGI_PROFILE_URL} {...ext}></a>
                 </div>
-                <span className="badge" id="pctbadge">–</span>
+                <span className="badge" id="pctbadge">% to $1M</span>
+              </div>
+              <div className="meter-scale">
+                <div className="meter-now-row"><span className="meter-now edge-l" id="meter-now">$–</span></div>
+                <div className="meter-bar-track" id="meter-track" role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $1M">
+                  <div className="meter-bar-fill" id="meter-fill"></div>
+                  <div className="meter-marker" id="meter-marker"></div>
+                </div>
+                <div className="meter-ticks" id="meter-ticks"></div>
               </div>
               <div className="meter-foot">
                 <div><p className="lbl">To go</p><p className="mono tabular" id="togo">–</p></div>
@@ -81,6 +89,8 @@ export function TogiTracker() {
               <details className="account-context"><summary>Account context &amp; important caveats</summary><p className="caveat" id="caveat"></p></details>
             </section>
 
+            <section className="panel prior-card" id="prior-challenge" aria-label="Previous challenge" hidden></section>
+
             <section className="panel panel-depth chartp">
               <div className="chart-toolbar">
                 <div className="chart-ranges" role="group" aria-label="Chart date range">
@@ -89,8 +99,8 @@ export function TogiTracker() {
                   <button type="button" data-range="all" aria-pressed="true">ALL</button>
                 </div>
                 <div className="chart-accounts" role="group" aria-label="Chart account">
-                  <button type="button" data-account="challenge" aria-pressed="true">Fidelity</button>
-                  <button type="button" data-account="options" aria-pressed="false">Robinhood</button>
+                  <button type="button" data-account="options" aria-pressed="true">Robinhood</button>
+                  <button type="button" data-account="challenge" aria-pressed="false">Fidelity</button>
                 </div>
               </div>
               <div className="chart-heading"><h2>Posted account balances</h2><span id="chart-context">Posted account values</span></div>
@@ -109,8 +119,8 @@ export function TogiTracker() {
         <aside className="reported-loss" id="reported-loss" aria-label="Self-reported loss context" hidden></aside>
 
         <section className="grid2" id="extras">
-            <div className="panel challenge-progress"><h2><span aria-hidden="true">◎</span> $10,000,000 challenge</h2>              <div className="road"><div className="road-heading"><span>The road to $10,000,000</span><span aria-hidden="true">🏁</span></div>
-                <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $10M">
+            <div className="panel challenge-progress"><h2><span aria-hidden="true">◎</span> <span id="road-title">$1,000,000 challenge</span></h2>              <div className="road"><div className="road-heading"><span id="road-to">The road to $1,000,000</span><span aria-hidden="true">🏁</span></div>
+                <div className="track" role="progressbar" id="bar" aria-valuemin={0} aria-valuemax={100} aria-label="Progress to $1M">
                   <div className="fill" id="fill"><span className="rider" aria-hidden="true">🚀</span></div>
                 </div>
                 <div className="ms" id="milestones"></div>
@@ -132,7 +142,7 @@ export function TogiTracker() {
                 <div><p className="lbl">Magic 8-Ball</p><p className="eight" id="eight" aria-hidden="true"><span>8</span></p></div>
                 <span className="badge joke">Joke · not a probability</span>
               </div>
-              <p className="answer" id="answer" aria-live="polite">Will he hit $10M?</p>
+              <p className="answer" id="answer" aria-live="polite">Will he hit $1M?</p>
               <button className="btn primary sm" id="shake" type="button">Shake it</button>
               <details className="realmath">
                 <summary>The real math</summary>
@@ -185,14 +195,14 @@ export function TogiTracker() {
             <div className="topline"></div>
             <div className="twist-l">
               <p className="eyebrow">Plot twist · <span id="gcdate"></span></p>
-              <p className="twist-h"><s>$3,000,000</s> <span className="arrow">→</span> <span className="acc">$10,000,000</span></p>
+              <p className="twist-h"><span id="twist-from">$6,000</span> <span className="arrow">→</span> <span className="acc" id="twist-to">$1,000,000</span></p>
             </div>
-            <p className="twist-q">“no longer 3ms goal. I&apos;m going for 10ms now.” <a id="gcsrc" href={TOGI_PROFILE_URL} {...ext}>post ↗</a></p>
+            <p className="twist-q">“<span id="twist-quote">Now in operation 6k to $1m</span>” <a id="gcsrc" href="https://x.com/ShaneStoffer/status/2125652479945883664" {...ext}>post ↗</a></p>
           </section>
 
         <section className="brand-hero hero solo">
           <p className="eyebrow">Stock market challenge · Fan tracker</p>
-          <h2 className="hero-h">Can Togi turn <span className="acc">$950K</span> into <span className="acc">$10M</span>?</h2>
+          <h2 className="hero-h" id="hero-q">Can Togi turn <span className="acc">$6K</span> into <span className="acc">$1M</span>?</h2>
           <p className="lede">Every trade he&apos;s posted on X, tracked to the dollar. The W&apos;s, the L&apos;s, and the occasional dream-based thesis.</p>
           <div className="btns">
             <a className="btn primary" href="#trades">See the trades</a>
