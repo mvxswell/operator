@@ -1,7 +1,7 @@
 // DOM rendering for the Togi Tracker page, ported from the standalone tracker's app.js.
 // Runs only in the browser, after the data has loaded. Every string from the feed is
 // HTML-escaped and every link goes through safeXUrl, since the feed is third-party data.
-import { isRobinhoodStats, isTogiPortfolio, safeXUrl, type TogiData, type TogiTrade } from "../../lib/togi";
+import { isRobinhoodStats, isTogiDonations, isTogiPortfolio, safeXUrl, type TogiData, type TogiDonation, type TogiTrade } from "../../lib/togi";
 import { renderPortfolioHtml, renderPortfolioSummaryHtml } from "./portfolio";
 import { renderRobinhoodHtml } from "./robinhood";
 import { renderBrokerPnlHtml } from "./pnl";
@@ -25,6 +25,39 @@ const ext = 'target="_blank" rel="noopener noreferrer"';
 export function degenNeedleAngle(score: number): number {
   const clamped = Math.max(0, Math.min(100, score));
   return -90 + 180 * (clamped / 100);
+}
+
+const money = (n: number) => usd(n, Number.isInteger(n) ? 0 : 2);
+
+/** Sum of disclosed donation amounts. Null when every amount is undisclosed. */
+export function disclosedDonationTotal(donations: TogiDonation[]): number | null {
+  let sum = 0;
+  let any = false;
+  for (const d of donations) {
+    if (typeof d.amount_usd !== "number") continue;
+    sum += d.amount_usd;
+    any = true;
+  }
+  return any ? sum : null;
+}
+
+/**
+ * Donations list. Amounts of null read "not disclosed" and are left out of the sum.
+ * The sum is labelled derived. Notes are escaped text; no images are rendered.
+ */
+export function renderDonationsHtml(donations: TogiDonation[]): { sumHtml: string; listHtml: string } {
+  const sorted = donations.map((d, i) => ({ d, i })).sort((a, b) => b.d.date.localeCompare(a.d.date) || a.i - b.i).map((x) => x.d);
+  const total = disclosedDonationTotal(sorted);
+  const sumHtml = total == null
+    ? `<span class="lbl">Disclosed total</span><span class="nd">not disclosed</span>`
+    : `<span class="lbl">Disclosed total</span><span class="v tabular">${money(total)}</span> <span class="dv">derived</span>`;
+  const listHtml = `<ul class="donations-list">${sorted.map((d) => {
+    const amount = d.amount_usd == null ? `<span class="nd">not disclosed</span>` : money(d.amount_usd);
+    const status = d.status === "pledged" ? "Pledged" : "Completed";
+    const note = d.note?.trim() ? `<p class="don-note">${esc(d.note)}</p>` : "";
+    return `<li class="don-row"><div class="don-main"><span class="date">${fmtDate(d.date)}</span><span class="don-who">${esc(d.recipient)}</span></div><span class="don-amt tabular">${amount}</span><span class="tag don-status">${status}</span><a class="don-src" href="${esc(safeXUrl(d.source_url))}" ${ext}>source post ↗</a>${note}</li>`;
+  }).join("")}</ul>`;
+  return { sumHtml, listHtml };
 }
 
 /** Semicircle gauge markup. The needle starts at 0; the caller sweeps it to `degenNeedleAngle`. */
@@ -381,6 +414,19 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("side").innerHTML = D.side_quests.map((s) =>
     `<li><span class="dt">${fmtDate(s.date)}</span>${esc(s.text)} <a href="${safeXUrl(s.source_url)}" ${ext}>post ↗</a></li>`,
   ).join("");
+
+  // ---- Donations (optional; hidden when the top-level key is missing or malformed) ----
+  const gifts = $("donations");
+  if (isTogiDonations(D.donations)) {
+    const html = renderDonationsHtml(D.donations);
+    $("donations-sum").innerHTML = html.sumHtml;
+    $("donations-list").innerHTML = html.listHtml;
+    gifts.hidden = false;
+  } else {
+    $("donations-sum").innerHTML = "";
+    $("donations-list").innerHTML = "";
+    gifts.hidden = true;
+  }
 
   // ---- Robinhood options account (optional; hidden when robinhood_stats is missing or malformed) ----
   const rh = $("robinhood-stats");

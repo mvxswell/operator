@@ -405,6 +405,25 @@
 .togi-tracker .pnl-method p{margin-top:10px;max-width:100ch}
 @media(max-width:600px){.togi-tracker .broker-pnl{grid-template-columns:1fr;gap:18px;padding:20px}.togi-tracker .pnl-balance .pnl-amount{font-size:24px}.togi-tracker .pnl-amount{font-size:32px}}
 .togi-tracker .tg-version{font-size:10px;font-weight:700;letter-spacing:.04em;color:var(--accent);background:#2c210c;border:1px solid #6b4a17;border-radius:5px;padding:3px 6px;white-space:nowrap}
+.togi-tracker .tg-follow-row{margin:0 0 12px;max-width:100%}
+.togi-tracker .tg-follow{font-size:14px;font-weight:650;color:var(--accent);overflow-wrap:anywhere}
+.togi-tracker .donate-call{display:flex;flex-wrap:wrap;align-items:center;gap:12px 18px;margin:0 0 16px;padding:16px 18px;max-width:100%;border:1px solid #4a3d25;border-radius:16px;background:linear-gradient(115deg,#1e180f 0,#111313 70%)}
+.togi-tracker .donate-btn{font-weight:700;min-height:48px;padding:12px 22px;box-shadow:0 0 0 1px #6b4a17}
+.togi-tracker .donate-call .fine{margin:0;flex:1 1 220px;min-width:0}
+.togi-tracker .donations{margin-top:0;max-width:100%}
+.togi-tracker .donations[hidden]{display:none}
+.togi-tracker .donations-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 16px;margin-bottom:4px}
+.togi-tracker .donations-sum{font-size:28px;font-weight:700;letter-spacing:-.04em;line-height:1.15}
+.togi-tracker .donations-sum .lbl{display:block;margin-bottom:4px}
+.togi-tracker .donations-list{list-style:none;margin:8px 0 0;padding:0}
+.togi-tracker .don-row{display:grid;grid-template-columns:minmax(0,1.4fr) auto auto auto;gap:6px 14px;align-items:center;padding:14px 0;border-top:1px solid var(--line-soft);min-width:0}
+.togi-tracker .don-main{display:flex;flex-direction:column;gap:2px;min-width:0}
+.togi-tracker .don-who{font-weight:650;overflow-wrap:anywhere}
+.togi-tracker .don-amt{font-weight:650;white-space:nowrap}
+.togi-tracker .don-src{font-size:13px;white-space:nowrap}
+.togi-tracker .don-note{grid-column:1/-1;margin:0;font-size:13px;line-height:1.55;color:var(--muted);overflow-wrap:anywhere}
+.togi-tracker .tag.don-status{white-space:nowrap}
+@media(max-width:639px){.togi-tracker .donate-btn{width:100%}.togi-tracker .donations-sum{font-size:24px}.togi-tracker .don-row{grid-template-columns:minmax(0,1fr) auto;align-items:start}.togi-tracker .don-main,.togi-tracker .don-note,.togi-tracker .don-src{grid-column:1/-1}.togi-tracker .don-src{white-space:normal}}
 .togi-tracker .degen .heat-value{display:flex;align-items:baseline;gap:5px;color:#ffc34c;font-size:28px;line-height:1;font-weight:750;font-variant-numeric:tabular-nums;letter-spacing:-.04em}
 .togi-tracker .heat-value small{font-size:9px;letter-spacing:.07em;color:var(--muted);font-weight:500}
 .togi-tracker .heat-status{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:7px;font-size:11px;color:var(--muted)}

@@ -349,3 +349,115 @@ test("tip button hides without a valid tip_url and keeps the note as plain text"
   assert.match(src, /const ext = \{ target: "_blank", rel: "noopener noreferrer" \}/);
   assert.ok(!/dangerouslySetInnerHTML/.test(src));
 });
+
+// ---- Donations, donate button, X follow link, V2.1 ----
+const { renderDonationsHtml, disclosedDonationTotal } = require("../src/components/togi/renderTogi.ts");
+
+const DONATIONS = [
+  {
+    date: "2026-11-25",
+    recipient: "Ronald McDonald House Charities",
+    amount_usd: 20000,
+    status: "completed",
+    note: "One-time donation receipt posted at 10:10 AM ET.",
+    source_url: "https://x.com/ShaneStoffer/status/2125608143489057114",
+  },
+  {
+    date: "2026-11-12",
+    recipient: "Ronald McDonald House Charities",
+    amount_usd: 16000,
+    status: "completed",
+    note: "One-time donation receipt posted at 5:15 PM ET.",
+    source_url: "https://x.com/ShaneStoffer/status/2121003939332313120",
+  },
+  {
+    date: "2026-10-03",
+    recipient: "The flower lady",
+    amount_usd: 300000,
+    status: "completed",
+    note: "Personal gift, not a Ronald McDonald House donation.",
+    source_url: "https://x.com/ShaneStoffer/status/2125084659126087786",
+  },
+];
+
+test("donations are optional and a bad copy does not reject the rest of the feed", () => {
+  assert.equal(snapshot.donations, undefined);
+  assert.equal(togi.isTogiDonations(undefined), false);
+  assert.equal(togi.isTogiDonations([]), false);
+  assert.equal(togi.isTogiData(snapshot), true);
+  assert.equal(togi.isTogiDonations(DONATIONS), true);
+  for (const bad of [null, "x", {}, [{ ...DONATIONS[0], amount_usd: "20000" }], [{ ...DONATIONS[0], status: "maybe" }], [{ ...DONATIONS[0], date: "Nov 25" }], [{ ...DONATIONS[0], recipient: "  " }]]) {
+    assert.equal(togi.isTogiDonations(bad), false);
+    assert.equal(togi.isTogiData({ ...snapshot, donations: bad }), true);
+  }
+  assert.equal(togi.isTogiData({ ...snapshot, donations: DONATIONS }), true);
+});
+
+test("disclosed donations sum to $336,000 and null amounts stay out of the total", () => {
+  assert.equal(disclosedDonationTotal(DONATIONS), 336000);
+  const withNull = [...DONATIONS, { date: "2026-09-01", recipient: "A cause", amount_usd: null, status: "pledged", source_url: "https://x.com/ShaneStoffer/status/2094852752962707959" }];
+  assert.equal(disclosedDonationTotal(withNull), 336000);
+  assert.equal(disclosedDonationTotal([{ ...DONATIONS[0], amount_usd: null }]), null);
+  const html = renderDonationsHtml(DONATIONS);
+  assert.match(html.sumHtml, /\$336,000/);
+  assert.match(html.sumHtml, />derived</);
+  assert.match(html.listHtml, /\$20,000/);
+  assert.match(html.listHtml, /\$16,000/);
+  assert.match(html.listHtml, /\$300,000/);
+  assert.match(html.listHtml, /The flower lady/);
+  assert.match(html.listHtml, /Nov 25, 2026/);
+  assert.match(html.listHtml, /Completed/);
+  assert.match(html.listHtml, /source post ↗/);
+  assert.doesNotMatch(html.listHtml + html.sumHtml, /<img|src=/);
+  const nov25 = html.listHtml.indexOf("Nov 25, 2026");
+  const oct3 = html.listHtml.indexOf("Oct 3, 2026");
+  assert.ok(nov25 > -1 && nov25 < oct3);
+  const hidden = renderDonationsHtml(withNull);
+  assert.match(hidden.listHtml, /not disclosed/);
+  assert.match(hidden.listHtml, /Pledged/);
+  assert.match(hidden.sumHtml, /\$336,000/);
+});
+
+test("donation text is escaped and source links stay on X posts", () => {
+  const html = renderDonationsHtml([{
+    ...DONATIONS[0],
+    recipient: '<img src=x onerror=alert(1)>',
+    note: '<script>alert(1)</script>',
+    source_url: "javascript:alert(1)",
+  }]);
+  const all = html.sumHtml + html.listHtml;
+  assert.doesNotMatch(all, /<img|<script|javascript:/);
+  assert.match(all, /&lt;img/);
+  assert.match(all, /&lt;script&gt;/);
+  assert.match(html.listHtml, new RegExp(`href="${togi.TOGI_PROFILE_URL}"`));
+  assert.match(html.listHtml, /target="_blank" rel="noopener noreferrer"/);
+});
+
+test("donate URL, version badge, and follow link", () => {
+  assert.equal(togi.safeDonateUrl("https://ronaldmcdonaldhouse.org/donate"), "https://ronaldmcdonaldhouse.org/donate");
+  assert.equal(togi.safeDonateUrl("https://www.ronaldmcdonaldhouse.org/donate"), "https://www.ronaldmcdonaldhouse.org/donate");
+  for (const bad of [undefined, null, "", "javascript:alert(1)", "http://ronaldmcdonaldhouse.org/donate", "https://evil.example/donate", "https://user:pw@ronaldmcdonaldhouse.org/donate", "https://ronaldmcdonaldhouse.org:8443/donate"]) {
+    assert.equal(togi.safeDonateUrl(bad), togi.DONATE_FALLBACK_URL);
+  }
+  assert.equal(togi.togiVersionLabel({ version: "2.1" }), "V2.1");
+  assert.equal(togi.togiVersionLabel({ version: "2" }), "V2");
+  assert.equal(togi.togiVersionLabel({}), "V2.1");
+  assert.equal(togi.togiVersionLabel({ version: "V2.1" }), "V2.1");
+  assert.equal(togi.togiVersionLabel({ version: "<script>" }), "V2.1");
+  assert.equal(togi.togiVersionLabel(snapshot.meta), "V2.1");
+  const page = fs.readFileSync("src/components/togi/TogiTracker.tsx", "utf8");
+  assert.match(page, /Follow Togi on X · @ShaneStoffer ↗/);
+  assert.match(page, /href=\{TOGI_PROFILE_URL\}/);
+  assert.match(page, /Donate to the kids/);
+  assert.match(page, /Unofficial fan-site link\. Not affiliated with Ronald McDonald House Charities or with Togi\./);
+  assert.match(page, /state\?\.donateUrl \?\? DONATE_FALLBACK_URL/);
+  assert.match(page, /state\?\.version \?\? "V2\.1"/);
+  assert.doesNotMatch(page, /V2\.0/);
+  assert.match(page, /id="donations"[^>]*\bhidden>/);
+  assert.match(page, /target: "_blank", rel: "noopener noreferrer"/);
+  assert.equal(snapshot.meta.tip_url, "https://x.com/ShaneStoffer");
+  const render = fs.readFileSync("src/components/togi/renderTogi.ts", "utf8");
+  assert.match(render, /isTogiDonations\(D\.donations\)/);
+  assert.match(render, /gifts\.hidden = false/);
+  assert.match(render, /gifts\.hidden = true/);
+});
