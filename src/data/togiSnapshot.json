@@ -1,27 +1,52 @@
 {
   "meta": {
-    "title": "Togi's $10,000,000 Stock Market Challenge (unofficial fan tracker)",
+    "title": "Togi's $6K to $1M challenge (unofficial fan tracker)",
     "handle": "@ShaneStoffer",
-    "goal": 10000000,
+    "goal": 1000000,
     "previous_goal": 3000000,
-    "goal_changed_on": "2026-11-02",
-    "goal_change_source": "https://x.com/ShaneStoffer/status/2117345071418716335",
+    "goal_changed_on": "2026-11-25",
+    "goal_change_source": "https://x.com/ShaneStoffer/status/2125652479945883664",
     "original_announcement": {
       "date": "2026-09-10",
       "text": "I'm doing a stock trading challenge 700k to 3ms",
       "source_url": "https://x.com/ShaneStoffer/status/2098139631942259114"
     },
-    "starting_value": 950000,
-    "starting_value_note": "His 'STOCK CHALLENGE UPDATE' posts list STARTING VALUE $950,000 (Sep 18 post: 'I started one month ago with $950,000'). The Sep 10 announcement said '700k to 3ms'.",
-    "starting_value_source": "https://x.com/ShaneStoffer/status/2110398186083033561",
-    "latest_value": 1954885.99,
-    "latest_value_date": "2026-11-02",
-    "latest_value_label": "Fidelity 'stonks' account total (screenshot), after he moved most of the $MRNA options money into shares",
-    "latest_value_source": "https://x.com/ShaneStoffer/status/2117345071418716335",
-    "latest_value_caveat": "Whatever is left in his Robinhood options account after the Nov 2 transfer is not disclosed, so the true combined total may be a bit higher.",
-    "last_updated": "2026-11-02",
+    "starting_value": 6000,
+    "starting_value_note": "His words on Nov 25: 'Now in operation 6k to $1m' (https://x.com/ShaneStoffer/status/2125652479945883664). The official start is $6,000 as he stated. The same post's video thumbnail (clock 11:03; video not transcribed) shows a Robinhood Investing 1D figure of $6,303.33, ▼ $94,864.02 (93.77%), and buying power $67,875.01. The Investing card on that same screen also shows $29,176.36, ▼ 71.16%. Those two current figures are not reconciled and the $29,176.36 card is not used as the headline. This is the Robinhood account, not Fidelity. The two accounts are not added together.",
+    "starting_value_source": "https://x.com/ShaneStoffer/status/2125652479945883664",
+    "latest_value": 45472.27,
+    "latest_value_date": "2026-11-26",
+    "latest_value_label": "Robinhood Investing total $45,472.27 (+$21,696.00 / +91.25% today, buying power $381.28). Robinhood only, not the Fidelity book.",
+    "latest_value_source": "https://x.com/ShaneStoffer/status/2126133393746432260",
+    "latest_value_caveat": "Robinhood Investing screenshot from https://x.com/ShaneStoffer/status/2126133393746432260; options marks are unrealized. Not a full net worth.",
+    "last_updated": "2026-11-26",
     "tip_url": "https://x.com/ShaneStoffer",
-    "tip_note": "Tip Togi on X: tap Money on his profile. Goes straight to him. We don't take a cut. Unofficial fan site."
+    "tip_note": "Tip Togi on X: tap Money on his profile. Goes straight to him. We don't take a cut. Unofficial fan site.",
+    "donate_url": "https://ronaldmcdonaldhouse.org/donate",
+    "version": "2.1",
+    "challenge": {
+      "id": "6k-to-1m",
+      "status": "current",
+      "account": "robinhood",
+      "title": "Togi's $6K to $1M challenge (unofficial fan tracker)",
+      "goal": 1000000,
+      "starting_value": 6000,
+      "start_date": "2026-11-25",
+      "source_url": "https://x.com/ShaneStoffer/status/2125652479945883664",
+      "announcement_text": "Now in operation 6k to $1m",
+      "rules_note": "Announced Nov 25 in the same post as 'SMART GAMBLING/TRADING DAY 1', 'Sold those positions', 'trading PnL: -$10,000', and 'gambling PnL: +$20,000'. He did not post a written rule set. The start is $6,000 as he stated ('6k'). The account is Robinhood Investing, not Fidelity. Gambling P&L is a side quest and is not counted in this challenge. The two accounts are not added together. Earlier the same day he had described a $200,000 budget for 'DAY ONE OF BEING A SMART TRADER/GAMBLER' (https://x.com/ShaneStoffer/status/2125568785822441489); this 6k-to-$1m post is the later announcement.",
+      "latest_value": 31350,
+      "latest_value_date": "2026-11-25",
+      "latest_value_label": "Open SPXW position market value $31,350.00 (110 contracts at a $2.85 listed mark, today's and total return +$10,400.50 / +49.65%). Not a full Robinhood Investing account total. 'Free 30k' is his wording.",
+      "latest_value_source": "https://x.com/ShaneStoffer/status/2125655510636433533",
+      "milestones": [
+        6000,
+        100000,
+        250000,
+        500000,
+        1000000
+      ]
+    }
   },
   "account_history": [
     {
@@ -163,6 +188,202 @@
       "value": 886370.64,
       "label": "Robinhood account after selling MSTR puts",
       "source_url": "https://x.com/ShaneStoffer/status/2116184686284386455"
+    },
+    {
+      "date": "2026-11-03",
+      "account": "challenge",
+      "value": 2012954.21,
+      "label": "Fidelity account total after rotating into more GPRO",
+      "source_url": "https://x.com/ShaneStoffer/status/2117671703526699370"
+    },
+    {
+      "date": "2026-11-03",
+      "account": "options",
+      "value": 36345.65,
+      "label": "Robinhood 'Investing' balance (screenshot, after moving most of the money to Fidelity)",
+      "source_url": "https://x.com/ShaneStoffer/status/2117684405791854807"
+    },
+    {
+      "date": "2026-11-06",
+      "account": "options",
+      "value": 49973.69,
+      "label": "Robinhood Investing after the MRNA earnings puts ('sticking to shares from now on')",
+      "source_url": "https://x.com/ShaneStoffer/status/2118766366996181295"
+    },
+    {
+      "date": "2026-11-06",
+      "account": "challenge",
+      "value": 1882146.99,
+      "label": "Fidelity account total ('best retirement account ever' screenshot)",
+      "source_url": "https://x.com/ShaneStoffer/status/2118793776168931696"
+    },
+    {
+      "date": "2026-11-11",
+      "account": "challenge",
+      "value": 1626583.8,
+      "label": "Fidelity account total ('Today I lost a years salary' screenshot)",
+      "source_url": "https://x.com/ShaneStoffer/status/2120639971140780104"
+    },
+    {
+      "date": "2026-11-12",
+      "account": "options",
+      "value": 181475.01,
+      "label": "Robinhood account chart ('tripled down' / 'Stocks are insane' screenshot)",
+      "source_url": "https://x.com/ShaneStoffer/status/2120888920712118431"
+    },
+    {
+      "date": "2026-11-12",
+      "account": "options",
+      "value": 360650.39,
+      "label": "Robinhood Investing after selling 'like 75%' of the SPXW calls ('first ever 1000%' screenshot)",
+      "source_url": "https://x.com/ShaneStoffer/status/2120915114518011948"
+    },
+    {
+      "date": "2026-11-12",
+      "account": "options",
+      "value": 246527.77,
+      "label": "Robinhood Investing after the SPXW calls faded (screenshot, 12:58 clock)",
+      "source_url": "https://x.com/ShaneStoffer/status/2120985001210925475"
+    },
+    {
+      "date": "2026-11-12",
+      "account": "options",
+      "value": 279763.88,
+      "label": "Robinhood Investing from his evening video (later frame, 8:01 clock)",
+      "source_url": "https://x.com/ShaneStoffer/status/2121092029472260166"
+    },
+    {
+      "date": "2026-11-13",
+      "account": "options",
+      "value": 319754.02,
+      "label": "Robinhood Investing (1W view, after closing SPXW puts)",
+      "source_url": "https://x.com/ShaneStoffer/status/2121290488414433727"
+    },
+    {
+      "date": "2026-11-17",
+      "account": "options",
+      "value": 374576.88,
+      "label": "Robinhood account chart ('Easy $500%' screenshot)",
+      "source_url": "https://x.com/ShaneStoffer/status/2122760093628579962"
+    },
+    {
+      "date": "2026-11-18",
+      "account": "options",
+      "value": 397186.51,
+      "label": "Robinhood Investing (1D chart, after selling SPXW puts)",
+      "source_url": "https://x.com/ShaneStoffer/status/2123089495365124278"
+    },
+    {
+      "date": "2026-11-22",
+      "account": "options",
+      "value": 214017.81,
+      "label": "Robinhood Investing (1D chart, -$89,445.02 / -29.47% today, buying power $103,005.39; 'Need a miracle')",
+      "source_url": "https://x.com/ShaneStoffer/status/2124695113918300201"
+    },
+    {
+      "date": "2026-11-22",
+      "account": "options",
+      "value": 303770.21,
+      "label": "Robinhood Investing (1D chart, +$307.38 / +0.10% today, buying power $3,392.88)",
+      "source_url": "https://x.com/ShaneStoffer/status/2124705264536555806"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 351424.15,
+      "label": "Robinhood Investing (LIVE, +$67,800.00 / +23.90% past hour, buying power $608.68; 'I can't sleep')",
+      "source_url": "https://x.com/ShaneStoffer/status/2124792935942128054"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 388794.15,
+      "label": "Robinhood Investing (LIVE, +$127,680.01 / +48.90% past hour)",
+      "source_url": "https://x.com/ShaneStoffer/status/2124793588332814477"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 400364.16,
+      "label": "Robinhood Investing (LIVE, +$137,640.01 / +52.39% past hour)",
+      "source_url": "https://x.com/ShaneStoffer/status/2124793926263730359"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 433434.16,
+      "label": "Robinhood Investing (1D, +$278,810.00 / +180.31% today). He said Robinhood was 'not displaying properly' and he's 'not up that much. Started w 300k'",
+      "source_url": "https://x.com/ShaneStoffer/status/2124794598199574986"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 457204.15,
+      "label": "Robinhood Investing (1D, +$202,579.99 / +79.56% today, buying power $220,878.01; 'my wire just hit')",
+      "source_url": "https://x.com/ShaneStoffer/status/2124825454754632013"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 522590.24,
+      "label": "Robinhood Investing (1D, +$267,966.09 / +105.24% today, buying power $230,950.21; 'GOING LIVE IN 1 HOUR')",
+      "source_url": "https://x.com/ShaneStoffer/status/2124842484966556155"
+    },
+    {
+      "date": "2026-11-23",
+      "account": "options",
+      "value": 438064.16,
+      "label": "Robinhood Investing (1D, +$83,440.00 / +23.53% today, buying power $3,533.68; clock 10:23). From the video-post thumbnail; the video was not transcribed. 'Losing the 700k' in the caption is his wording, not a figure on this screen.",
+      "source_url": "https://x.com/ShaneStoffer/status/2124901951133393202"
+    },
+    {
+      "date": "2026-11-24",
+      "account": "options",
+      "value": 363790.2,
+      "label": "Robinhood Investing (1D, +$231,241.96 / +174.46% today). Chart-only screenshot posted with 'Noice'; buying power and positions not shown.",
+      "source_url": "https://x.com/ShaneStoffer/status/2125228019946316211"
+    },
+    {
+      "date": "2026-11-24",
+      "account": "options",
+      "value": 422815.21,
+      "label": "Robinhood Investing (1D, +$290,266.96 / +218.99% today, buying power $13,882.80; clock 10:29). Posted with 'Another classic round trip'.",
+      "source_url": "https://x.com/ShaneStoffer/status/2125251028119400711"
+    },
+    {
+      "date": "2026-11-24",
+      "account": "options",
+      "value": 94222.62,
+      "label": "Robinhood Investing (3M view, +$223,889.42 past 3 months; buying power $13,882.80; clock 11:22). Posted as '3 month options PnL'.",
+      "source_url": "https://x.com/ShaneStoffer/status/2125267313071104429"
+    },
+    {
+      "date": "2026-11-24",
+      "account": "options",
+      "value": 123472.62,
+      "label": "Robinhood Investing (YTD view, +$253,139.06 year to date; buying power $13,882.80; clock 12:26). Posted as 'Idk bruh I don't track that stuff but here's ytd' (he says he started ~2.5 months ago).",
+      "source_url": "https://x.com/ShaneStoffer/status/2125280164837982681"
+    },
+    {
+      "date": "2026-11-25",
+      "account": "options",
+      "value": 24563.32,
+      "label": "Robinhood Investing (1W view, -$773,944.27 / -96.92% past week). Posted as 'What a week'.",
+      "source_url": "https://x.com/ShaneStoffer/status/2125584639452500092"
+    },
+    {
+      "date": "2026-11-25",
+      "account": "options",
+      "value": 6303.33,
+      "label": "Robinhood Investing (1D, $6,303.33, ▼ $94,864.02 / 93.77% today, buying power $67,875.01; clock 11:03). Investing card on the same screen shows $29,176.36, ▼ 71.16% — not reconciled, not used as this mark. From the video-post thumbnail; the video was not transcribed. Posted with 'Now in operation 6k to $1m'.",
+      "source_url": "https://x.com/ShaneStoffer/status/2125652479945883664"
+    },
+    {
+      "date": "2026-11-26",
+      "account": "options",
+      "value": 45472.27,
+      "label": "Robinhood Investing (1D, $45,472.27, +$21,696.00 / 91.25% today, buying power $381.28).",
+      "source_url": "https://x.com/ShaneStoffer/status/2126133393746432260"
     }
   ],
   "trades": [
@@ -347,7 +568,7 @@
       {
         "ticker": "DUOT",
         "shares": 20000,
-        "value": 119400.0,
+        "value": 119400,
         "unrealized": -47829.54,
         "pct": -28.61
       },
@@ -361,15 +582,15 @@
       {
         "ticker": "MYO",
         "shares": 35000,
-        "value": 43050.0,
+        "value": 43050,
         "unrealized": -1123.28,
         "pct": -2.55
       },
       {
         "ticker": "TYGO",
         "shares": 40000,
-        "value": 35176.0,
-        "unrealized": -5924.0,
+        "value": 35176,
+        "unrealized": -5924,
         "pct": -14.42
       }
     ]
@@ -522,9 +743,9 @@
         "option": null,
         "shares": 20000,
         "last_price": 5.97,
-        "value": 119400.0,
+        "value": 119400,
         "pct_of_account": 6.11,
-        "day_change": -4600.0,
+        "day_change": -4600,
         "unrealized": -47829.54,
         "unrealized_pct": -28.61,
         "cost_basis": 167229.54,
@@ -544,7 +765,7 @@
         "last_price": 10.08,
         "value": 49522.37,
         "pct_of_account": 2.53,
-        "day_change": 0.0,
+        "day_change": 0,
         "unrealized": null,
         "unrealized_pct": null,
         "cost_basis": null,
@@ -562,9 +783,9 @@
         "option": null,
         "shares": 35000,
         "last_price": 1.23,
-        "value": 43050.0,
+        "value": 43050,
         "pct_of_account": 2.2,
-        "day_change": -350.0,
+        "day_change": -350,
         "unrealized": -1123.28,
         "unrealized_pct": -2.55,
         "cost_basis": 44173.28,
@@ -582,12 +803,12 @@
         "option": null,
         "shares": 40000,
         "last_price": 0.8794,
-        "value": 35176.0,
+        "value": 35176,
         "pct_of_account": 1.8,
-        "day_change": -144.0,
-        "unrealized": -5924.0,
+        "day_change": -144,
+        "unrealized": -5924,
         "unrealized_pct": -14.42,
-        "cost_basis": 41100.0,
+        "cost_basis": 41100,
         "cost_basis_derived": true,
         "as_of": "2026-11-02",
         "source_url": "https://x.com/ShaneStoffer/status/2117345071418716335",
@@ -702,5 +923,103 @@
         "source_url": "https://x.com/ShaneStoffer/status/2117392797468914107"
       }
     ]
-  }
+  },
+  "challenges": [
+    {
+      "id": "10m-fidelity",
+      "status": "historical",
+      "account": "fidelity",
+      "title": "Togi's $10,000,000 Stock Market Challenge (unofficial fan tracker)",
+      "goal": 10000000,
+      "previous_goal": 3000000,
+      "goal_changed_on": "2026-11-02",
+      "goal_change_source": "https://x.com/ShaneStoffer/status/2117345071418716335",
+      "original_announcement": {
+        "date": "2026-09-10",
+        "text": "I'm doing a stock trading challenge 700k to 3ms",
+        "source_url": "https://x.com/ShaneStoffer/status/2098139631942259114"
+      },
+      "starting_value": 950000,
+      "starting_value_note": "His 'STOCK CHALLENGE UPDATE' posts list STARTING VALUE $950,000 (Sep 18 post: 'I started one month ago with $950,000'). The Sep 10 announcement said '700k to 3ms'.",
+      "starting_value_source": "https://x.com/ShaneStoffer/status/2110398186083033561",
+      "latest_value": 1626583.8,
+      "latest_value_date": "2026-11-11",
+      "latest_value_label": "Fidelity account total (screenshot, 'TO DA MOOOOOON'), same four positions",
+      "latest_value_source": "https://x.com/ShaneStoffer/status/2120639971140780104",
+      "latest_value_caveat": "Not counting his Robinhood options account, which showed $397,186.51 on Nov 18 (+$26,492.88 / +7.15% on the day, https://x.com/ShaneStoffer/status/2123089495365124278; and +$314,900.87 / +382.69% past week on a later 1W chart, https://x.com/ShaneStoffer/status/2123191556916260912). Cash, buying power, and margin were not on those charts. The two accounts aren't added together. On Nov 6 he said he 'withdrew 800k to buy $GPRO' (https://x.com/ShaneStoffer/status/2118777789960925617) — self-reported; not added into the Fidelity headline. On Nov 19 he said he 'put 1.3ms into $GPRO at 95 cents' with no screenshot (https://x.com/ShaneStoffer/status/2123245977616494626) — his words, not a new account mark. The Fidelity headline stays the Nov 11 screenshot of $1,626,583.80 (https://x.com/ShaneStoffer/status/2120639971140780104). Nov 23 update: his Robinhood Investing total showed $522,590.24 (+$267,966.09 / +105.24% today, buying power $230,950.21; https://x.com/ShaneStoffer/status/2124842484966556155). He said he started the day with 300k and that Robinhood was 'not displaying properly' (https://x.com/ShaneStoffer/status/2124794598199574986), and a wire reportedly hit that day, so the day change likely includes the deposit and is not all trading gains. Still not added into the Fidelity headline. Nov 24 update: Robinhood Investing showed $422,815.21 at 10:29 (https://x.com/ShaneStoffer/status/2125251028119400711) and $94,222.62 at 11:22 (3M view, buying power $13,882.80; https://x.com/ShaneStoffer/status/2125267313071104429). Still not added into the Fidelity headline.",
+      "end_note": "No post says the $10M challenge officially ended or was reset. The last posted Fidelity account total is still the Nov 11 screenshot of $1,626,583.80 (https://x.com/ShaneStoffer/status/2120639971140780104). The Nov 25 cropped holdings post (https://x.com/ShaneStoffer/status/2125568785822441489, 7:34 AM ET) is a Fidelity positions table with no account total, last prices, or net values visible. Visible quantities: SPAXX (FIDELITY GOVT MMKT) 1,029.850; GPRO 1,257,613.553 (same as Nov 11); MRNA 984.528 (same as Nov 11); SNDK 1,252.376 (Nov 11 showed 156.547); MSTR 2,960.095 (same as Nov 11). Unrealized Gain/Loss is cut off at the right edge (visible prefixes only: GPRO after –$663,642 / –50.9; MRNA after +$71,862 / +47.2; SNDK after –$148,301 / –60.3; MSTR after –$200,364 / –46.6). He called that book 'my main portfolio. Safer stuff for retirement.' The same day he announced a new 'operation 6k to $1m' in the Robinhood account. The two accounts are not added together.",
+      "holdings_update": {
+        "as_of": "2026-11-25",
+        "source_url": "https://x.com/ShaneStoffer/status/2125568785822441489",
+        "account_total": null,
+        "account_total_note": "The screenshot is cropped. No account total, last prices, or net/current values are visible. The Net Value Inc/Dec column shows only a dash on each row; the dollar values in that column are not on the crop. Unrealized Gain/Loss figures are cut off at the right edge, so only the visible prefix is recorded — the missing digits are not invented.",
+        "caption": "This is my main portfolio. Safer stuff for retirement. $GPRO $MRNA $SNDK $MSTR",
+        "positions": [
+          {
+            "ticker": "SPAXX",
+            "name": "FIDELITY GOVT MMKT",
+            "quantity": 1029.85,
+            "unrealized": null,
+            "unrealized_visible": null,
+            "note": "Quantity 1,029.850 is fully visible. No unrealized figure is shown (blank). Net value is not printed. SPAXX is the Fidelity government money-market cash line; the dollar value is not on this crop. The Nov 11 Fidelity screenshot listed cash of $1,029.85 in this same fund."
+          },
+          {
+            "ticker": "GPRO",
+            "name": "GOPRO INC CL A",
+            "quantity": 1257613.553,
+            "unrealized": null,
+            "unrealized_visible": "cut off after –$663,642 and –50.9",
+            "note": "Quantity 1,257,613.553 is fully visible (same share count as the Nov 11 screenshot). Unrealized Gain/Loss is cropped after –$663,642 and –50.9; remaining digits and the % sign are not visible."
+          },
+          {
+            "ticker": "MRNA",
+            "name": "MODERNA INC",
+            "quantity": 984.528,
+            "unrealized": null,
+            "unrealized_visible": "cut off after +$71,862 and +47.2",
+            "note": "Quantity 984.528 is fully visible (same share count as the Nov 11 screenshot). Unrealized Gain/Loss is cropped after +$71,862 and +47.2."
+          },
+          {
+            "ticker": "SNDK",
+            "name": "SANDISK CORPORAT…",
+            "quantity": 1252.376,
+            "unrealized": null,
+            "unrealized_visible": "cut off after –$148,301 and –60.3",
+            "note": "Quantity 1,252.376 is fully visible. The Nov 11 Fidelity screenshot showed 156.547 shares, so this is a larger share count. Unrealized Gain/Loss is cropped after –$148,301 and –60.3."
+          },
+          {
+            "ticker": "MSTR",
+            "name": "STRATEGY INC CL A",
+            "quantity": 2960.095,
+            "unrealized": null,
+            "unrealized_visible": "cut off after –$200,364 and –46.6",
+            "note": "Quantity 2,960.095 is fully visible (same share count as the Nov 11 screenshot). Unrealized Gain/Loss is cropped after –$200,364 and –46.6."
+          }
+        ]
+      }
+    },
+    {
+      "id": "6k-to-1m",
+      "status": "current",
+      "account": "robinhood",
+      "title": "Togi's $6K to $1M challenge (unofficial fan tracker)",
+      "goal": 1000000,
+      "starting_value": 6000,
+      "start_date": "2026-11-25",
+      "source_url": "https://x.com/ShaneStoffer/status/2125652479945883664",
+      "announcement_text": "Now in operation 6k to $1m",
+      "rules_note": "Announced Nov 25 in the same post as 'SMART GAMBLING/TRADING DAY 1', 'Sold those positions', 'trading PnL: -$10,000', and 'gambling PnL: +$20,000'. He did not post a written rule set. The start is $6,000 as he stated ('6k'). The account is Robinhood Investing, not Fidelity. Gambling P&L is a side quest and is not counted in this challenge. The two accounts are not added together. Earlier the same day he had described a $200,000 budget for 'DAY ONE OF BEING A SMART TRADER/GAMBLER' (https://x.com/ShaneStoffer/status/2125568785822441489); this 6k-to-$1m post is the later announcement.",
+      "latest_value": 31350,
+      "latest_value_date": "2026-11-25",
+      "latest_value_label": "Open SPXW position market value $31,350.00 (110 contracts at a $2.85 listed mark, today's and total return +$10,400.50 / +49.65%). Not a full Robinhood Investing account total. 'Free 30k' is his wording.",
+      "latest_value_source": "https://x.com/ShaneStoffer/status/2125655510636433533",
+      "milestones": [
+        6000,
+        100000,
+        250000,
+        500000,
+        1000000
+      ]
+    }
+  ]
 }

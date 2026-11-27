@@ -373,7 +373,7 @@
 @media(min-width:1800px){.togi-tracker .meter .score{font-size:72px}}
 @media(max-width:1250px){.togi-tracker .tg-top{flex-wrap:wrap}.togi-tracker .tg-jump{order:10;flex-basis:100%;margin:0;justify-content:flex-start;padding-top:6px}.togi-tracker .feed-status{margin-left:auto}.togi-tracker .tg-lead{grid-template-columns:1fr 1fr}.togi-tracker .meter{padding:20px}.togi-tracker .meter .score{font-size:46px}.togi-tracker .meter-top>.badge{position:static}.togi-tracker .meter .lbl{font-size:15px}.togi-tracker .meter-foot .mono{font-size:17px}.togi-tracker .hero-day{font-size:15px}.togi-tracker .grid2{grid-template-columns:1fr 1fr}.togi-tracker .grid2 .odds{grid-column:1/-1;min-height:100px;grid-template-columns:58px 1fr auto}.togi-tracker .dashboard-panels{grid-template-columns:1fr 1fr}.togi-tracker .dashboard-panels .donations{grid-column:1/-1;min-height:0}.togi-tracker .chart-toolbar{gap:8px}.togi-tracker .chart-toolbar button{padding-inline:9px}.togi-tracker .chart-heading>span{font-size:10px}.togi-tracker .chart-readout{flex-wrap:wrap;gap:4px 8px}.togi-tracker .chart-readout strong{font-size:18px}}
 @media(max-width:767px){.togi-tracker .wrap{padding-inline:16px}.togi-tracker .tg-title{font-size:22px}.togi-tracker .tg-top{padding-top:18px;gap:8px}.togi-tracker .tg-jump{gap:2px}.togi-tracker .tg-jump a{padding:9px 12px;font-size:13px}.togi-tracker .tg-lead{grid-template-columns:1fr;gap:12px}.togi-tracker .meter{min-height:260px;padding:22px}.togi-tracker .meter .score{font-size:clamp(34px,10vw,59px)}.togi-tracker .meter-top>.badge{position:absolute;right:18px;top:20px;font-size:9px}.togi-tracker .meter .lbl{font-size:14px}.togi-tracker .meter-foot .lbl{font-size:11px}.togi-tracker .meter-foot .mono{font-size:18px}.togi-tracker .hero-day{font-size:16px}.togi-tracker .chartp{min-height:0;padding:16px}.togi-tracker .chart-readout strong{font-size:19px}.togi-tracker .grid2{gap:12px;grid-template-columns:1fr}.togi-tracker .grid2>.panel{min-height:128px}.togi-tracker .grid2 .odds{grid-column:auto;min-height:134px}.togi-tracker .grid2 .challenge-progress{min-height:128px}.togi-tracker .dashboard-panels{grid-template-columns:1fr;gap:12px;margin-top:12px}.togi-tracker .dashboard-panels>.panel{min-height:0;padding:18px}.togi-tracker .dashboard-panels .donations{grid-column:auto}.togi-tracker .stats{gap:12px}.togi-tracker .stat{padding:15px}.togi-tracker .stat .v{font-size:25px}.togi-tracker .stat .lbl{font-size:11px}.togi-tracker .meter .src{font-size:11px}.togi-tracker .rh-stats{padding-inline:0}.togi-tracker .chartp>.fine{font-size:10px}}
-@media(max-width:374px){.togi-tracker .tg-title{font-size:19px}.togi-tracker .tg-top .chip{font-size:9px}.togi-tracker .meter .lbl{max-width:140px}.togi-tracker .meter-top>.badge{top:21px;right:18px}.togi-tracker .meter .score{font-size:34px}.togi-tracker .hero-day{font-size:14px}.togi-tracker .chart-toolbar{flex-wrap:wrap}.togi-tracker .chart-accounts{margin-left:auto}.togi-tracker .chart-heading>span{font-size:9px}.togi-tracker .summary-table{font-size:12px}.togi-tracker .summary-table td{padding-inline:4px}.togi-tracker .summary-table th{font-size:10px;padding-inline:4px}}
+@media(max-width:374px){.togi-tracker .tg-title{font-size:19px}.togi-tracker .tg-top .chip{font-size:9px}.togi-tracker #meter-kicker{max-width:140px}.togi-tracker .meter-top>.badge{top:21px;right:18px}.togi-tracker .meter .score{font-size:34px}.togi-tracker .hero-day{font-size:14px}.togi-tracker .chart-toolbar{flex-wrap:wrap}.togi-tracker .chart-accounts{margin-left:auto}.togi-tracker .chart-heading>span{font-size:9px}.togi-tracker .summary-table{font-size:12px}.togi-tracker .summary-table td{padding-inline:4px}.togi-tracker .summary-table th{font-size:10px;padding-inline:4px}}
 .togi-tracker .grid2>.panel{min-height:128px}
 .togi-tracker .grid2 .challenge-progress{padding-block:13px}
 .togi-tracker .challenge-progress .road-heading{display:none}
@@ -438,3 +438,43 @@
 .togi-tracker .reported-loss>a{font-size:11px;white-space:nowrap;color:#e3ae9e}
 @media(max-width:767px){.togi-tracker .reported-loss{grid-template-columns:1fr;gap:8px;padding:15px}.togi-tracker .reported-loss strong>span{display:inline;margin-left:8px}.togi-tracker .reported-loss p{font-size:11px}.togi-tracker .tg-version{padding:2px 4px;font-size:9px}}
 @media(max-width:374px){.togi-tracker .tg-title{font-size:18px}.togi-tracker .tg-top{gap:6px}.togi-tracker .tg-top>.mark{width:22px;height:22px}.togi-tracker .tg-top .chip{font-size:8px;padding:3px 5px}}
+.togi-tracker .meter-top>div{min-width:0;padding-right:118px}
+.togi-tracker .meter .src{display:block;max-width:100%;overflow-wrap:anywhere}
+.togi-tracker .meter-scale{position:relative;margin:14px 0 2px;min-width:0}
+.togi-tracker .meter-now-row{position:relative;height:18px;margin-bottom:6px}
+.togi-tracker .meter-now{position:absolute;top:0;font-size:12px;font-weight:700;line-height:1.2;color:var(--accent);white-space:nowrap;font-variant-numeric:tabular-nums}
+.togi-tracker .meter-now.mid{transform:translateX(-50%)}
+.togi-tracker .meter-now.edge-r{left:auto;right:0}
+.togi-tracker .meter-bar-track{position:relative;height:12px;border-radius:20px;background:#30312a}
+.togi-tracker .meter-bar-fill{position:absolute;left:0;top:0;bottom:0;width:0;border-radius:20px;background:linear-gradient(90deg,#a8781f,#f2b441);box-shadow:0 0 12px #e8b85d88;animation:tg-fill-glow 2.4s ease-in-out infinite}
+.togi-tracker .meter-marker{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:#fff6df;border:2px solid #e8b85d;animation:tg-bar-pulse 1.8s ease-out infinite}
+.togi-tracker .meter-marker.edge-l{margin-left:0}
+.togi-tracker .meter-marker.edge-r{margin-left:-14px}
+.togi-tracker .meter-ticks{position:relative;height:36px;margin-top:6px;overflow:hidden}
+.togi-tracker .meter-tick{position:absolute;top:0;font-size:10px;line-height:1.2;color:var(--faint);white-space:nowrap;transform:translateX(-50%)}
+.togi-tracker .meter-tick.edge-l{transform:none}
+.togi-tracker .meter-tick.edge-r{transform:translateX(-100%)}
+.togi-tracker .meter-tick.alt{top:16px}
+.togi-tracker .meter-tick.hit{color:var(--accent)}
+@keyframes tg-bar-pulse{0%{box-shadow:0 0 0 0 #e8b85db3}100%{box-shadow:0 0 0 8px #e8b85d00}}
+@keyframes tg-fill-glow{0%,100%{filter:brightness(1)}50%{filter:brightness(1.18)}}
+@media (prefers-reduced-motion: reduce){.togi-tracker .meter-marker,.togi-tracker .meter-bar-fill{animation:none}}
+.togi-tracker .prior-card{padding:14px 16px;min-width:0;background:#141614;border-color:#3a3428}
+.togi-tracker .prior-card[hidden]{display:none}
+.togi-tracker .prior-line{font-size:13px;line-height:1.45;color:var(--muted);overflow-wrap:anywhere}
+.togi-tracker .prior-card a{display:inline-block;margin-top:6px;font-size:12px}
+.togi-tracker .twist-q{min-width:0;overflow-wrap:anywhere}
+@media (min-width: 768px){
+  .togi-tracker .tg-lead[data-prior="1"] .meter{grid-column:1;grid-row:1}
+  .togi-tracker .tg-lead[data-prior="1"] .prior-card{grid-column:1;grid-row:2}
+  .togi-tracker .tg-lead[data-prior="1"] .chartp{grid-column:2;grid-row:1 / span 2}
+}
+@media (max-width: 1250px) and (min-width: 768px){.togi-tracker .meter-top>div{padding-right:0}}
+@media (max-width: 767px){
+  .togi-tracker .meter-top>div{padding-right:0}
+  .togi-tracker #meter-kicker{display:block;max-width:calc(100% - 96px)}
+  .togi-tracker .twist{flex-direction:column;align-items:flex-start;gap:8px;padding:18px}
+  .togi-tracker .twist-h{font-size:18px}
+  .togi-tracker .meter-now{font-size:11px}
+  .togi-tracker .meter-tick{font-size:9px}
+}

@@ -51,6 +51,8 @@ export type TogiData = {
     donate_url?: unknown;
     /** Optional tracker version from the feed, such as "2.1". Shown as V2.1. */
     version?: unknown;
+    /** Optional current-challenge block. Preferred over the flat headline fields when status is current. */
+    challenge?: unknown;
   };
   account_history: TogiHistoryPoint[];
   trades: TogiTrade[];
@@ -61,6 +63,8 @@ export type TogiData = {
   robinhood_stats?: unknown;
   /** Optional. Validated by isTogiDonations; a missing or bad key hides the section. */
   donations?: unknown;
+  /** Optional earlier challenges. A missing key hides the previous-challenge card. */
+  challenges?: unknown;
 };
 
 export type TogiAccount = {
@@ -331,6 +335,181 @@ export function isTogiDonations(value: unknown): value is TogiDonation[] {
     if (d.note !== undefined && !isStr(d.note)) return false;
   }
   return true;
+}
+
+/** Compact challenge amounts: $6K, $31K, $1M, $1.63M. */
+export function compactChallengeUsd(n: number): string {
+  const sign = n < 0 ? "-" : "";
+  const a = Math.abs(n);
+  if (a >= 1_000_000) return `${sign}$${+((a / 1_000_000).toFixed(2))}M`;
+  if (a >= 1_000) return `${sign}$${Math.round(a / 1_000)}K`;
+  return `${sign}$${Math.round(a).toLocaleString("en-US")}`;
+}
+
+/** Exact dollars. Cents only when the feed value is not a whole dollar. */
+export function exactUsd(n: number): string {
+  const digits = Number.isInteger(n) ? 0 : 2;
+  return (n < 0 ? "-" : "") + "$" + Math.abs(n).toLocaleString("en-US", { minimumFractionDigits: digits, maximumFractionDigits: digits });
+}
+
+export function brokerName(account: unknown): string | null {
+  const name = typeof account === "string" ? account.trim().toLowerCase() : "";
+  if (name === "robinhood" || name === "options") return "Robinhood";
+  if (name === "fidelity" || name === "challenge") return "Fidelity";
+  return null;
+}
+
+type ChallengeFields = {
+  status: string;
+  account: string | null;
+  goal: number;
+  starting_value: number;
+  latest_value: number;
+  latest_value_date: string;
+  latest_value_label: string;
+  latest_value_source: string;
+  announcement_text: string;
+  source_url: string;
+  milestones: number[] | null;
+};
+
+function readChallenge(value: unknown): ChallengeFields | null {
+  if (!isObj(value) || !isNum(value.goal) || value.goal <= 0 || !isNum(value.starting_value) || !isNum(value.latest_value)) return null;
+  const milestones = Array.isArray(value.milestones)
+    ? value.milestones.filter((n): n is number => isNum(n) && n >= 0)
+    : null;
+  return {
+    status: isStr(value.status) ? value.status : "",
+    account: isStr(value.account) ? value.account : null,
+    goal: value.goal,
+    starting_value: value.starting_value,
+    latest_value: value.latest_value,
+    latest_value_date: isDate(value.latest_value_date) ? value.latest_value_date : "",
+    latest_value_label: isStr(value.latest_value_label) ? value.latest_value_label : "",
+    latest_value_source: isStr(value.latest_value_source) ? value.latest_value_source : "",
+    announcement_text: isStr(value.announcement_text) ? value.announcement_text.trim() : "",
+    source_url: isStr(value.source_url) ? value.source_url : "",
+    milestones: milestones && milestones.length ? milestones : null,
+  };
+}
+
+export type ChallengeView = {
+  goal: number;
+  starting_value: number;
+  latest_value: number;
+  latest_value_date: string;
+  latest_value_label: string;
+  latest_value_source: string;
+  account: string | null;
+  broker: string | null;
+  announcement_text: string;
+  announcement_source: string;
+  milestones: number[];
+  /** Which feed field supplied latest_value. */
+  field: string;
+};
+
+const FALLBACK_QUOTE = "Now in operation 6k to $1m";
+const FALLBACK_QUOTE_URL = "https://x.com/ShaneStoffer/status/2125652479945883664";
+
+type DatedMark = { latest_value: number; latest_value_date: string; latest_value_label: string; latest_value_source: string; field: string };
+
+/**
+ * Numbers for the live challenge card. Goal and start come from the current
+ * challenge. The posted value is whichever dated mark is newest, so a stale
+ * meta.challenge.latest_value loses to a newer meta.latest_value.
+ */
+export function currentChallengeView(data: TogiData): ChallengeView {
+  const meta = data.meta;
+  const fromMeta = readChallenge(meta.challenge);
+  const fromList = Array.isArray(data.challenges)
+    ? data.challenges.map(readChallenge).find((item) => item?.status === "current") ?? null
+    : null;
+  const identity = fromMeta && (fromMeta.status === "current" || fromMeta.status === "")
+    ? fromMeta
+    : fromList ?? fromMeta;
+  const marks: DatedMark[] = [{
+    latest_value: meta.latest_value,
+    latest_value_date: meta.latest_value_date,
+    latest_value_label: meta.latest_value_label,
+    latest_value_source: meta.latest_value_source,
+    field: "meta.latest_value",
+  }];
+  if (fromMeta?.latest_value_date) marks.push({
+    latest_value: fromMeta.latest_value,
+    latest_value_date: fromMeta.latest_value_date,
+    latest_value_label: fromMeta.latest_value_label,
+    latest_value_source: fromMeta.latest_value_source,
+    field: "meta.challenge.latest_value",
+  });
+  if (fromList?.latest_value_date) marks.push({
+    latest_value: fromList.latest_value,
+    latest_value_date: fromList.latest_value_date,
+    latest_value_label: fromList.latest_value_label,
+    latest_value_source: fromList.latest_value_source,
+    field: "challenges[].latest_value",
+  });
+  marks.sort((a, b) => b.latest_value_date.localeCompare(a.latest_value_date) || (a.field === "meta.latest_value" ? -1 : b.field === "meta.latest_value" ? 1 : 0));
+  const mark = marks[0];
+  const goal = identity?.goal ?? meta.goal;
+  const starting_value = identity?.starting_value ?? meta.starting_value;
+  const ticks = new Set<number>();
+  for (const n of identity?.milestones ?? []) if (n <= goal) ticks.add(n);
+  if (!ticks.size) for (const n of [starting_value, 10_000, 100_000, 500_000, goal]) if (n >= 0 && n <= goal) ticks.add(n);
+  if (starting_value >= 0 && starting_value <= goal) ticks.add(starting_value);
+  ticks.add(goal);
+  return {
+    goal,
+    starting_value,
+    latest_value: mark.latest_value,
+    latest_value_date: mark.latest_value_date,
+    latest_value_label: mark.latest_value_label,
+    latest_value_source: mark.latest_value_source,
+    account: identity?.account ?? null,
+    broker: brokerName(identity?.account) ?? (/robinhood/i.test(mark.latest_value_label) ? "Robinhood" : null),
+    announcement_text: identity?.announcement_text || FALLBACK_QUOTE,
+    announcement_source: identity?.source_url || meta.goal_change_source || FALLBACK_QUOTE_URL,
+    milestones: [...ticks].sort((a, b) => a - b),
+    field: mark.field,
+  };
+}
+
+export type PriorChallenge = {
+  account: string | null;
+  broker: string | null;
+  goal: number;
+  starting_value: number;
+  latest_value: number;
+  latest_value_date: string;
+  latest_value_source: string;
+};
+
+/** Earlier challenges. Empty when challenges[] is missing, so the history card stays hidden. */
+export function priorChallengeList(data: { challenges?: unknown }): PriorChallenge[] {
+  if (!Array.isArray(data.challenges)) return [];
+  const out: PriorChallenge[] = [];
+  for (const item of data.challenges) {
+    const challenge = readChallenge(item);
+    if (!challenge || challenge.status === "current") continue;
+    if (challenge.status && challenge.status !== "historical") continue;
+    if (!challenge.latest_value_date) continue;
+    out.push({
+      account: challenge.account,
+      broker: brokerName(challenge.account),
+      goal: challenge.goal,
+      starting_value: challenge.starting_value,
+      latest_value: challenge.latest_value,
+      latest_value_date: challenge.latest_value_date,
+      latest_value_source: challenge.latest_value_source,
+    });
+  }
+  return out;
+}
+
+/** Last posted Fidelity total from a historical challenge, when the feed still carries one. */
+export function historicalFidelityMark(data: { challenges?: unknown }): { latest_value: number; latest_value_date: string } | null {
+  const prior = priorChallengeList(data).find((item) => item.broker === "Fidelity");
+  return prior ? { latest_value: prior.latest_value, latest_value_date: prior.latest_value_date } : null;
 }
 
 /** The four numbers the homepage needs. The full feed stays on /togi/. */

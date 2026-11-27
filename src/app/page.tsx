@@ -11,7 +11,7 @@ import savingsJson from "@/data/grokBotSavings.json";
 import togiJson from "@/data/togiSnapshot.json";
 import { CATEGORIES } from "@/lib/categories";
 import { isSavingsData, niceDate, ratio, signedUsd, usd } from "@/lib/grokBotSavings";
-import { isTogiData, togiHeadline } from "@/lib/togi";
+import { compactChallengeUsd, isTogiData, togiHeadline } from "@/lib/togi";
 
 const START_HERE = [
   {
@@ -88,7 +88,7 @@ export default function HomePage() {
           </Link>
           <Link prefetch={false} href="/#trackers" className="hh-card hh-pillar hh-pillar-track">
             <p className="hh-kicker">Live trackers</p>
-            <p>Real numbers from real work, with sources shown. Including an unofficial tracker of Togi’s public $10M challenge.</p>
+            <p>Real numbers from real work, with sources shown. Including an unofficial tracker of Togi’s public {compactChallengeUsd(togi.starting_value)} to {compactChallengeUsd(togi.goal)} challenge.</p>
             <span className="hh-more">See the trackers →</span>
           </Link>
         </div>

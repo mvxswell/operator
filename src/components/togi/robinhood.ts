@@ -56,7 +56,7 @@ export function renderRobinhoodHtml(R: RobinhoodStats): { kpis: string; note: st
     cell("Started with", `<span class="v">${esc(started)}</span>`, undisclosed ? "deposit never posted" : "", undisclosed ? "nd" : ""),
     cell("First posted", moneyLink(fp.value, fp.source_url, fp.label), fmtDate(fp.date)),
     cell("Peak", moneyLink(pk.value, pk.source_url, pk.label), fmtDate(pk.date)),
-    cell("Low", moneyLink(lo.value, lo.source_url, lo.label), `${fmtDate(lo.date)} · after the move to Fidelity`),
+    cell("Low", moneyLink(lo.value, lo.source_url, lo.label), fmtDate(lo.date)),
     cell("Now", moneyLink(lt.value, lt.source_url, lt.label), day, "now"),
     cell("Started today", ts ? moneyLink(ts.value, ts.source_url, method) : '<span class="v">not disclosed</span>', todaySub, "today"),
   ].join("");

@@ -18,6 +18,25 @@ test("bundled Togi snapshot is valid fallback data", () => {
   assert.match(snapshot.meta.last_updated, /^\d{4}-\d{2}-\d{2}$/);
 });
 
+test("the headline uses the current Robinhood challenge, not the old $10M run", () => {
+  const view = togi.currentChallengeView(snapshot);
+  assert.equal(view.field, "meta.latest_value");
+  assert.equal(view.latest_value, 45472.27);
+  assert.equal(view.starting_value, 6000);
+  assert.equal(view.goal, 1000000);
+  assert.equal(view.broker, "Robinhood");
+  assert.equal(((view.latest_value / view.goal) * 100).toFixed(1), "4.5");
+  assert.equal((view.goal / view.latest_value).toFixed(2), "21.99");
+  const prior = togi.priorChallengeList(snapshot);
+  assert.equal(prior.length, 1);
+  assert.equal(prior[0].broker, "Fidelity");
+  assert.equal(prior[0].latest_value, 1626583.8);
+  assert.deepEqual(togi.priorChallengeList({}), []);
+  const page = fs.readFileSync("src/components/togi/TogiTracker.tsx", "utf8");
+  assert.match(page, /Robinhood · \$6K to \$1M challenge/);
+  assert.doesNotMatch(page, /Fidelity · The \$10M|% to \$10M|\$950K|\$10,000,000|going for 10ms/);
+});
+
 test("feed links are limited to X posts", () => {
   assert.equal(togi.safeXUrl("https://x.com/ShaneStoffer/status/2117345071418716335"), "https://x.com/ShaneStoffer/status/2117345071418716335");
   for (const bad of ["javascript:alert(1)", "https://evil.example/x.com/a/status/1", "https://x.com/a/status/1\" onmouseover=\"x", null, 7]) {
@@ -262,7 +281,8 @@ test("robinhood panel formats currency, links each stat, and links the withdrawa
   assert.match(html.kpis, /\$48,518\.00/);
   assert.match(html.kpis, /\$915,450\.97/);
   assert.match(html.kpis, /\$36,345\.65/);
-  assert.match(html.kpis, /after the move to Fidelity/);
+  assert.match(html.kpis, /Nov 3, 2026/);
+  assert.doesNotMatch(html.kpis, /after the move to Fidelity/);
   assert.match(html.kpis, /\$360,650\.39/);
   assert.match(html.kpis, /class="pos">\+\$281,804\.75 \(\+357\.41%\)/);
   assert.match(html.kpis, /\$78,845\.64/);
