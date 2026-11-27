@@ -14,12 +14,12 @@
     "starting_value": 6000,
     "starting_value_note": "His words on Nov 25: 'Now in operation 6k to $1m' (https://x.com/ShaneStoffer/status/2125652479945883664). The official start is $6,000 as he stated. The same post's video thumbnail (clock 11:03; video not transcribed) shows a Robinhood Investing 1D figure of $6,303.33, ▼ $94,864.02 (93.77%), and buying power $67,875.01. The Investing card on that same screen also shows $29,176.36, ▼ 71.16%. Those two current figures are not reconciled and the $29,176.36 card is not used as the headline. This is the Robinhood account, not Fidelity. The two accounts are not added together.",
     "starting_value_source": "https://x.com/ShaneStoffer/status/2125652479945883664",
-    "latest_value": 31350,
-    "latest_value_date": "2026-11-25",
-    "latest_value_label": "Open SPXW position market value $31,350.00 (110 contracts at a $2.85 listed mark, today's and total return +$10,400.50 / +49.65%). Not a full Robinhood Investing account total. 'Free 30k' is his wording.",
-    "latest_value_source": "https://x.com/ShaneStoffer/status/2125655510636433533",
-    "latest_value_caveat": "Live $6K-to-$1M mark is the open SPXW position market value $31,350.00 from https://x.com/ShaneStoffer/status/2125655510636433533 (posted 1:19 PM ET, after the 'operation 6k to $1m' announcement). Today's and total return on that screen is +$10,400.50 (+49.65%), unrealized. This is a 'Your position' screenshot, not a full Investing account total; no new Robinhood or Fidelity account total is on this post. The earlier $6,303.33 figure was the 1D Investing number on an 11:03 thumbnail in the announcement video (https://x.com/ShaneStoffer/status/2125652479945883664), taken before this progress post, and is not used as the live challenge mark. Call vs put and strike are not printed on the position screen (expiry 11/27, bought 11/25, avg cost $1.90, SPXW 7,151.98, breakeven 7,381.95). Shuffle sports bets in the same post are side quests and are not added into this total. Fidelity is not added in. Live challenge is $6K to $1M in Robinhood, announced as 'Now in operation 6k to $1m' (https://x.com/ShaneStoffer/status/2125652479945883664). Start is $6,000, his words. Headline current value is the 1D Investing figure $6,303.33 on that post's thumbnail (clock 11:03). The Investing card on the same screen shows $29,176.36, ▼ 71.16%; not used as the headline and not reconciled. The last posted Fidelity account total is still $1,626,583.80 from the Nov 11 screenshot (https://x.com/ShaneStoffer/status/2120639971140780104). No later Fidelity account total has been posted. The Nov 25 cropped holdings screenshot (https://x.com/ShaneStoffer/status/2125568785822441489) shows share counts but no account total; he called that book 'my main portfolio. Safer stuff for retirement.' He has not posted that the $10M challenge officially ended or was reset; the $1.6M figure is still the last Fidelity mark, but it is no longer the live challenge headline and is not added into the $6K-to-$1M total. Gambling P&L of +$20,000 in the same post is a side quest, not counted here.",
-    "last_updated": "2026-11-25",
+    "latest_value": 45472.27,
+    "latest_value_date": "2026-11-26",
+    "latest_value_label": "Robinhood Investing total $45,472.27 (+$21,696.00 / +91.25% today, buying power $381.28). Robinhood only, not the Fidelity book.",
+    "latest_value_source": "https://x.com/ShaneStoffer/status/2126133393746432260",
+    "latest_value_caveat": "Robinhood Investing screenshot from https://x.com/ShaneStoffer/status/2126133393746432260; options marks are unrealized. Not a full net worth.",
+    "last_updated": "2026-11-26",
     "tip_url": "https://x.com/ShaneStoffer",
     "tip_note": "Tip Togi on X: tap Money on his profile. Goes straight to him. We don't take a cut. Unofficial fan site.",
     "donate_url": "https://ronaldmcdonaldhouse.org/donate",
@@ -377,6 +377,13 @@
       "value": 6303.33,
       "label": "Robinhood Investing (1D, $6,303.33, ▼ $94,864.02 / 93.77% today, buying power $67,875.01; clock 11:03). Investing card on the same screen shows $29,176.36, ▼ 71.16% — not reconciled, not used as this mark. From the video-post thumbnail; the video was not transcribed. Posted with 'Now in operation 6k to $1m'.",
       "source_url": "https://x.com/ShaneStoffer/status/2125652479945883664"
+    },
+    {
+      "date": "2026-11-26",
+      "account": "options",
+      "value": 45472.27,
+      "label": "Robinhood Investing (1D, $45,472.27, +$21,696.00 / 91.25% today, buying power $381.28).",
+      "source_url": "https://x.com/ShaneStoffer/status/2126133393746432260"
     }
   ],
   "trades": [
@@ -940,7 +947,56 @@
       "latest_value_label": "Fidelity account total (screenshot, 'TO DA MOOOOOON'), same four positions",
       "latest_value_source": "https://x.com/ShaneStoffer/status/2120639971140780104",
       "latest_value_caveat": "Not counting his Robinhood options account, which showed $397,186.51 on Nov 18 (+$26,492.88 / +7.15% on the day, https://x.com/ShaneStoffer/status/2123089495365124278; and +$314,900.87 / +382.69% past week on a later 1W chart, https://x.com/ShaneStoffer/status/2123191556916260912). Cash, buying power, and margin were not on those charts. The two accounts aren't added together. On Nov 6 he said he 'withdrew 800k to buy $GPRO' (https://x.com/ShaneStoffer/status/2118777789960925617) — self-reported; not added into the Fidelity headline. On Nov 19 he said he 'put 1.3ms into $GPRO at 95 cents' with no screenshot (https://x.com/ShaneStoffer/status/2123245977616494626) — his words, not a new account mark. The Fidelity headline stays the Nov 11 screenshot of $1,626,583.80 (https://x.com/ShaneStoffer/status/2120639971140780104). Nov 23 update: his Robinhood Investing total showed $522,590.24 (+$267,966.09 / +105.24% today, buying power $230,950.21; https://x.com/ShaneStoffer/status/2124842484966556155). He said he started the day with 300k and that Robinhood was 'not displaying properly' (https://x.com/ShaneStoffer/status/2124794598199574986), and a wire reportedly hit that day, so the day change likely includes the deposit and is not all trading gains. Still not added into the Fidelity headline. Nov 24 update: Robinhood Investing showed $422,815.21 at 10:29 (https://x.com/ShaneStoffer/status/2125251028119400711) and $94,222.62 at 11:22 (3M view, buying power $13,882.80; https://x.com/ShaneStoffer/status/2125267313071104429). Still not added into the Fidelity headline.",
-      "end_note": "No post says the $10M challenge officially ended or was reset. The last posted Fidelity account total is still the Nov 11 screenshot of $1,626,583.80. A Nov 25 cropped holdings post (https://x.com/ShaneStoffer/status/2125568785822441489) shows share counts for GPRO, MRNA, SNDK, and MSTR but no account total; he called that book 'my main portfolio. Safer stuff for retirement.' The same day he announced a new 'operation 6k to $1m' in the Robinhood account."
+      "end_note": "No post says the $10M challenge officially ended or was reset. The last posted Fidelity account total is still the Nov 11 screenshot of $1,626,583.80 (https://x.com/ShaneStoffer/status/2120639971140780104). The Nov 25 cropped holdings post (https://x.com/ShaneStoffer/status/2125568785822441489, 7:34 AM ET) is a Fidelity positions table with no account total, last prices, or net values visible. Visible quantities: SPAXX (FIDELITY GOVT MMKT) 1,029.850; GPRO 1,257,613.553 (same as Nov 11); MRNA 984.528 (same as Nov 11); SNDK 1,252.376 (Nov 11 showed 156.547); MSTR 2,960.095 (same as Nov 11). Unrealized Gain/Loss is cut off at the right edge (visible prefixes only: GPRO after –$663,642 / –50.9; MRNA after +$71,862 / +47.2; SNDK after –$148,301 / –60.3; MSTR after –$200,364 / –46.6). He called that book 'my main portfolio. Safer stuff for retirement.' The same day he announced a new 'operation 6k to $1m' in the Robinhood account. The two accounts are not added together.",
+      "holdings_update": {
+        "as_of": "2026-11-25",
+        "source_url": "https://x.com/ShaneStoffer/status/2125568785822441489",
+        "account_total": null,
+        "account_total_note": "The screenshot is cropped. No account total, last prices, or net/current values are visible. The Net Value Inc/Dec column shows only a dash on each row; the dollar values in that column are not on the crop. Unrealized Gain/Loss figures are cut off at the right edge, so only the visible prefix is recorded — the missing digits are not invented.",
+        "caption": "This is my main portfolio. Safer stuff for retirement. $GPRO $MRNA $SNDK $MSTR",
+        "positions": [
+          {
+            "ticker": "SPAXX",
+            "name": "FIDELITY GOVT MMKT",
+            "quantity": 1029.85,
+            "unrealized": null,
+            "unrealized_visible": null,
+            "note": "Quantity 1,029.850 is fully visible. No unrealized figure is shown (blank). Net value is not printed. SPAXX is the Fidelity government money-market cash line; the dollar value is not on this crop. The Nov 11 Fidelity screenshot listed cash of $1,029.85 in this same fund."
+          },
+          {
+            "ticker": "GPRO",
+            "name": "GOPRO INC CL A",
+            "quantity": 1257613.553,
+            "unrealized": null,
+            "unrealized_visible": "cut off after –$663,642 and –50.9",
+            "note": "Quantity 1,257,613.553 is fully visible (same share count as the Nov 11 screenshot). Unrealized Gain/Loss is cropped after –$663,642 and –50.9; remaining digits and the % sign are not visible."
+          },
+          {
+            "ticker": "MRNA",
+            "name": "MODERNA INC",
+            "quantity": 984.528,
+            "unrealized": null,
+            "unrealized_visible": "cut off after +$71,862 and +47.2",
+            "note": "Quantity 984.528 is fully visible (same share count as the Nov 11 screenshot). Unrealized Gain/Loss is cropped after +$71,862 and +47.2."
+          },
+          {
+            "ticker": "SNDK",
+            "name": "SANDISK CORPORAT…",
+            "quantity": 1252.376,
+            "unrealized": null,
+            "unrealized_visible": "cut off after –$148,301 and –60.3",
+            "note": "Quantity 1,252.376 is fully visible. The Nov 11 Fidelity screenshot showed 156.547 shares, so this is a larger share count. Unrealized Gain/Loss is cropped after –$148,301 and –60.3."
+          },
+          {
+            "ticker": "MSTR",
+            "name": "STRATEGY INC CL A",
+            "quantity": 2960.095,
+            "unrealized": null,
+            "unrealized_visible": "cut off after –$200,364 and –46.6",
+            "note": "Quantity 2,960.095 is fully visible (same share count as the Nov 11 screenshot). Unrealized Gain/Loss is cropped after –$200,364 and –46.6."
+          }
+        ]
+      }
     },
     {
       "id": "6k-to-1m",

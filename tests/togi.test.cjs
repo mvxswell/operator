@@ -20,13 +20,13 @@ test("bundled Togi snapshot is valid fallback data", () => {
 
 test("the headline uses the current Robinhood challenge, not the old $10M run", () => {
   const view = togi.currentChallengeView(snapshot);
-  assert.equal(view.field, "meta.challenge.latest_value");
-  assert.equal(view.latest_value, 31350);
+  assert.equal(view.field, "meta.latest_value");
+  assert.equal(view.latest_value, 45472.27);
   assert.equal(view.starting_value, 6000);
   assert.equal(view.goal, 1000000);
   assert.equal(view.broker, "Robinhood");
-  assert.equal(((view.latest_value / view.goal) * 100).toFixed(1), "3.1");
-  assert.equal((view.goal / view.latest_value).toFixed(2), "31.90");
+  assert.equal(((view.latest_value / view.goal) * 100).toFixed(1), "4.5");
+  assert.equal((view.goal / view.latest_value).toFixed(2), "21.99");
   const prior = togi.priorChallengeList(snapshot);
   assert.equal(prior.length, 1);
   assert.equal(prior[0].broker, "Fidelity");
@@ -281,7 +281,8 @@ test("robinhood panel formats currency, links each stat, and links the withdrawa
   assert.match(html.kpis, /\$48,518\.00/);
   assert.match(html.kpis, /\$915,450\.97/);
   assert.match(html.kpis, /\$36,345\.65/);
-  assert.match(html.kpis, /after the move to Fidelity/);
+  assert.match(html.kpis, /Nov 3, 2026/);
+  assert.doesNotMatch(html.kpis, /after the move to Fidelity/);
   assert.match(html.kpis, /\$360,650\.39/);
   assert.match(html.kpis, /class="pos">\+\$281,804\.75 \(\+357\.41%\)/);
   assert.match(html.kpis, /\$78,845\.64/);

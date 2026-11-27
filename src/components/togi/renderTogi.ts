@@ -130,7 +130,8 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   count($("pctbadge"), pct, (v) => v.toFixed(1) + "% to " + goalShort);
   const curSrc = $("cursrc") as HTMLAnchorElement;
   curSrc.href = safeXUrl(view.latest_value_source);
-  curSrc.textContent = (view.latest_value_label || "Latest posted value") + " · " + fmtDate(view.latest_value_date) + " ↗";
+  const sourceLabel = (view.latest_value_label || "Latest posted value").split(/(?<=[.!?])\s+/).filter((sentence) => !/fidelity|\$10\s?m|10,000,000/i.test(sentence)).join(" ").trim();
+  curSrc.textContent = (sourceLabel || "Latest posted value") + " · " + fmtDate(view.latest_value_date) + " ↗";
   ($("latestbtn") as HTMLAnchorElement).href = safeXUrl(view.latest_value_source);
   count($("togo"), Math.max(0, goal - cur), (v) => short(v));
   count($("fromstart"), goal === start ? 0 : ((cur - start) / (goal - start)) * 100, (v) => v.toFixed(1) + "%");
@@ -138,7 +139,8 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("mult").textContent = mult.toFixed(2) + "x";
   $("mult2").textContent = mult.toFixed(2) + "x";
   $("dbl").textContent = dbl.toFixed(1);
-  const note = [view.latest_value_label, m.starting_value_note].filter((part): part is string => typeof part === "string" && part.trim().length > 0 && !retiredNote.test(part)).join(" ");
+  const cardSafe = (text: string) => text.split(/(?<=[.!?])\s+/).filter((sentence) => !/fidelity|\$10\s?m|10,000,000/i.test(sentence)).join(" ").trim();
+  const note = [view.latest_value_label, m.starting_value_note].filter((part): part is string => typeof part === "string" && part.trim().length > 0 && !retiredNote.test(part)).map(cardSafe).filter(Boolean).join(" ");
   $("caveat").textContent = `This challenge runs on ${broker}. Unofficial fan tracker. Not financial advice. Start: ${exactUsd(start)}. Live mark: ${exactUsd(cur)} on ${fmtDate(view.latest_value_date)}. ${note}`.replace(/\s+/g, " ").trim();
   const amount = exactUsd(cur);
   const now = $("meter-now");
@@ -179,19 +181,16 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("hero-q").innerHTML = `Can Togi turn <span class="acc">${esc(startShort)}</span> into <span class="acc">${esc(goalShort)}</span>?`;
   const priors = priorChallengeList(D);
   const priorEl = $("prior-challenge");
-  const lead = root.querySelector(".tg-lead");
   if (priors.length) {
     priorEl.hidden = false;
-    lead?.setAttribute("data-prior", "1");
     priorEl.innerHTML = priors.map((p) => {
-      const who = p.broker ? ` (${esc(p.broker)})` : "";
+      const who = p.broker ? ` on ${esc(p.broker)}` : "";
       const when = new Date(p.latest_value_date + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric" });
-      return `<p class="prior-line">Previous challenge: ${esc(compactChallengeUsd(p.starting_value))} to ${esc(compactChallengeUsd(p.goal))}${who}, last posted ${esc(exactUsd(p.latest_value))} on ${esc(when)}</p><a href="${esc(safeXUrl(p.latest_value_source))}" ${ext}>source post ↗</a>`;
+      return `<p class="prior-line">Previous challenge (ended): ${esc(compactChallengeUsd(p.starting_value))} to ${esc(compactChallengeUsd(p.goal))}${who}, last posted ${esc(exactUsd(p.latest_value))} on ${esc(when)}</p><a href="${esc(safeXUrl(p.latest_value_source))}" ${ext}>source post ↗</a>`;
     }).join("");
   } else {
     priorEl.hidden = true;
     priorEl.innerHTML = "";
-    lead?.removeAttribute("data-prior");
   }
   $("herometa").textContent = `${T.length} trades tracked · announced ${fmtDate(m.original_announcement.date)} · updated ${fmtDate(m.last_updated)}`;
   $("gcdate").textContent = fmtDate(m.goal_changed_on);
@@ -316,14 +315,10 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
   $("tape").innerHTML = tapeAll + tapeAll;
 
   // ---- Historical account chart: one account at a time, with source receipts. ----
-  const priorRun = priorChallengeList(D).find((item) => item.broker === "Fidelity");
-  const historyForCurrent = view.broker === "Fidelity" ? "challenge" : "options";
-  let chartAccount = D.account_history.some((p) => p.account === historyForCurrent)
-    ? historyForCurrent
-    : D.account_history.some((p) => p.account === "challenge") ? "challenge" : "options";
+  let chartAccount = D.account_history.some((p) => p.account === "options") ? "options" : "challenge";
   root.querySelectorAll<HTMLButtonElement>(".chart-accounts button").forEach((button) => {
     if (button.dataset.account === "options") button.textContent = "Robinhood";
-    if (button.dataset.account === "challenge") button.textContent = priorRun ? `Fidelity · ${compactChallengeUsd(priorRun.goal)}` : "Fidelity";
+    if (button.dataset.account === "challenge") button.textContent = "Previous run";
   });
   let chartRange = "all";
   function chart() {
@@ -343,9 +338,7 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
     const readout = (point: typeof history[number]) => {
       $("chart-readout").innerHTML = `<strong>${usd(point.value, 2)}</strong><span>${fmtDate(point.date)}</span><a href="${safeXUrl(point.source_url)}" ${ext}>Source post ↗</a>`;
     };
-    $("chart-context").textContent = chartAccount === "challenge"
-      ? (priorRun ? `Fidelity · previous ${compactChallengeUsd(priorRun.goal)} run` : "Fidelity · previous run")
-      : "Robinhood · posted balances";
+    $("chart-context").textContent = chartAccount === "challenge" ? "Previous run" : "Robinhood · posted balances";
     readout(selected[selected.length - 1]);
     let g = '<defs><linearGradient id="tg-chart-area" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#35d87c" stop-opacity=".22"/><stop offset="1" stop-color="#35d87c" stop-opacity=".015"/></linearGradient></defs>';
     for (let i = 0; i <= 3; i++) {
@@ -367,7 +360,7 @@ export function renderTogi(root: HTMLElement, D: TogiData): () => void {
       const last = visible && p === selected[selected.length - 1];
       g += `<a class="chart-point${last ? " last" : ""}" data-point="${index}" href="${safeXUrl(p.source_url)}" aria-label="${esc(p.account)} · ${fmtDate(p.date)}: ${usd(p.value, 2)} · ${esc(p.label)} · open source post" ${visible ? "" : 'style="display:none"'} ${ext}><circle class="point-hit" cx="${x(p.date)}" cy="${y(p.value)}" r="12" fill="transparent"/><circle class="point-dot" cx="${x(p.date)}" cy="${y(p.value)}" r="${last ? 4 : 3.5}" fill="#35d87c" stroke="#0a100d" stroke-width="2"><title>${fmtDate(p.date)}: ${usd(p.value, 2)} (${esc(p.label)})</title></circle></a>`;
     });
-    $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${chartAccount === "challenge" ? "Fidelity previous run" : "Robinhood current challenge"} posted account history">${g}</svg>`;
+    $("chart").innerHTML = `<svg viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${chartAccount === "challenge" ? "Previous run" : "Robinhood"} posted account history">${g}</svg>`;
     root.querySelectorAll<SVGAElement>(".chart-point").forEach((point) => {
       const show = () => {
         const p = history[Number(point.dataset.point)];

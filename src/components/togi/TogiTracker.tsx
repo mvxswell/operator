@@ -89,8 +89,6 @@ export function TogiTracker() {
               <details className="account-context"><summary>Account context &amp; important caveats</summary><p className="caveat" id="caveat"></p></details>
             </section>
 
-            <section className="panel prior-card" id="prior-challenge" aria-label="Previous challenge" hidden></section>
-
             <section className="panel panel-depth chartp">
               <div className="chart-toolbar">
                 <div className="chart-ranges" role="group" aria-label="Chart date range">
@@ -100,7 +98,7 @@ export function TogiTracker() {
                 </div>
                 <div className="chart-accounts" role="group" aria-label="Chart account">
                   <button type="button" data-account="options" aria-pressed="true">Robinhood</button>
-                  <button type="button" data-account="challenge" aria-pressed="false">Fidelity</button>
+                  <button type="button" data-account="challenge" aria-pressed="false">Previous run</button>
                 </div>
               </div>
               <div className="chart-heading"><h2>Posted account balances</h2><span id="chart-context">Posted account values</span></div>
@@ -190,6 +188,8 @@ export function TogiTracker() {
           <div className="trade-columns" aria-hidden="true"><span>Position / outcome</span><span>Trade notes &amp; receipts</span><span>Reported P&amp;L</span></div>
           <div id="timeline" className="timeline" aria-live="polite"></div>
         </section>
+
+        <section className="panel prior-card" id="prior-challenge" aria-label="Previous challenge" hidden></section>
 
           <section className="twist brand-card rise d1">
             <div className="topline"></div>

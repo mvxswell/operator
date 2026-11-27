@@ -412,9 +412,12 @@ export type ChallengeView = {
 const FALLBACK_QUOTE = "Now in operation 6k to $1m";
 const FALLBACK_QUOTE_URL = "https://x.com/ShaneStoffer/status/2125652479945883664";
 
+type DatedMark = { latest_value: number; latest_value_date: string; latest_value_label: string; latest_value_source: string; field: string };
+
 /**
- * Numbers for the live challenge card. meta.challenge wins when it is marked
- * current; otherwise the challenges[] entry with status "current".
+ * Numbers for the live challenge card. Goal and start come from the current
+ * challenge. The posted value is whichever dated mark is newest, so a stale
+ * meta.challenge.latest_value loses to a newer meta.latest_value.
  */
 export function currentChallengeView(data: TogiData): ChallengeView {
   const meta = data.meta;
@@ -422,35 +425,52 @@ export function currentChallengeView(data: TogiData): ChallengeView {
   const fromList = Array.isArray(data.challenges)
     ? data.challenges.map(readChallenge).find((item) => item?.status === "current") ?? null
     : null;
-  const chosen = fromMeta && (fromMeta.status === "current" || fromMeta.status === "")
+  const identity = fromMeta && (fromMeta.status === "current" || fromMeta.status === "")
     ? fromMeta
     : fromList ?? fromMeta;
-  const goal = chosen?.goal ?? meta.goal;
-  const starting_value = chosen?.starting_value ?? meta.starting_value;
-  const latest_value = chosen?.latest_value ?? meta.latest_value;
-  const field = chosen && fromMeta && chosen === fromMeta
-    ? "meta.challenge.latest_value"
-    : chosen && fromList && chosen === fromList
-      ? "challenges[].latest_value"
-      : "meta.latest_value";
+  const marks: DatedMark[] = [{
+    latest_value: meta.latest_value,
+    latest_value_date: meta.latest_value_date,
+    latest_value_label: meta.latest_value_label,
+    latest_value_source: meta.latest_value_source,
+    field: "meta.latest_value",
+  }];
+  if (fromMeta?.latest_value_date) marks.push({
+    latest_value: fromMeta.latest_value,
+    latest_value_date: fromMeta.latest_value_date,
+    latest_value_label: fromMeta.latest_value_label,
+    latest_value_source: fromMeta.latest_value_source,
+    field: "meta.challenge.latest_value",
+  });
+  if (fromList?.latest_value_date) marks.push({
+    latest_value: fromList.latest_value,
+    latest_value_date: fromList.latest_value_date,
+    latest_value_label: fromList.latest_value_label,
+    latest_value_source: fromList.latest_value_source,
+    field: "challenges[].latest_value",
+  });
+  marks.sort((a, b) => b.latest_value_date.localeCompare(a.latest_value_date) || (a.field === "meta.latest_value" ? -1 : b.field === "meta.latest_value" ? 1 : 0));
+  const mark = marks[0];
+  const goal = identity?.goal ?? meta.goal;
+  const starting_value = identity?.starting_value ?? meta.starting_value;
   const ticks = new Set<number>();
-  for (const n of chosen?.milestones ?? []) if (n <= goal) ticks.add(n);
+  for (const n of identity?.milestones ?? []) if (n <= goal) ticks.add(n);
   if (!ticks.size) for (const n of [starting_value, 10_000, 100_000, 500_000, goal]) if (n >= 0 && n <= goal) ticks.add(n);
   if (starting_value >= 0 && starting_value <= goal) ticks.add(starting_value);
   ticks.add(goal);
   return {
     goal,
     starting_value,
-    latest_value,
-    latest_value_date: chosen?.latest_value_date || meta.latest_value_date,
-    latest_value_label: chosen?.latest_value_label || meta.latest_value_label,
-    latest_value_source: chosen?.latest_value_source || meta.latest_value_source,
-    account: chosen?.account ?? null,
-    broker: brokerName(chosen?.account) ?? (/robinhood/i.test(meta.latest_value_label) ? "Robinhood" : null),
-    announcement_text: chosen?.announcement_text || FALLBACK_QUOTE,
-    announcement_source: chosen?.source_url || meta.goal_change_source || FALLBACK_QUOTE_URL,
+    latest_value: mark.latest_value,
+    latest_value_date: mark.latest_value_date,
+    latest_value_label: mark.latest_value_label,
+    latest_value_source: mark.latest_value_source,
+    account: identity?.account ?? null,
+    broker: brokerName(identity?.account) ?? (/robinhood/i.test(mark.latest_value_label) ? "Robinhood" : null),
+    announcement_text: identity?.announcement_text || FALLBACK_QUOTE,
+    announcement_source: identity?.source_url || meta.goal_change_source || FALLBACK_QUOTE_URL,
     milestones: [...ticks].sort((a, b) => a - b),
-    field,
+    field: mark.field,
   };
 }
 
